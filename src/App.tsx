@@ -1,6 +1,8 @@
 import React from "react";
+import supabase from "./config/supabaseClient";
+
 function App() {
-  return <div></div>;
+  console.log(supabase);
 }
 
 export default App;
