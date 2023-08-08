@@ -1,11 +1,15 @@
 import React from "react";
-import supabase from "./config/supabaseClient";
+import { QueryClient, QueryClientProvider } from "react-query";
 import Router from "./shared/Router";
 
-function App() {
-  console.log(supabase);
+const queryClient = new QueryClient();
 
-  return <Router></Router>;
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Router />
+    </QueryClientProvider>
+  );
 }
 
 export default App;
