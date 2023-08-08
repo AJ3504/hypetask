@@ -10,7 +10,6 @@ const Register: React.FC = () => {
   const joinUsHandler = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      // Check if the username already exists
       const { data: existingUsers, error: existingUsersError } = await supabase
         .from("users")
         .select("*")
@@ -31,6 +30,7 @@ const Register: React.FC = () => {
       });
       if (error) console.error(error);
       console.log(data);
+      await addUser(data.user.id, name);
     } catch (error) {
       console.error(error);
     }
@@ -38,7 +38,6 @@ const Register: React.FC = () => {
 
   return (
     <div>
-      {/* 폼 컨트롤들과 submit 버튼 */}
       <form onSubmit={joinUsHandler}>
         <input
           type="text"
@@ -64,10 +63,10 @@ const Register: React.FC = () => {
   );
 };
 
-const addUser = async () => {
+const addUser = async (userUid: string, userName: string) => {
   const { data, error } = await supabase
     .from("users")
-    .insert([{ email: "example@example.com", username: "example_user" }]);
+    .insert([{ user_id: userUid, name: userName }]);
 
   if (error) {
     console.error(error);

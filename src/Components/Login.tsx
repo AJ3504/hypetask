@@ -24,26 +24,73 @@ const Login: React.FC = () => {
       console.log("Successfully logged in:", data.user);
     } catch (error) {
       console.error((error as any).message);
+      await supabase.from("users").upsert([
+        {
+          user_uid: user.id,
+        },
+      ]);
     }
   };
-
-  // async function signInWithKakao() {
-  //   const { data, error } = await supabase.auth.signInWithOAuth({
-  //     provider: 'kakao',
-  //   })
-  // }
-
-  //     if (error) {
-  //       console.error(error);
-  //       return;
-  //     }
-
-  //     console.log("Kakao user:", data);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
+  const signInWithGoogle = async () => {
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+      });
+      if (error) {
+        console.error("구글 로그인 에러 발생 :", error);
+        return;
+      }
+      const user = data.user;
+      console.log("google user:");
+    } catch (error) {
+      console.error("구글 로그인 에러2:", error);
+      await supabase.from("users").upsert([
+        {
+          user_uid: user.id,
+        },
+      ]);
+    }
+  };
+  const signInWithKakao = async () => {
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "kakao",
+      });
+      if (error) {
+        console.error("카카오 로그인 에러 발생 :", error);
+        return;
+      }
+      const user = data.user;
+      console.log("Kakao user:");
+    } catch (error) {
+      console.error("카카오 로그인 에러2:", error);
+      await supabase.from("users").upsert([
+        {
+          user_uid: user.id,
+        },
+      ]);
+    }
+  };
+  const signInWithGithub = async () => {
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "github",
+      });
+      if (error) {
+        console.error("깃허브 로그인 에러 발생 :", error);
+        return;
+      }
+      const user = data.user;
+      console.log("Github user:");
+    } catch (error) {
+      console.error("깃허브 로그인 에러2:", error);
+      await supabase.from("users").upsert([
+        {
+          user_uid: user.id,
+        },
+      ]);
+    }
+  };
   return (
     <div>
       <div className="login-container">
@@ -69,14 +116,14 @@ const Login: React.FC = () => {
         </div>
         {/* Social login options */}
         <div className="social-login">
-          <div>
+          <div onClick={signInWithGoogle}>
             <LoginIcon src="/assets/google (1).png" /> Sign in with Google
           </div>
-          <div>
+          <div onClick={signInWithGithub}>
             <LoginIcon src="/assets/github (1).png" />
             Sign in with GitHub
           </div>
-          <div>
+          <div onClick={signInWithKakao}>
             <LoginIcon src="/assets/kakao-talk.png" />
             Sign in with Kakao
           </div>
