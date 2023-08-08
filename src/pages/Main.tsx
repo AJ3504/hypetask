@@ -1,11 +1,7 @@
 import TasksMain from "../components/tasks/TasksMain";
 
 const Main = () => {
-  return (
-    <>
-      <TasksMain />
-    </>
-  );
+  return <>{/* <TasksMain /> */}</>;
 };
 
 export default Main;
