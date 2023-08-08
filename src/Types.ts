@@ -24,12 +24,15 @@ export interface Likes {
   created_at: string;
 }
 export interface Tasks {
-  todo_id: string;
+  task_id: string;
   created_at: string;
-  days_id: string;
   desc: string;
   title: string;
   done: boolean;
+  start_time: string;
+  end_time: string;
+  date: string;
+  user_id: string;
 }
 export interface Users {
   user_id: string;
