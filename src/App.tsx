@@ -1,11 +1,9 @@
 import React from "react";
 import supabase from "./config/supabaseClient";
-import { follow } from "./api/user";
+import Router from "./shared/Router";
 type Props = {};
-
 const App = (props: Props) => {
-  console.log(supabase);
-  follow();
-  return <div>App</div>;
+  return <Router></Router>;
 };
+
 export default App;

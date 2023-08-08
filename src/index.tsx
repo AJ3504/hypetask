@@ -3,14 +3,15 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import GlobalStyle from "./GlobalStyles";
 import Layout from "./common/Layout";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
+const queryClient = new QueryClient();
 root.render(
   <React.StrictMode>
-    <GlobalStyle />
-    <Layout>
+    <QueryClientProvider client={queryClient}>
       <App />
-    </Layout>
+    </QueryClientProvider>
   </React.StrictMode>
 );
