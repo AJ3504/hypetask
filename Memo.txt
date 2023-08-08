@@ -143,3 +143,8 @@ function App() {
     </>
   );
 }
+
+//
+body {
+  background-color: #fffefa;
+}
