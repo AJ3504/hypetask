@@ -2,6 +2,7 @@ import React, { FormEvent, useState } from "react";
 import supabase from "../config/supabaseClient";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { styled } from "styled-components";
+import { Link } from "react-router-dom";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -111,8 +112,8 @@ const Login: React.FC = () => {
           <button onClick={loginHandler}>Go!</button>
         </div>
         <div className="login-guide">
-          <div>forgot password?</div>
-          <div>Join us</div>
+          <Link to="/findpassword">forgot password?</Link>
+          <Link to="/register">Join us</Link>
         </div>
         {/* Social login options */}
         <div className="social-login">
