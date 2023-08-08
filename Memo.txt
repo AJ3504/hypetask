@@ -1,0 +1,145 @@
+function App() {
+  const [fetchError, setFetchError] = useState<string | null>(null);
+
+  const [followers, setFollowers] = useState<Followers[] | null>(null);
+  const [users, setUsers] = useState<Users[] | null>(null);
+  const [comments, setComments] = useState<Comments[] | null>(null);
+  const [days, setDays] = useState<Days[] | null>(null);
+  const [likes, setLikes] = useState<Likes[] | null>(null);
+  const [tasks, setTasks] = useState<Tasks[] | null>(null);
+
+  useEffect(() => {
+    const fetchFollowers = async () => {
+      let { data: followers, error } = await supabase
+        .from("followers")
+        .select("*");
+      // console.log(followers);
+
+      if (error) {
+        setFetchError("데이터 불러오기 실패");
+        setFollowers(null);
+        console.log(error);
+      }
+
+      if (followers) {
+        setFollowers(followers);
+        setFetchError(null);
+      }
+    };
+
+    fetchFollowers();
+  }, []);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      let { data: users, error } = await supabase.from("users").select("*");
+      // console.log(users);
+
+      if (error) {
+        setFetchError("데이터 불러오기 실패");
+        setUsers(null);
+        console.log(error);
+      }
+
+      if (users) {
+        setUsers(users);
+        setFetchError(null);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      let { data: comments, error } = await supabase
+        .from("comments")
+        .select("*");
+      console.log(comments);
+
+      if (error) {
+        setFetchError("데이터 불러오기 실패");
+        setComments(null);
+        console.log(error);
+      }
+
+      if (comments) {
+        setComments(comments);
+        setFetchError(null);
+      }
+    };
+    fetchComments();
+  }, []);
+
+  useEffect(() => {
+    const fetchDays = async () => {
+      let { data: days, error } = await supabase.from("days").select("*");
+      console.log(days); // ??
+      if (error) {
+        setFetchError("데이터 불러오기 실패");
+        setDays(null);
+        console.log(error);
+      }
+
+      if (days) {
+        setDays(days);
+        setFetchError(null);
+      }
+    };
+    fetchDays();
+  }, []);
+
+  useEffect(() => {
+    const fetchLikes = async () => {
+      let { data: likes, error } = await supabase.from("likes").select("*");
+      console.log(likes);
+
+      if (error) {
+        setFetchError("데이터 불러오기 실패");
+        setLikes(null);
+        console.log(error);
+      }
+
+      if (likes) {
+        setLikes(likes);
+        setFetchError(null);
+      }
+    };
+
+    fetchLikes();
+  }, []);
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      let { data: tasks, error } = await supabase.from("tasks").select("*");
+      console.log(tasks);
+
+      if (error) {
+        setFetchError("데이터 불러오기 실패");
+        setTasks(null);
+        console.log(error);
+      }
+
+      if (tasks) {
+        setTasks(tasks);
+        setFetchError(null);
+      }
+    };
+
+    fetchTasks();
+  }, []);
+
+  return (
+    <>
+      <div>
+        {fetchError && <p>{fetchError}</p>}
+        {followers?.map((follower) => (
+          <div key={follower.follow_id}>
+            <p>{follower.from}</p>
+            <p>{follower.to}</p>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}
