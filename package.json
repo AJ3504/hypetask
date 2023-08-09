@@ -14,6 +14,7 @@
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "antd": "^5.8.2",
+    "axios": "^1.4.0",
     "dayjs": "^1.11.9",
     "force": "^0.0.3",
     "react": "^18.2.0",
