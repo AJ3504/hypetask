@@ -3,9 +3,67 @@
 1. 캘린더에 0점~10점 표시
 2. Σ(전체 날짜 점수 *10)/날짜수=달성률
 
-10 % : 초심자
-30 % : 노력왕
-50 % : 도전왕
-70 % : 희망왕
-90 % : 열정왕
+0~20 % : 초심자
+21~40 % : 노력왕
+41~60 % : 도전왕
+61~80 % : 희망왕
+81~99 % : 열정왕
 100 %: 완벽왕
+
+Chart.js를 사용해서 그래프 나타내기
+
+1. 데이터 예시
+const achievementData = [
+  { item: "Project A", achievement: 75 },
+  { item: "Project B", achievement: 40 },
+  { item: "Project C", achievement: 90 },]
+
+2. yarn add chart.js
+
+3. 데이터 구조화
+const itemNames = achievementData.map(item => item.item);
+const achievementRates = achievementData.map(item => item.achievement);
+
+4. 그래프 생성:
+import React, { useEffect } from "react";
+import Chart from "chart.js";
+
+const BarChart = () => {
+  useEffect(() => {
+    const ctx = document.getElementById("myBarChart").getContext("2d");
+
+    new Chart(ctx, {
+      type: "horizontalBar",
+      data: {
+        labels: itemNames,
+        datasets: [
+          {
+            label: "Achievement Rate",
+            data: achievementRates,
+            backgroundColor: "rgba(75, 192, 192, 0.2)",
+            borderColor: "rgba(75, 192, 192, 1)",
+            borderWidth: 1,
+          },
+        ],
+      },
+      options: {
+        scales: {
+          x: {
+            beginAtZero: true,
+            max: 100,
+            title: {
+              display: true,
+              text: "Achievement Rate (%)",
+            },
+          },
+        },
+      },
+    });
+  }, []);
+
+  return <canvas id="myBarChart" width="400" height="200"></canvas>;
+};
+
+export default BarChart;
+
+
