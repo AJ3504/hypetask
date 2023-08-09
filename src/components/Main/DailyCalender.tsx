@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { styled } from "styled-components";
 import { getTasks } from "../../api/tasks";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 const DailyCalender = () => {
   // 1. 현재 로그인된 유저의 uid를 가지고 와서 uid와 현재 날짜를 이용해 task들을 가져오기
@@ -12,7 +12,7 @@ const DailyCalender = () => {
     data: tasks,
     isLoading,
     isError,
-  } = useQuery("tasks", async () => {
+  } = useQuery(["tasks"], async () => {
     const tasksData = await getTasks(today);
     return tasksData;
   });
