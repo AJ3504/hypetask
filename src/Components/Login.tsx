@@ -3,7 +3,11 @@ import supabase from "../config/supabaseClient";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
-
+enum AuthProvider {
+  Google = "google",
+  Kakao = "kakao",
+  GitHub = "github",
+}
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -23,73 +27,51 @@ const Login: React.FC = () => {
         return;
       }
       console.log("Successfully logged in:", data.user);
+      alert("로그인에 성공했습니다. 메인페이지로 이동합니다.");
     } catch (error) {
       console.error((error as any).message);
-      await supabase.from("users").upsert([
-        {
-          user_uid: user.id,
-        },
-      ]);
     }
   };
-  const signInWithGoogle = async () => {
+  interface OAuthResponse {
+    user?: {
+      id: string;
+    };
+    profile?: {
+      id: string;
+    };
+  }
+
+  interface ProviderResponse {
+    provider: AuthProvider;
+    url: string;
+  }
+  const handleOAuthLogin = async (provider: AuthProvider, e: FormEvent) => {
+    e.preventDefault();
     try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-      });
+      const { data, error } = await (
+        supabase.auth as SupabaseClient["auth"]
+      ).signInWithOAuth({ provider });
+
       if (error) {
-        console.error("구글 로그인 에러 발생 :", error);
+        console.error(`${provider} 로그인 에러 발생:`, error);
         return;
       }
-      const user = data.user;
-      console.log("google user:");
-    } catch (error) {
-      console.error("구글 로그인 에러2:", error);
-      await supabase.from("users").upsert([
-        {
-          user_uid: user.id,
-        },
-      ]);
-    }
-  };
-  const signInWithKakao = async () => {
-    try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: "kakao",
-      });
-      if (error) {
-        console.error("카카오 로그인 에러 발생 :", error);
-        return;
+
+      const oauthData = data as OAuthResponse;
+      if (oauthData.user || oauthData.profile) {
+        const user = oauthData.user ?? oauthData.profile;
+        if (user) {
+          console.log(`${provider} user:`, user);
+
+          await supabase.from("users").upsert([
+            {
+              user_id: user.id,
+            },
+          ]);
+        }
       }
-      const user = data.user;
-      console.log("Kakao user:");
     } catch (error) {
-      console.error("카카오 로그인 에러2:", error);
-      await supabase.from("users").upsert([
-        {
-          user_uid: user.id,
-        },
-      ]);
-    }
-  };
-  const signInWithGithub = async () => {
-    try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: "github",
-      });
-      if (error) {
-        console.error("깃허브 로그인 에러 발생 :", error);
-        return;
-      }
-      const user = data.user;
-      console.log("Github user:");
-    } catch (error) {
-      console.error("깃허브 로그인 에러2:", error);
-      await supabase.from("users").upsert([
-        {
-          user_uid: user.id,
-        },
-      ]);
+      console.error(`${provider} 로그인 에러 발생:`, error);
     }
   };
   return (
@@ -115,28 +97,28 @@ const Login: React.FC = () => {
           <Link to="/findpassword">forgot password?</Link>
           <Link to="/register">Join us</Link>
         </div>
-        {/* Social login options */}
+        {/* Social login */}
         <div className="social-login">
-          <div onClick={signInWithGoogle}>
-            <LoginIcon src="/assets/google (1).png" /> Sign in with Google
+          <div onClick={(e) => handleOAuthLogin(AuthProvider.Google, e)}>
+            <LoginIcon src="/assets/google (1).png" />
           </div>
-          <div onClick={signInWithGithub}>
+          <div onClick={(e) => handleOAuthLogin(AuthProvider.GitHub, e)}>
             <LoginIcon src="/assets/github (1).png" />
-            Sign in with GitHub
           </div>
-          <div onClick={signInWithKakao}>
+          <div onClick={(e) => handleOAuthLogin(AuthProvider.Kakao, e)}>
             <LoginIcon src="/assets/kakao-talk.png" />
-            Sign in with Kakao
           </div>
         </div>
       </div>
     </div>
   );
 };
-
 export default Login;
 const LoginIcon = styled.img`
-  width: 24px;
+  width: 30px;
   height: auto;
-  margin-right: 8px;
+  margin: 8px;
+  padding: 6px;
+  border: solid 1px lightgray;
+  border-radius: 8px;
 `;

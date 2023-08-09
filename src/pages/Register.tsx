@@ -1,14 +1,20 @@
 import React, { useState } from "react";
 import { FormEvent } from "react";
 import supabase from "../config/supabaseClient";
+import { error } from "console";
 
 const Register: React.FC = () => {
-  const [email, setEmail] = useState(""); // 이메일 상태 변수
-  const [password, setPassword] = useState(""); // 패스워드 상태 변수
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
   const joinUsHandler = async (e: FormEvent) => {
     e.preventDefault();
+    if (password !== confirmPassword) {
+      setError("비밀번호가 일치하지 않습니다.");
+      return;
+    }
     try {
       const { data: existingUsers, error: existingUsersError } = await supabase
         .from("users")
@@ -24,13 +30,23 @@ const Register: React.FC = () => {
         console.error("이미 사용 중인 사용자 이름입니다.");
         return;
       }
-      const { data, error } = await supabase.auth.signUp({
+
+      const signUpResult: any = await supabase.auth.signUp({
         email,
         password,
       });
-      if (error) console.error(error);
-      console.log(data);
-      await addUser(data.user.id, name);
+
+      if (signUpResult.error) {
+        console.error(signUpResult.error);
+        return;
+      }
+
+      const user = signUpResult.user;
+
+      if (user) {
+        console.log("User registered:", user);
+        await addUser(user.id, name);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -38,6 +54,7 @@ const Register: React.FC = () => {
 
   return (
     <div>
+      Join Us !
       <form onSubmit={joinUsHandler}>
         <input
           type="text"
@@ -57,7 +74,14 @@ const Register: React.FC = () => {
           onChange={(e) => setPassword(e.target.value)}
           placeholder="password"
         />
-        <button type="submit">Join Us</button>
+        <input
+          type="password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          placeholder="비밀번호 확인"
+        />
+        <button type="submit">회원가입 완료</button>
+        {error && <p style={{ color: "red" }}>{error}</p>}
       </form>
     </div>
   );
@@ -66,7 +90,7 @@ const Register: React.FC = () => {
 const addUser = async (userUid: string, userName: string) => {
   const { data, error } = await supabase
     .from("users")
-    .insert([{ user_id: userUid, name: userName }]);
+    .upsert([{ user_id: userUid, name: userName }]);
 
   if (error) {
     console.error(error);
@@ -75,13 +99,4 @@ const addUser = async (userUid: string, userName: string) => {
   }
 };
 
-const getUsers = async () => {
-  const { data, error } = await supabase.from("users").select("*");
-
-  if (error) {
-    console.error(error);
-  } else {
-    console.log("Users:", data);
-  }
-};
 export default Register;

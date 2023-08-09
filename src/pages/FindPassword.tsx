@@ -36,7 +36,7 @@ const FindPassword: React.FC = () => {
     if (data) {
       alert("Password updated successfully!");
       setNewPassword("");
-      // router.push("/"); // 이 부분은 router 관련 기능을 이용해야 함
+      //router.push("/"); // 이 부분은 router 관련 기능을 이용해야 함
     }
     if (error) {
       alert("There was an error updating your password.");
@@ -45,17 +45,16 @@ const FindPassword: React.FC = () => {
 
   return (
     <div>
-      {/* JSX 또는 HTML 내용 추가 */}
-      <h1>Find Password</h1>
+      <h1>비밀번호 변경</h1>
       <form onSubmit={resetPasswordHandler}>
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          placeholder="이메일을 입력해주세요"
         />
         <button type="submit">Reset Password</button>
       </form>
-      {/* 나머지 내용 추가 */}
     </div>
   );
 };

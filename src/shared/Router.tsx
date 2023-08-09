@@ -7,6 +7,7 @@ import Mypage from "../pages/Mypage";
 import Register from "../pages/Register";
 import FirstMain from "../pages/FirstMain";
 import FindPassword from "../pages/FindPassword";
+import ResetPassword from "../pages/ResetPassword";
 
 const Router = () => {
   return (
@@ -18,6 +19,7 @@ const Router = () => {
           <Route path="/" element={<Main />} />
           <Route path="register" element={<Register />} />
           <Route path="findpassword" element={<FindPassword />} />
+          <Route path="resetpassword" element={<ResetPassword />} />
 
           <Route path="detail/:id" element={<Detail />} />
           <Route path="my-page/:id" element={<Mypage />} />
