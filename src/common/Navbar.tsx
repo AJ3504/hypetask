@@ -27,6 +27,7 @@ export function Navbar() {
               </StImageWrapper>
 
               <div>로그아웃</div>
+              <div style={{ marginLeft: "10px" }}>하입톡💬</div>
             </StRightNavInner>
           </StRightNav>
         </StContainer>
