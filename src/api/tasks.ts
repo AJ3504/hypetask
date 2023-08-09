@@ -1,4 +1,14 @@
 import supabase from "../config/supabaseClient";
+
+export const getTasks = async (date: string) => {
+  const { data: tasks } = await supabase
+    .from("tasks")
+    .select("*")
+    .eq("date", date);
+  console.log(tasks);
+  return tasks;
+};
+
 /**
  *
  * @string desc 내용

@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { Space, DatePicker, Select, Button } from "antd";
 import type { DatePickerProps } from "antd";
 import dayjs from "dayjs";
-import { addTask } from "../api/task";
+import { addTask } from "../api/tasks";
 import "dayjs/locale/ko";
 dayjs.locale("ko");
 type IModalProps = {
@@ -52,10 +52,10 @@ const Modal: React.FC<IModalProps> = ({
   );
   const [desc, setDesc, onChangeDesc] = useInput("");
   const [startTime, setStartTime] = useInput(
-    dayjs(new Date()).locale("ko").format("A:hh")
+    dayjs(new Date()).locale("ko").format("hh")
   );
   const [endTime, setEndTime] = useInput(
-    dayjs(new Date()).locale("ko").format("A:hh")
+    dayjs(new Date()).locale("ko").format("hh")
   );
   const onChangeDate: DatePickerProps["onChange"] = (date, dateString) => {
     setDate(dateString);
@@ -63,6 +63,11 @@ const Modal: React.FC<IModalProps> = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const submitHandler = async () => {
     setIsLoading(true);
+    if (startTime >= endTime) {
+      alert("종료시간은 시작시간보다 커야합니다.");
+      setIsLoading(false);
+      return;
+    }
     console.log(title, desc, date, startTime, endTime);
     const soj = startTime.indexOf("후") === -1 ? 0 : 12;
     const eoj = endTime.indexOf("후") === -1 ? 0 : 12;
@@ -82,10 +87,6 @@ const Modal: React.FC<IModalProps> = ({
     });
     setIsLoading(false);
     alert("작성되었습니다");
-  };
-  const validate = (rule: any, value: any) => {
-    console.log(value);
-    return Promise.resolve();
   };
   const { handleSubmit } = useForm();
 

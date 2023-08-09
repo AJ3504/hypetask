@@ -1,7 +1,12 @@
 import React from "react";
+import DailyCalender from "../components/Main/DailyCalender";
 
 const Main = () => {
-  return <div>Main</div>;
+  return (
+    <>
+      <DailyCalender />
+    </>
+  );
 };
 
 export default Main;

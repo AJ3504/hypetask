@@ -1,9 +1,15 @@
 import React from "react";
-import supabase from "./config/supabaseClient";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Router from "./shared/Router";
-type Props = {};
-const App = (props: Props) => {
-  return <Router></Router>;
-};
+
+const queryClient = new QueryClient();
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Router />
+    </QueryClientProvider>
+  );
+}
 
 export default App;
