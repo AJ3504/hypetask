@@ -78,6 +78,19 @@ const Login: React.FC = () => {
       console.error(`${provider} 로그인 에러 발생:`, error);
     }
   };
+  //로그아웃 기능 (로그아웃 버튼 만들때 가져가면 됨)
+  const logoutHandler = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error("로그아웃 에러 발생:", error);
+        return;
+      }
+      console.log("로그아웃 완료");
+    } catch (error) {
+      console.error("로그아웃 에러 발생:", error);
+    }
+  };
   return (
     <LoginContainer>
       <div className="login-container">

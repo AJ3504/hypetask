@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { FormEvent } from "react";
 import supabase from "../config/supabaseClient";
 import { styled } from "styled-components";
-
+interface FormEvent extends React.FormEvent<HTMLFormElement> {}
 const Register: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -43,12 +42,34 @@ const Register: React.FC = () => {
       if (user) {
         console.log("User registered:", user);
         await addUser(user.id, name);
-        setSuccessRegister(true);
+
+        setError("");
+        console.log("User added to users table");
       }
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const addUser = async (userUid: string, userName: string) => {
+    const { data, error } = await supabase
+      .from("users")
+      .upsert([{ user_id: userUid, name: userName }]);
+
+    if (error) {
+      console.error(error);
+    } else {
+      console.log("User added:", data);
+      const { data: profileData, error: profileError } = await supabase
+        .from("profiles")
+        .upsert([{ user_id: userUid, name: userName }]);
+      if (profileError) {
+        console.error(profileError);
+      } else {
+        console.log("Profile added", profileData);
+      }
     }
   };
 
@@ -60,38 +81,38 @@ const Register: React.FC = () => {
         ) : (
           <div>
             Join Us !
-            <RegistFormContainer>
-              <Form onSubmit={joinUsHandler}>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="user name"
-                />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="email"
-                />
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="password"
-                />
-                <input
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="비밀번호 확인"
-                />
-                <button type="submit" disabled={loading}>
-                  {" "}
-                  {loading ? "회원가입 중..." : "회원가입 완료"}
-                </button>
-                {error && <p style={{ color: "red" }}>{error}</p>}
-              </Form>
+            <RegistFormContainer onSubmit={joinUsHandler}>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="user name"
+              />
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="email"
+                autoComplete="username"
+              />
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="password"
+                autoComplete="new-password"
+              />
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="비밀번호 확인"
+                autoComplete="new-password"
+              />
+              <button type="submit" disabled={loading}>
+                {loading ? "회원가입 중..." : "회원가입 완료"}
+              </button>
+              {error && <p style={{ color: "red" }}>{error}</p>}
             </RegistFormContainer>
           </div>
         )}
@@ -100,19 +121,6 @@ const Register: React.FC = () => {
   );
 };
 
-const addUser = async (userUid: string, userName: string) => {
-  const { data, error } = await supabase
-    .from("users")
-    .upsert([{ user_id: userUid, name: userName }]);
-
-  if (error) {
-    console.error(error);
-  } else {
-    console.log("User added:", data);
-  }
-};
-
-export default Register;
 const CenteredContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -128,9 +136,6 @@ const RegisterContents = styled.div`
   height: 300px;
 `;
 
-const ResetPasswordContent = styled.div`
-  text-align: center;
-`;
 const RegistFormContainer = styled.form`
   display: flex;
   flex-direction: column;
@@ -138,11 +143,5 @@ const RegistFormContainer = styled.form`
   justify-content: center;
   height: 100%;
 `;
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  gap: 10px;
-`;
+
+export default Register;
