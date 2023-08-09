@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import supabase from "../config/supabaseClient";
+import { styled } from "styled-components";
 
 const FindPassword: React.FC = () => {
   const [email, setEmail] = useState(""); // 이메일 상태 변수
@@ -44,19 +45,48 @@ const FindPassword: React.FC = () => {
   };
 
   return (
-    <div>
-      <h1>비밀번호 변경</h1>
-      <form onSubmit={resetPasswordHandler}>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="이메일을 입력해주세요"
-        />
-        <button type="submit">Reset Password</button>
-      </form>
-    </div>
+    <CenteredContainer>
+      <ResetPassword>
+        <h1>비밀번호 변경</h1>
+        <PasswordFormContainer>
+          <form onSubmit={resetPasswordHandler}>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="이메일을 입력해주세요"
+            />
+            <button type="submit">Reset Password</button>
+          </form>
+        </PasswordFormContainer>
+      </ResetPassword>
+    </CenteredContainer>
   );
 };
 
 export default FindPassword;
+const CenteredContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+`;
+
+const ResetPassword = styled.div`
+  border: 1px solid lightgray;
+  padding: 20px;
+  border-radius: 20px;
+  width: 400px;
+  height: 300px;
+`;
+
+const ResetPasswordContent = styled.div`
+  text-align: center;
+`;
+const PasswordFormContainer = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+`;

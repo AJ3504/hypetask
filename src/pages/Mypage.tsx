@@ -1,13 +1,16 @@
 import React from "react";
-import { useState } from "react";
 import Profile from "../Components/Profile";
-import Calender from "../Components/Calender";
+import MyCalender from "../Components/MyCalender";
+import { ContentContainer, FirstMainContainer } from "./FirstMain";
+
 const MyPage: React.FC = () => {
   return (
-    <div>
-      <Profile />
-      <Calender />
-    </div>
+    <FirstMainContainer>
+      <ContentContainer>
+        <Profile />
+        <MyCalender />
+      </ContentContainer>
+    </FirstMainContainer>
   );
 };
 
