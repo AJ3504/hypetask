@@ -14,7 +14,7 @@ type IModalProps = {
   todayDefault: boolean;
   visible: boolean;
 };
-const timeTable = [
+export const timeTable = [
   { value: "00", label: "오전:00" },
   { value: "01", label: "오전:01" },
   { value: "02", label: "오전:02" },

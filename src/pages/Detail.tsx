@@ -1,7 +1,9 @@
 import React from "react";
 import Modal from "../components/Modal";
+import CommentContainer from "../components/Comment/CommentContainer";
+
 const Detail = () => {
-  return <Modal todayDefault={false} visible={true} />;
+  return <CommentContainer />;
 };
 
 export default Detail;
