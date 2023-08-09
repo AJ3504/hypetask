@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { styled } from "styled-components";
 import { Tasks, getFollowersTasks, getMyTasks } from "../../api/tasks";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Followers, getFollowers } from "../../api/users";
 
 const DailyCalender = () => {
@@ -11,7 +11,7 @@ const DailyCalender = () => {
   const today = new Date().toISOString().slice(0, 10);
   const myId = "ae06168e-38d9-4a05-a2d6-41e5c0a7aac6";
 
-  const { data: tasks } = useQuery("tasks", async () => {
+  const { data: tasks } = useQuery(["tasks"], async () => {
     const tasksData = await getMyTasks(myId, today);
     return tasksData;
   });
