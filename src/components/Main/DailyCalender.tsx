@@ -17,7 +17,7 @@ const DailyCalender = () => {
   });
 
   const { data: followers } = useQuery(
-    "followers",
+    ["followers"],
     async () => {
       const followersData = await getFollowers(myId);
       return followersData;
@@ -30,7 +30,7 @@ const DailyCalender = () => {
   console.log("팔로워들", followers);
 
   const { data: followersTasks } = useQuery(
-    "followersTasks",
+    ["followersTasks"],
     async () => {
       const followersTasksData = await getFollowersTasks(today, followers!);
       return followersTasksData;
