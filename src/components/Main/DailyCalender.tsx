@@ -27,7 +27,7 @@ const DailyCalender = () => {
         followers?.map((follower: Followers) => follower.from),
     }
   );
-  console.log("팔로워들", followers);
+  // console.log("팔로워들", followers);
 
   const { data: followersTasks } = useQuery(
     ["followersTasks"],
@@ -63,15 +63,15 @@ const DailyCalender = () => {
       </S.TaskContainer>
       {followers &&
         followers.map((follower: string) => {
-          console.log("팔로워", follower);
+          // console.log("팔로워", follower);
           const followerTasks = followersTasks?.filter(
             (followersTask) => followersTask.user_id === follower
           );
-          console.log("팔로워의 태스크들", followerTasks);
+          // console.log("팔로워의 태스크들", followerTasks);
           return (
             <S.TaskContainer>
               {followerTasks?.map((followerTask: Tasks) => {
-                console.log("팔로워의 태스크", followerTask);
+                // console.log("팔로워의 태스크", followerTask);
                 const endHour = followerTask.end_time;
                 const startHour = followerTask.start_time;
                 const height = (endHour - startHour) * 80;

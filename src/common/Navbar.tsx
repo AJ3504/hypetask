@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { styled } from "styled-components";
 
 export function Navbar() {
@@ -27,7 +28,9 @@ export function Navbar() {
               </StImageWrapper>
 
               <div>로그아웃</div>
-              <div style={{ marginLeft: "10px" }}>하입톡💬</div>
+              <Link to="/chat" style={{ marginLeft: "10px" }}>
+                하입톡💬
+              </Link>
             </StRightNavInner>
           </StRightNav>
         </StContainer>
