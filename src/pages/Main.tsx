@@ -1,5 +1,5 @@
 import React from "react";
-import DailyCalender from "../components/main/DailyCalender";
+import DailyCalender from "../components/Main/DailyCalender";
 
 const Main = () => {
   return (

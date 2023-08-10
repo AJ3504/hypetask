@@ -1,11 +1,24 @@
-export interface Comments {
-  comment_id: string;
+export type Comment = {
+  user_id: string;
+  comment_id?: string;
   task_id: string;
+  created_at?: string;
+  comment: string;
+  ref_step: number;
+  ref_id?: string;
+  time_ref?: number;
+  replys: Comment[];
+  num_of_reply?: number;
+  user?: User;
+};
+export type User = {
   user_id: string;
   created_at: string;
-  comment: string;
-  day_id: string;
-}
+  name: string;
+  img_url: string;
+  email: string;
+};
+
 export interface Days {
   day_id: string;
   created_at: string;
@@ -30,10 +43,4 @@ export interface Tasks {
   desc: string;
   title: string;
   done: boolean;
-}
-export interface Users {
-  user_id: string;
-  created_at: string;
-  name: string;
-  img_url: string;
 }
