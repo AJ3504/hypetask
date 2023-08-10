@@ -39,7 +39,8 @@ export const StNavBar = styled.div`
   position: sticky;
   top: 0;
   width: 100%;
-  margin-bottom: 30px;
+  height: 70px;
+  /* margin-bottom: 30px; */
   background-color: #faf7e1;
   z-index: 999;
 `;
