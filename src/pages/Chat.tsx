@@ -1,28 +1,34 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ChatRoom from "../components/Chat/ChatRoom";
+import { useUserStore } from "../components/Authentication/Login";
 
 const Chat = () => {
   // 상단 hooks
   const navigate = useNavigate();
 
-  const userToken = localStorage.getItem("userToken");
+  // zustand - state
+  const accessToken = useUserStore((state) => state.accessToken);
 
-  // const [isAuth, setIsAuth] = useState(userToken);
-  const [room, setRoom] = useState<string | undefined>();
-
+  // useStates
+  const [room, setRoom] = useState<string | undefined>("");
   const roomInputRef = useRef<HTMLInputElement | null>(null);
+  console.log(accessToken);
 
-  if (!userToken) {
+  if (!accessToken) {
     alert("로그인 해주세요!");
-    navigate("/");
+
+    setTimeout(() => {
+      navigate("/first-main");
+    }, 500);
+
     return null;
   }
 
   return (
     <div>
       {room ? (
-        <ChatRoom />
+        <ChatRoom room={room} />
       ) : (
         <div className="room">
           <label>Enter Room Name:</label>
