@@ -41,6 +41,7 @@ const Login: React.FC = () => {
   console.log(fullName);
   console.log(accessToken);
 
+  // 1. 일반 이메일 로그인 (provider = email)
   const loginHandler = async (e: FormEvent) => {
     e.preventDefault();
     try {
@@ -55,21 +56,21 @@ const Login: React.FC = () => {
         alert("로그인 정보를 다시 확인해주세요");
         return;
       }
-      console.log("Successfully logged in:", data.user);
-      console.log("full name?>", data.user.user_metadata.full_name);
+      // console.log("Successfully logged in:", data.user);
+      // console.log("full name?>", data.user.user_metadata.full_name);
 
       // zustand
       setFullName(data.user.user_metadata.full_name);
 
-      // 토큰 저장
+      // 토큰 저장 - 일반 로그인
       if (data.user) {
         const session = await supabase.auth.getSession();
-        console.log("session>", session);
+        // console.log("session>", session);
 
         const accessToken = session?.data?.session?.access_token;
         if (accessToken) {
           localStorage.setItem("accessToken", accessToken);
-          console.log("Access token saved to localStorage.");
+          // console.log("Access token saved to localStorage.");
 
           // zustand
           setAccessToken(accessToken);
@@ -96,6 +97,8 @@ const Login: React.FC = () => {
     provider: AuthProvider;
     url: string;
   }
+
+  // 2. 소셜 로그인 (provider = google, github, kakao)
   const handleOAuthLogin = async (provider: AuthProvider, e: FormEvent) => {
     e.preventDefault();
     try {
@@ -112,7 +115,8 @@ const Login: React.FC = () => {
       if (oauthData.user || oauthData.profile) {
         const user = oauthData.user ?? oauthData.profile;
         if (user) {
-          console.log(`${provider} user:`, user);
+          // 이안진 추가
+          console.log(`Successfully Sociallogged in: ${provider} user:`, user);
 
           await supabase.from("users").upsert([
             {
