@@ -7,12 +7,15 @@ import { useForm } from "react-hook-form";
 import { Space, DatePicker, Select, Button } from "antd";
 import type { DatePickerProps } from "antd";
 import dayjs from "dayjs";
-import { addTask } from "../../api/tasks";
+import { Tasks, addTask, updateTask } from "../../api/tasks";
 import "dayjs/locale/ko";
 import { useModalStore } from "../../config/useModalStore";
+import { useMutation } from "@tanstack/react-query";
+import { queryClient } from "../../App";
 dayjs.locale("ko");
 type IModalProps = {
   todayDefault: boolean;
+  task?: Tasks;
 };
 const timeTable = [
   { value: "00", label: "오전:00" },
@@ -42,7 +45,10 @@ const timeTable = [
 ];
 const today = dayjs(new Date());
 
-const AddTaskModal: React.FC<IModalProps> = ({ todayDefault }: IModalProps) => {
+const AddTaskModal: React.FC<IModalProps> = ({
+  todayDefault,
+  task,
+}: IModalProps) => {
   const [title, setTitle, onChangeTitle] = useInput("");
   const [date, setDate] = useInput(
     dayjs(new Date()).format("YYYY-MM-DD").toString()
@@ -84,15 +90,52 @@ const AddTaskModal: React.FC<IModalProps> = ({ todayDefault }: IModalProps) => {
     });
     setIsLoading(false);
     alert("작성되었습니다");
+    changeAddTaskModalstatus();
+  };
+
+  const updateTaskMutation = useMutation(
+    (newTask: Tasks) => updateTask(newTask),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["followersTasks"]);
+        alert("수정되었습니다!");
+        changeAddTaskModalstatus();
+      },
+    }
+  );
+
+  const updateBtnHandler = () => {
+    const soj = startTime.indexOf("후") === -1 ? 0 : 12;
+    const eoj = endTime.indexOf("후") === -1 ? 0 : 12;
+    const startTimeParsed: number = parseInt(startTime.slice(-2)) + soj;
+    const endTimeParsed: number = parseInt(endTime.slice(-2)) + eoj;
+    const newTask = {
+      task_id: task?.task_id,
+      title,
+      desc,
+      date,
+      start_time: startTimeParsed,
+      end_time: endTimeParsed,
+      user_id: task?.user_id,
+      detail_on: false,
+    };
+
+    updateTaskMutation.mutate(newTask);
   };
   const { handleSubmit } = useForm();
   const { changeAddTaskModalstatus } = useModalStore();
 
   return (
     <>
-      <StModalBackGround onClick={changeAddTaskModalstatus}>
+      <StModalBackGround>
         <StModalContent>
-          <Form onSubmitCapture={handleSubmit(submitHandler)}>
+          <Form
+            onSubmitCapture={
+              task
+                ? handleSubmit(updateBtnHandler)
+                : handleSubmit(submitHandler)
+            }
+          >
             <Space
               direction="vertical"
               size="small"
@@ -175,23 +218,32 @@ const AddTaskModal: React.FC<IModalProps> = ({ todayDefault }: IModalProps) => {
                   </div>
                 </Space>
               </div>
-              {isLoading ? (
+              <div>
+                {isLoading ? (
+                  <Button
+                    type="primary"
+                    style={{ position: "relative", left: "280px" }}
+                    loading
+                  >
+                    제출중
+                  </Button>
+                ) : (
+                  <Button
+                    type="primary"
+                    style={{ position: "relative", left: "280px" }}
+                    htmlType="submit"
+                  >
+                    제출
+                  </Button>
+                )}
                 <Button
                   type="primary"
                   style={{ position: "relative", left: "350px" }}
-                  loading
+                  onClick={changeAddTaskModalstatus}
                 >
-                  제출중
+                  닫기
                 </Button>
-              ) : (
-                <Button
-                  type="primary"
-                  style={{ position: "relative", left: "350px" }}
-                  htmlType="submit"
-                >
-                  제출
-                </Button>
-              )}
+              </div>
             </Space>
           </Form>
         </StModalContent>
