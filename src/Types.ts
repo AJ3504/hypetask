@@ -1,3 +1,12 @@
+export interface Chats {
+  chat_id: string;
+  text: string;
+  created_at: string;
+  user_id: string;
+  texter: string;
+  roomName: string;
+}
+
 export interface Comments {
   comment_id: string;
   task_id: string;

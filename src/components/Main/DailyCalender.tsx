@@ -46,6 +46,7 @@ const DailyCalender = () => {
   const { addTaskModalVisible, changeAddTaskModalstatus } = useModalStore();
 
   return (
+
     <>
       {addTaskModalVisible ? <AddTaskModal todayDefault={true} /> : null}
       <S.Header>
