@@ -24,7 +24,7 @@ const store = (set: any, get: any) => ({
       }
     }
     set({ comment: c });
-    return c.length;
+    return fetchedReplys.length;
   },
   setParentCommentContainerWidth(width: number) {
     set({ parentCommentContainerWidth: width });

@@ -1,4 +1,4 @@
-import type { Comment } from "../../Types";
+import type { Comment } from "../Types";
 export type CommentStoreType = {
   parentCommentContainerWidth: number;
   comment: Comment[];

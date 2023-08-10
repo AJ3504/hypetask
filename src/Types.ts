@@ -1,3 +1,12 @@
+export interface Chats {
+  chat_id: string;
+  text: string;
+  created_at: string;
+  user_id: string;
+  texter: string;
+  roomName: string;
+}
+
 export type Comment = {
   user_id: string;
   comment_id?: string;
@@ -7,7 +16,7 @@ export type Comment = {
   ref_step: number;
   ref_id?: string;
   time_ref?: number;
-  replys: Comment[];
+  replys?: Comment[];
   num_of_reply?: number;
   user?: User;
 };

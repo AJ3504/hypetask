@@ -1,13 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Card, Space, Typography, Avatar, Button } from "antd";
 import { DownOutlined, EditFilled, UpOutlined } from "@ant-design/icons";
-import type { Comment, User } from "../../../Types";
+import type { Comment, User } from "../../Types";
 import dayjs from "dayjs";
 import { timeTable } from "../../consts/consts";
 import { StCommentContainer } from "./CommentContainer";
 import { useCommentStoreDev } from "../../zustand/CommentStore";
 import CommentWriteForm from "./CommentWriteForm";
-import { getReplys } from "../../api/comments";
 dayjs.locale("ko");
 function CommentCard({
   comment_id,
@@ -38,7 +37,8 @@ function CommentCard({
   const fetchReplysHandler = async () => {
     increasePage();
     const fetchedNum = await fetchReplys(comment_id!!, replyPage);
-    if (fetchedNum < 10) {
+    console.log(fetchedNum);
+    if (fetchedNum < 11) {
       setSeeMoreReply(false);
     }
   };
@@ -81,10 +81,10 @@ function CommentCard({
           }}
         >
           <Space direction="horizontal">
-            <Avatar />
+            <Avatar src={user?.img_url} />
             <Space direction="vertical">
               <Space direction="horizontal">
-                <Typography.Text type="secondary">Ban heesoo</Typography.Text>
+                <Typography.Text type="secondary">{user?.name}</Typography.Text>
                 <Typography.Text type="secondary" aria-setsize={5}>
                   {esimateTimeElapsed(created_at!!)}
                 </Typography.Text>
@@ -151,7 +151,7 @@ function CommentCard({
         {writeForm && <CommentWriteForm ref_step={ref_step + 1} />}
         {seeReply && (
           <StCommentContainer width={commentContainerWidth}>
-            {replys.map((c) => {
+            {replys!!.map((c) => {
               return (
                 <CommentCard
                   comment_id={c.comment_id}

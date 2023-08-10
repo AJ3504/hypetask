@@ -4,7 +4,7 @@ import CommentCard from "./CommentCard";
 import CommentWriteForm from "./CommentWriteForm";
 import { Typography } from "antd";
 import { useCommentStoreDev } from "../../zustand/CommentStore";
-import type { Comment, User } from "../../../Types";
+import type { Comment, User } from "../../Types";
 function CommentContainer() {
   const testTaskId = "ba8cf7cd-926d-423b-897a-6b3c6deff9da";
 

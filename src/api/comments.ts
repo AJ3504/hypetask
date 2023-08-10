@@ -1,17 +1,17 @@
 import supabase from "../config/supabaseClient";
-import { Comment } from "../../Types";
+import { Comment } from "../Types";
 
 export const writeComment = async (data: Comment | null) => {
-  // let testData: Comment = {
-  //   user_id: "2d99d192-6ec8-4404-bc60-c0b680f45757",
-  //   task_id: "ba8cf7cd-926d-423b-897a-6b3c6deff9da",
-  //   comment:
-  //     "test comment test commenttest comment test comment v test comment",
-  //   ref_step: 1,
-  //   ref_id: "f3f12dc7-3f40-44cf-bb15-50baf5d0ac49",
-  // };
-  // const result = await supabase.from("comments").insert(testData);
-  // console.log(result);
+  let testData: Comment = {
+    user_id: "2d99d192-6ec8-4404-bc60-c0b680f45757",
+    task_id: "ba8cf7cd-926d-423b-897a-6b3c6deff9da",
+    comment:
+      "test comment test commenttest comment test comment v test comment",
+    ref_step: 1,
+    ref_id: "f3f12dc7-3f40-44cf-bb15-50baf5d0ac49",
+  };
+  const result = await supabase.from("comments").insert(testData);
+  console.log(result);
 };
 
 /**

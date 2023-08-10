@@ -1,18 +1,30 @@
 import { styled } from "styled-components";
-import { Tasks, getFollowersTasks, getMyTasks } from "../../api/tasks";
-import { useQuery } from "@tanstack/react-query";
+import {
+  Tasks,
+  getFollowersTasks,
+  updateDetailOn,
+  updateDone,
+} from "../../api/tasks";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Followers, getFollowers } from "../../api/users";
 import { useModalStore } from "../../config/useModalStore";
 import AddTaskModal from "../modal/AddTaskModal";
 import { getQuotes } from "../../api/getQuotes";
+import MytasksCard from "./MyTasksCard";
+import TimeStampCard from "./TimeStampCard";
+import TaskDetail from "./TaskDetail";
+import { MdCheckBoxOutlineBlank } from "react-icons/md";
+import { MdOutlineCheckBox } from "react-icons/md";
+import { BsSearch } from "react-icons/bs";
+import { queryClient } from "../../App";
 
 const DailyCalender = () => {
   const today = new Date().toISOString().slice(0, 10);
   const myId = "ae06168e-38d9-4a05-a2d6-41e5c0a7aac6";
 
-  const { data: tasks } = useQuery(["tasks"], async () => {
-    const tasksData = await getMyTasks(myId, today);
-    return tasksData;
+  const { data: quotes } = useQuery(["quotes"], async () => {
+    const quotesData = await getQuotes();
+    return quotesData;
   });
 
   const { data: followers } = useQuery(
@@ -36,16 +48,30 @@ const DailyCalender = () => {
     { enabled: !!followers }
   );
 
-  const { data: quotes } = useQuery(["quotes"], async () => {
-    const quotesData = await getQuotes();
-    return quotesData;
-  });
-
-  console.log(quotes);
-
   const { addTaskModalVisible, changeAddTaskModalstatus } = useModalStore();
 
+  const updateDoneMutation = useMutation(
+    ({ taskId, done }: { taskId: string; done: boolean }) =>
+      updateDone({ taskId, done }),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["followersTasks"]);
+      },
+    }
+  );
+
+  const updateDetailOnMutation = useMutation(
+    ({ taskId, on }: { taskId: string; on: boolean }) =>
+      updateDetailOn({ taskId, on }),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["followersTasks"]);
+      },
+    }
+  );
+
   return (
+
     <>
       {addTaskModalVisible ? <AddTaskModal todayDefault={true} /> : null}
       <S.Header>
@@ -54,29 +80,8 @@ const DailyCalender = () => {
       </S.Header>
       <S.Container>
         <S.CalenderContainer>
-          <S.TimeStampContainer>
-            <S.TimeStamp>Time</S.TimeStamp>
-            {Array.from({ length: 25 }, (_, i) => (
-              <S.TimeStamp key={i}>{`${i}:00`}</S.TimeStamp>
-            ))}
-          </S.TimeStampContainer>
-          <S.TaskContainer>
-            <S.TaskBox>My Task</S.TaskBox>
-            {tasks &&
-              tasks.map((task) => {
-                const endHour = task.end_time;
-                const startHour = task.start_time;
-                const height = (endHour - startHour) * 80;
-                const top = (startHour + 1) * 80;
-                return (
-                  <S.TaskBox height={height} top={top}>
-                    <S.Task>
-                      <p>{task.title}</p>
-                    </S.Task>
-                  </S.TaskBox>
-                );
-              })}
-          </S.TaskContainer>
+          <TimeStampCard />
+          <MytasksCard today={today} myId={myId} />
         </S.CalenderContainer>
         <S.FollowersCalenderContainer>
           {followers &&
@@ -84,26 +89,56 @@ const DailyCalender = () => {
               const followerTasks = followersTasks?.filter(
                 (followersTask) => followersTask.user_id === follower
               );
-              return (
-                <S.TaskContainer>
-                  {followerTasks?.map((followerTask: Tasks) => {
-                    const endHour = followerTask.end_time;
-                    const startHour = followerTask.start_time;
-                    const height = (endHour - startHour) * 80;
-                    const top = (startHour + 1) * 80;
-                    return (
-                      <>
-                        <S.TaskBox>{followerTask.user_id}</S.TaskBox>
-                        <S.TaskBox height={height} top={top}>
-                          <S.Task>
-                            <p>{followerTask.title}</p>
-                          </S.Task>
-                        </S.TaskBox>
-                      </>
-                    );
-                  })}
-                </S.TaskContainer>
-              );
+              if (followerTasks && followerTasks.length > 0)
+                return (
+                  <S.TaskContainer>
+                    {followerTasks &&
+                      followerTasks?.map((followerTask: Tasks) => {
+                        const endHour = followerTask.end_time;
+                        const startHour = followerTask.start_time;
+                        const height = (endHour - startHour) * 80;
+                        const top = (startHour + 1) * 80;
+                        return (
+                          <>
+                            <S.TaskBox>{followerTask.user_id}</S.TaskBox>
+                            <S.TaskBox height={height} top={top}>
+                              {followerTask.detail_on ? (
+                                <TaskDetail task={followerTask} />
+                              ) : (
+                                <S.Task>
+                                  <button
+                                    onClick={() =>
+                                      updateDoneMutation.mutate({
+                                        taskId: followerTask.task_id!,
+                                        done: followerTask.done!,
+                                      })
+                                    }
+                                  >
+                                    {followerTask.done ? (
+                                      <MdOutlineCheckBox size="25" />
+                                    ) : (
+                                      <MdCheckBoxOutlineBlank size="25" />
+                                    )}
+                                  </button>
+                                  <p>{followerTask.title}</p>
+                                  <span
+                                    onClick={() =>
+                                      updateDetailOnMutation.mutate({
+                                        taskId: followerTask.task_id!,
+                                        on: followerTask.detail_on!,
+                                      })
+                                    }
+                                  >
+                                    <BsSearch size="25" />
+                                  </span>
+                                </S.Task>
+                              )}
+                            </S.TaskBox>
+                          </>
+                        );
+                      })}
+                  </S.TaskContainer>
+                );
             })}
         </S.FollowersCalenderContainer>
       </S.Container>
@@ -124,6 +159,11 @@ const S = {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    position: fixed;
+    background-color: white;
+    height: 100px;
+    width: 100%;
+    z-index: 99;
   `,
   Container: styled.div`
     display: flex;
@@ -134,14 +174,7 @@ const S = {
     flex-direction: row;
     background-color: azure;
     padding: 10px;
-  `,
-
-  TimeStampContainer: styled.div`
-    background-color: antiquewhite;
-    margin: 0 30px;
-  `,
-  TimeStamp: styled.p`
-    height: 80px;
+    margin-top: 100px;
   `,
   TaskContainer: styled.div`
     background-color: beige;
@@ -154,7 +187,9 @@ const S = {
     flex-direction: row;
     background-color: azure;
     overflow-x: scroll;
+    overflow-y: hidden;
     padding: 10px;
+    margin-top: 100px;
   `,
   TaskBox: styled.div<styleProps>`
     height: ${(props) => props.height}px;
@@ -171,8 +206,7 @@ const S = {
     border-radius: 15px;
 
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
   `,
 };
