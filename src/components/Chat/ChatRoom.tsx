@@ -3,65 +3,173 @@ import supabase from "../../config/supabaseClient";
 import { Chats } from "../../Types";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { useUserStore } from "../Authentication/Login";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { addChat, getChats } from "../../api/chats";
+import { styled } from "styled-components";
 
-const ChatRoom = () => {
+type ChatRoomProps = {
+  room: string;
+};
+
+const ChatRoom: React.FC<ChatRoomProps> = (props) => {
+  const { room } = props;
+  // useStates + hooks
   const [newMessage, setNewMessage] = useState("");
-  const [fetchError, setFetchError] = useState<string | null>(null);
-  const [chats, setChats] = useState<Chats[] | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
+  const [messages, setMessages] = useState<Chats[]>([]);
+  const queryClient = useQueryClient();
+  const fullName = useUserStore((state) => state.fullName);
 
-  // fetching data
+  // useQuery
+  // Get
+  const {
+    isLoading,
+    isError,
+    data: chats,
+  } = useQuery(["chats", room], () => getChats({ room }));
+  console.log(chats);
   useEffect(() => {
-    const fetchChats = async () => {
-      let { data: chats, error } = await supabase.from("chats").select("*");
-      // console.log("chats>", chats);
+    if (chats) {
+      setMessages(chats);
+    }
+  }, [chats]);
 
-      if (error) {
-        setFetchError("데이터 불러오기 실패");
-        setChats(null);
-        console.log(error);
-      }
+  // Post
+  const addMutation = useMutation(addChat, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["chats", room]); // dB onsuccess시, 쿼리컨텍스트 속 stale data를 새것으로 교체해줘
+    },
+  });
 
-      if (chats) {
-        setChats(chats);
-        setFetchError(null);
-      }
-    };
+  if (isLoading || isLoading) {
+    return <h1>로딩중입니다.</h1>;
+  }
 
-    fetchChats();
-  }, []);
+  if (isError || isError) {
+    return <h1>오류가 발생했습니다.</h1>;
+  }
 
   // Event Handler
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    try {
-      if (!newMessage) {
-        setFormError("메시지를 정확히 입력해주세요!");
-        return;
-      }
-      const { data, error } = await supabase
-        .from("chats")
-        .insert([{ text: newMessage }])
-        .select();
-    } catch (error) {
-      console.log(error);
-      throw error;
+    if (!newMessage) {
+      setFormError("메시지를 정확히 입력해주세요!");
+      return;
     }
+
+    addMutation.mutate({ newMessage, fullName, room });
+    setNewMessage("");
+  };
+
+  const prettierCreatedAt = (createdAt: string) => {
+    const date = new Date(createdAt);
+    const options: Intl.DateTimeFormatOptions = {
+      // year: "numeric",
+      // month: "long",
+      // day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      // second: "numeric",
+    };
+    return new Intl.DateTimeFormat("en-US", options).format(date);
   };
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <input
+    <StChatApp>
+      <StHeader>
+        <h1>Welcome to: {room.toUpperCase()}</h1>
+      </StHeader>
+      <StMessages>
+        {messages.map((message) => (
+          <StMessage key={message.chat_id}>
+            <StUser>{message.texter}:</StUser> {message.text}
+            <br />
+            <StDate>{prettierCreatedAt(message.created_at)}</StDate>
+          </StMessage>
+        ))}
+      </StMessages>
+      <StNewMessageForm onSubmit={handleSubmit}>
+        <StNewMessageInput
           placeholder="메세지를 입력해주세요..."
           onChange={(e) => setNewMessage(e.target.value)}
+          value={newMessage}
         />
-        <button type="submit">전송</button>
+        <StSendButton type="submit">전송</StSendButton>
 
         {formError && <p className="error">{formError}</p>}
-      </form>
-    </div>
+      </StNewMessageForm>
+    </StChatApp>
   );
 };
 
 export default ChatRoom;
+
+export const StChatApp = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: sans-serif;
+  width: 90%;
+  margin: 0 auto;
+  border-radius: 5px;
+  overflow: hidden;
+  border: 2px solid #3b5998;
+  background-color: #b4b4cd;
+`;
+
+export const StHeader = styled.div`
+  background-color: #3b5998;
+  color: white;
+  width: 100%;
+  text-align: center;
+`;
+export const StMessages = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  height: 80%;
+  overflow-y: auto;
+  padding: 10px;
+  margin-bottom: 10px;
+`;
+export const StMessage = styled.div`
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 10px;
+`;
+export const StUser = styled.span`
+  font-weight: bold;
+  margin-right: 10px;
+  color: #333;
+`;
+export const StDate = styled.span`
+  font-size: 10px;
+  margin-left: 5px;
+  color: lightgray;
+  position: relative;
+  top: 3px;
+`;
+export const StNewMessageForm = styled.form`
+  display: flex;
+  width: 100%;
+  padding: 10px;
+`;
+export const StNewMessageInput = styled.input`
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 16px;
+  color: #333;
+  padding: 10px;
+  border-radius: 5px 0 0 5px;
+`;
+export const StSendButton = styled.button`
+  border: none;
+  outline: none;
+  background: #3b5998;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+`;

@@ -10,10 +10,11 @@ import Chat from "../pages/Chat";
 import ResetPassword from "../pages/ResetPassword";
 import FindPassword from "../pages/FindPassword";
 import FirstMain from "../pages/FirstMain";
-
-const userToken = localStorage.getItem("userToken");
+import { useUserStore } from "../components/Authentication/Login";
 
 const Router = () => {
+  const accessToken = useUserStore((state) => state.accessToken);
+
   return (
     <BrowserRouter>
       <GlobalStyle />
@@ -27,10 +28,11 @@ const Router = () => {
 
           <Route path="/detail/:id" element={<Detail />} />
           <Route path="my-page/:id" element={<Mypage />} />
-          <Route
+          {/* <Route
             path="chat"
-            element={userToken ? <Chat /> : <Navigate to="/first-main" />}
-          />
+            element={accessToken ? <Chat /> : <Navigate to="/first-main" />}
+          /> */}
+          <Route path="chat" element={<Chat />} />
         </Routes>
       </Layout>
     </BrowserRouter>

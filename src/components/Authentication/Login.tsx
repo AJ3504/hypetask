@@ -64,11 +64,11 @@ const Login: React.FC = () => {
       // 토큰 저장
       if (data.user) {
         const session = await supabase.auth.getSession();
-        // console.log("session>", session);
+        console.log("session>", session);
 
         const accessToken = session?.data?.session?.access_token;
         if (accessToken) {
-          localStorage.setItem("userToken", accessToken);
+          localStorage.setItem("accessToken", accessToken);
           console.log("Access token saved to localStorage.");
 
           // zustand
