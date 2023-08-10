@@ -1,7 +1,8 @@
 import React from "react";
-import Introduce from "../Components/Introduce";
-import Login from "../Components/Login";
+
 import { styled } from "styled-components";
+import Introduce from "../Components/Introduce";
+import Login from "../Components/Authentication/Login";
 const FirstMain: React.FC = () => {
   return (
     <FirstMainContainer>

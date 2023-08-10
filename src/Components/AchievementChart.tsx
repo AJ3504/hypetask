@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import Chart from "chart.js/auto"; // Chart.js를 제대로 임포트
+import { Chart } from "chart.js";
 
 interface AchievementItem {
   item: string;

@@ -1,9 +1,15 @@
 import React, { FormEvent, useState } from "react";
-import supabase from "../config/supabaseClient";
+// import supabase from "../config/supabaseClient";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { createClient } from "@supabase/supabase-js";
+
+const supabaseUrl = "https://axjsatnjllkdhfsgkduq.supabase.co";
+const supabaseKey =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF4anNhdG5qbGxrZGhmc2drZHVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTE2NzYxNzAsImV4cCI6MjAwNzI1MjE3MH0.nHxlSsUecmxXn8L_5WVFemC2uNf1eheSzXI4e5kMwWU";
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 enum AuthProvider {
   Google = "google",
