@@ -21,7 +21,6 @@ export const getMyTasks = async (
     .select("*")
     .eq("user_id", myId)
     .eq("date", date);
-  // console.log(tasks);
   return tasks;
 };
 
@@ -29,14 +28,11 @@ export const getFollowersTasks = async (
   date: string,
   userIds: string[]
 ): Promise<Tasks[] | null> => {
-  // console.log("111", date);
-  // console.log("sss", userIds);
   const { data: followersTasks } = await supabase
     .from("tasks")
     .select("*")
     .eq("date", date)
     .in("user_id", userIds);
-  // console.log(followersTasks);
   return followersTasks;
 };
 

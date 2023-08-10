@@ -1,7 +1,7 @@
 import React from "react";
-import Modal from "../components/Modal";
+import AddTaskModal from "../components/modal/AddTaskModal";
 const Detail = () => {
-  return <Modal todayDefault={false} visible={true} />;
+  return <AddTaskModal todayDefault={false} />;
 };
 
 export default Detail;

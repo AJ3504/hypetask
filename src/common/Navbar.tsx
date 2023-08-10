@@ -45,6 +45,7 @@ export const StNavBar = styled.div`
   width: 100%;
   margin-bottom: 30px;
   background-color: #faf7e1;
+  z-index: 999;
 `;
 export const StContainer = styled.div`
   padding-right: 15px;
