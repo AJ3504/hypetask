@@ -71,6 +71,7 @@ const DailyCalender = () => {
   );
 
   return (
+
     <>
       {addTaskModalVisible ? <AddTaskModal todayDefault={true} /> : null}
       <S.Header>
