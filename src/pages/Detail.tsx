@@ -1,7 +1,11 @@
 import React from "react";
+import CommentContainer from "../components/Comment/CommentContainer";
 import AddTaskModal from "../components/modal/AddTaskModal";
 const Detail = () => {
-  return <AddTaskModal todayDefault={false} />;
+  return (
+    <>
+      <CommentContainer />
+    </>
+  );
 };
-
 export default Detail;

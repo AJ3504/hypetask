@@ -39,11 +39,11 @@ export const getFollowersTasks = async (
 
 /**
  *
- * @string desc 내용
- * @string title 제목
- * @param start_time 시작시간 HH
- * @param end_time 종료시간 HH
- * @param user_id 제목
+ * @param {string} desc 내용
+ * @param {string} title 제목
+ * @param {number} start_time 시작시간 HH
+ * @param {number} end_time 종료시간 HH
+ * @param {string} user_id 유저아이디
  * @returns 성공여부
  */
 export async function addTask({
