@@ -7,7 +7,7 @@ export const getChats = async ({
 }: {
   room: string;
   page: number;
-}) => {
+}): Promise<Chats[]> => {
   const response = await supabase
     .from("chats")
     .select("*")
@@ -16,7 +16,7 @@ export const getChats = async ({
     .order("created_at", { ascending: false });
 
   console.log(response);
-  return response.data;
+  return response.data as Chats[];
 };
 
 export const addChat = async ({
