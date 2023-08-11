@@ -69,3 +69,21 @@ export const getReplys = async (
   }
   return comments as Comment[];
 };
+
+export const getMyComments = async (
+  myTaskIds: string[]
+): Promise<Comment[]> => {
+  const { data: myComments } = await supabase
+    .from("comments")
+    .select("*")
+    .in("task_id", myTaskIds);
+  return myComments as Comment[];
+};
+
+export const updateChecked = async (taskIds: string[]): Promise<void> => {
+  await supabase
+    .from("comments")
+    .update({ checked: true })
+    .in("task_id", taskIds)
+    .select();
+};

@@ -172,7 +172,7 @@ const S = {
     background-color: white;
     height: 100px;
     width: 100%;
-    z-index: 99;
+    z-index: 2;
   `,
   Container: styled.div`
     display: flex;

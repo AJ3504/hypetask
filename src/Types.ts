@@ -19,6 +19,7 @@ export type Comment = {
   replys?: Comment[];
   num_of_reply?: number;
   user?: User;
+  checked?: boolean;
 };
 export type User = {
   user_id: string;

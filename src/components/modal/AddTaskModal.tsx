@@ -133,6 +133,7 @@ const AddTaskModal: React.FC<IModalProps> = ({
                     onChange={onChangeTitle}
                     size="large"
                     placeholder="제목을 입력해주세요"
+                    // defaultValue={}
                   />
                 </Form.Item>
 
