@@ -18,6 +18,8 @@ import { MdOutlineCheckBox } from "react-icons/md";
 import { BsSearch } from "react-icons/bs";
 import { queryClient } from "../../App";
 import { useCurrentUserStore } from "../../config/useCurrentUserStore";
+import { Button } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 
 const DailyCalender = () => {
   const today = new Date().toISOString().slice(0, 10);
@@ -86,7 +88,15 @@ const DailyCalender = () => {
       ) : null}
       <S.Header>
         <div>{quotes?.advice}</div>
-        <button onClick={changeAddTaskModalstatus}>버튼</button>
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={changeAddTaskModalstatus}
+          style={{ backgroundColor: "#344CB7" }}
+          size="small"
+        >
+          추가
+        </Button>
       </S.Header>
       <S.Container>
         <S.CalenderContainer>
@@ -171,10 +181,12 @@ const S = {
     align-items: center;
     justify-content: space-between;
     position: fixed;
-    background-color: white;
-    height: 100px;
+    background-color: #262286;
+    height: 55px;
     width: 100%;
     z-index: 2;
+    padding-right: 10px;
+    padding-left: 20px;
   `,
   Container: styled.div`
     display: flex;
@@ -183,7 +195,6 @@ const S = {
   CalenderContainer: styled.div`
     display: flex;
     flex-direction: row;
-    background-color: azure;
     padding: 10px;
     margin-top: 100px;
   `,
