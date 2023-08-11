@@ -12,6 +12,7 @@ import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../../App";
 import { useModalStore } from "../../config/useModalStore";
 import AddTaskModal from "../modal/AddTaskModal";
+import { useCurrentUserStore } from "../../config/useCurrentUserStore";
 
 export interface TaskDetailProps {
   task: Tasks | undefined | null;
@@ -40,20 +41,25 @@ const TaskDetail = ({ task }: TaskDetailProps) => {
   );
 
   const { addTaskModalVisible, changeAddTaskModalstatus } = useModalStore();
-
+  const { currentUserId } = useCurrentUserStore();
   return (
     <S.TaskDetailBox>
       {addTaskModalVisible ? (
-        <AddTaskModal todayDefault={true} task={task!} />
+        <AddTaskModal todayDefault={true} task={task!} myId={currentUserId!} />
       ) : null}
 
       <div>
-        <span onClick={changeAddTaskModalstatus}>
-          <BiPencil />
-        </span>
-        <span onClick={() => deleteTaskMutaion.mutate(task?.task_id!)}>
-          <BsTrash3 />
-        </span>
+        {currentUserId === task?.user_id ? (
+          <>
+            <span onClick={changeAddTaskModalstatus}>
+              <BiPencil />
+            </span>
+            <span onClick={() => deleteTaskMutaion.mutate(task?.task_id!)}>
+              <BsTrash3 />
+            </span>
+          </>
+        ) : null}
+
         <span
           onClick={() =>
             updateDetailOnMutation.mutate({

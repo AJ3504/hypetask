@@ -5,15 +5,17 @@ import { getMyTasks } from "../api/tasks";
 import AlertModal, { MyComment } from "../components/modal/AlertModal";
 import { useModalStore } from "../config/useModalStore";
 import { getMyComments } from "../api/comments";
+import supabase from "../config/supabaseClient";
+import { useCurrentUserStore } from "../config/useCurrentUserStore";
 
 export function Navbar() {
-  const myId = "ae06168e-38d9-4a05-a2d6-41e5c0a7aac6";
+  const { currentUserId } = useCurrentUserStore();
   const today = new Date().toISOString().slice(0, 10);
 
   const { data: myTaskIds } = useQuery(
     ["myTaskIds"],
     async () => {
-      const tasksData = await getMyTasks(myId, today);
+      const tasksData = await getMyTasks(currentUserId, today);
       return tasksData;
     },
     {
@@ -31,13 +33,19 @@ export function Navbar() {
     {
       select: (myComments) =>
         myComments?.map((myComment) => ({
-          user_id: myComment.user_id,
+          username: myComment.username,
           created_at: myComment.created_at,
           checked: myComment.checked,
           comment: myComment.comment,
         })),
     }
   );
+  console.log(myComments);
+
+  const signOutBtnHandler = async () => {
+    await supabase.auth.signOut();
+    window.location.reload();
+  };
 
   const { alertModalVisible, changeAlertModalstatus } = useModalStore();
 
@@ -79,7 +87,7 @@ export function Navbar() {
                 ) : null}
               </StImageWrapper>
 
-              <div>로그아웃</div>
+              <button onClick={signOutBtnHandler}>로그아웃</button>
               <Link to="/chat" style={{ marginLeft: "10px" }}>
                 하입톡💬
               </Link>
