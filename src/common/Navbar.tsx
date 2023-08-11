@@ -7,6 +7,8 @@ import { useModalStore } from "../config/useModalStore";
 import { getMyComments } from "../api/comments";
 import supabase from "../config/supabaseClient";
 import { useCurrentUserStore } from "../config/useCurrentUserStore";
+import { useEffect } from "react";
+import { useMainTabStore } from "../config/useMainTabStore";
 
 export function Navbar() {
   const { currentUserId } = useCurrentUserStore();
@@ -20,6 +22,7 @@ export function Navbar() {
     },
     {
       select: (myTasks) => myTasks?.map((myTask) => myTask.task_id),
+      enabled: !!currentUserId,
     }
   );
 
@@ -37,9 +40,9 @@ export function Navbar() {
           checked: myComment.checked,
           comment: myComment.comment,
         })),
+      enabled: !!myTaskIds,
     }
   );
-  console.log(myComments);
 
   const signOutBtnHandler = async () => {
     await supabase.auth.signOut();
@@ -47,12 +50,11 @@ export function Navbar() {
   };
 
   const { alertModalVisible, changeAlertModalstatus } = useModalStore();
+  const { setCurrentTab } = useMainTabStore();
 
   const notCheckedMyComments = myComments?.filter(
     (myComment) => myComment.checked === false
   );
-
-  console.log(notCheckedMyComments);
 
   return (
     <>
@@ -65,8 +67,13 @@ export function Navbar() {
                 alt="logo img"
                 style={{ width: "30px", height: "30px", marginRight: "10px" }}
               />
-              <div style={{ paddingRight: "20px" }}>친구</div>
-              <div>탐색</div>
+              <div
+                style={{ paddingRight: "20px" }}
+                onClick={() => setCurrentTab("main")}
+              >
+                친구
+              </div>
+              <div onClick={() => setCurrentTab("explore")}>탐색</div>
             </StLeftNavInner>
           </StLeftNav>
           <StRightNav>

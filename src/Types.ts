@@ -28,6 +28,7 @@ export type User = {
   name: string;
   img_url: string;
   email: string;
+  username: string;
 };
 
 export interface Days {
