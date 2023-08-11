@@ -9,7 +9,8 @@ import Chat from "../pages/Chat";
 import ResetPassword from "../pages/ResetPassword";
 import FindPassword from "../pages/FindPassword";
 import FirstMain from "../pages/FirstMain";
-import { useUserStore } from "../Components/Authentication/Login";
+import { useUserStore } from "../components/Authentication/Login";
+import PrivateRoute from "./PrivateRouter";
 
 const Router = () => {
   const accessToken = useUserStore((state) => state.accessToken);
@@ -20,13 +21,34 @@ const Router = () => {
       <Layout>
         <Routes>
           <Route path="/first-main" element={<FirstMain />} />
-          <Route path="/" element={<Main />} />
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>
+                <Main />
+              </PrivateRoute>
+            }
+          />
           <Route path="/register" element={<Register />} />
           <Route path="/findpassword" element={<FindPassword />} />
           <Route path="/resetpassword" element={<ResetPassword />} />
 
-          <Route path="/detail/:id" element={<Detail />} />
-          <Route path="/my-page/:id" element={<Mypage />} />
+          <Route
+            path="/detail/:id"
+            element={
+              <PrivateRoute>
+                <Detail />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/my-page/:id"
+            element={
+              <PrivateRoute>
+                <Mypage />
+              </PrivateRoute>
+            }
+          />
           {/* <Route
             path="chat"
             element={accessToken ? <Chat /> : <Navigate to="/first-main" />}

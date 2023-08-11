@@ -1,6 +1,6 @@
 import React from "react";
 import { ContentContainer, FirstMainContainer } from "./FirstMain";
-import Profile from "../Components/Mypage/Profile";
+import Profile from "../components/Mypage/Profile";
 import MyCalender from "../Components/Mypage/MyCalendar";
 
 const MyPage: React.FC = () => {

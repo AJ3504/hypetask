@@ -1,15 +1,16 @@
 import supabase from "../config/supabaseClient";
 
 export interface Tasks {
-  task_id: string;
-  created_at: string;
+  task_id: string | undefined;
+  created_at?: string;
   title: string;
   desc: string;
-  done: boolean;
+  done?: boolean;
   start_time: number;
   end_time: number;
   date: string;
-  user_id: string;
+  user_id: string | undefined;
+  detail_on?: boolean;
 }
 
 export const getMyTasks = async (
@@ -21,7 +22,7 @@ export const getMyTasks = async (
     .select("*")
     .eq("user_id", myId)
     .eq("date", date);
-  return tasks;
+  return tasks as Tasks[];
 };
 
 export const getFollowersTasks = async (
@@ -38,11 +39,11 @@ export const getFollowersTasks = async (
 
 /**
  *
- * @string desc 내용
- * @string title 제목
- * @param start_time 시작시간 HH
- * @param end_time 종료시간 HH
- * @param user_id 제목
+ * @param {string} desc 내용
+ * @param {string} title 제목
+ * @param {number} start_time 시작시간 HH
+ * @param {number} end_time 종료시간 HH
+ * @param {string} user_id 유저아이디
  * @returns 성공여부
  */
 export async function addTask({
@@ -71,3 +72,51 @@ export async function addTask({
   const result = await supabase.from("tasks").insert(data);
   return result;
 }
+
+export const updateTask = async (newTask: Tasks): Promise<void> => {
+  await supabase
+    .from("tasks")
+    .update({
+      title: newTask.title,
+      desc: newTask.desc,
+      date: newTask.date,
+      start_time: newTask.start_time,
+      end_time: newTask.end_time,
+      user_id: newTask.user_id,
+      detail_on: false,
+    })
+    .eq("task_id", newTask.task_id)
+    .select();
+};
+
+export const updateDone = async ({
+  taskId,
+  done,
+}: {
+  taskId: string;
+  done: boolean;
+}): Promise<void> => {
+  await supabase
+    .from("tasks")
+    .update({ done: !done })
+    .eq("task_id", taskId)
+    .select();
+};
+
+export const deleteTask = async (taskId: string): Promise<void> => {
+  await supabase.from("tasks").delete().eq("task_id", taskId);
+};
+
+export const updateDetailOn = async ({
+  taskId,
+  on,
+}: {
+  taskId: string;
+  on: boolean;
+}): Promise<void> => {
+  await supabase
+    .from("tasks")
+    .update({ detail_on: !on })
+    .eq("task_id", taskId)
+    .select();
+};
