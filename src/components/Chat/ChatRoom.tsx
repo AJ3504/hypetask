@@ -1,11 +1,20 @@
-import { FormEvent, useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 import supabase from "../../config/supabaseClient";
 import { Chats } from "../../Types";
 import { SupabaseClient } from "@supabase/supabase-js";
-import { useUserStore } from "../Authentication/Login";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { addChat, getChats } from "../../api/chats";
 import { styled } from "styled-components";
+import { useUserStore } from "../../config/useUserStore";
+// infinitescroll import
+import { debounce } from "lodash";
+import { useInView } from "react-intersection-observer";
+import { motion } from "framer-motion";
 
 type ChatRoomProps = {
   room: string;
@@ -20,19 +29,40 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
   const queryClient = useQueryClient();
   const fullName = useUserStore((state) => state.fullName);
 
+  // useInfiniteQuery
+  const fetchChats = async ({ pageParam = 0 }) => {
+    const response = await getChats({ room, page: pageParam });
+    return response;
+  };
+
   // useQuery
   // Get
+  // const {
+  //   isLoading,
+  //   isError,
+  //   data: chats,
+  // } = useQuery(["chats", room], () => getChats({ room }));
+  // // console.log(chats);
+  // useEffect(() => {
+  //   if (chats) {
+  //     setMessages(chats);
+  //   }
+  // }, [chats]);
+
   const {
-    isLoading,
-    isError,
-    data: chats,
-  } = useQuery(["chats", room], () => getChats({ room }));
-  console.log(chats);
-  useEffect(() => {
-    if (chats) {
-      setMessages(chats);
+    data,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    status,
+  } = useInfiniteQuery(
+    ["chats", room],
+    ({ pageParam }) => fetchChats({ pageParam }),
+    {
+      getNextPageParam: (lastPage) => lastPage?.nextPage ?? null, // API 응답에서 다음 페이지 매개 변수를 추출
     }
-  }, [chats]);
+  );
 
   // Post
   const addMutation = useMutation(addChat, {
@@ -41,13 +71,13 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
     },
   });
 
-  if (isLoading || isLoading) {
-    return <h1>로딩중입니다.</h1>;
-  }
+  // if (isLoading || isLoading) {
+  //   return <h1>로딩중입니다.</h1>;
+  // }
 
-  if (isError || isError) {
-    return <h1>오류가 발생했습니다.</h1>;
-  }
+  // if (isError || isError) {
+  //   return <h1>오류가 발생했습니다.</h1>;
+  // }
 
   // Event Handler
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -74,19 +104,33 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
     };
     return new Intl.DateTimeFormat("en-US", options).format(date);
   };
+
   return (
     <StChatApp>
       <StHeader>
         <h1>Welcome to: {room.toUpperCase()}</h1>
       </StHeader>
       <StMessages>
-        {messages.map((message) => (
-          <StMessage key={message.chat_id}>
-            <StUser>{message.texter}:</StUser> {message.text}
-            <br />
-            <StDate>{prettierCreatedAt(message.created_at)}</StDate>
-          </StMessage>
+        {data?.pages.map((page, pageIndex) => (
+          <React.Fragment key={pageIndex}>
+            {page?.map((message) => (
+              <StMessage key={message.chat_id}>
+                <StUser>{message.texter}:</StUser> {message.text}
+                <br />
+                <StDate>{prettierCreatedAt(message.created_at)}</StDate>
+              </StMessage>
+            ))}
+          </React.Fragment>
         ))}
+        {hasNextPage && (
+          <button onClick={() => fetchNextPage()} disabled={isFetchingNextPage}>
+            {isFetchingNextPage
+              ? "로딩 중..."
+              : hasNextPage
+              ? "더 보기"
+              : "더 이상 데이터 없음"}
+          </button>
+        )}
       </StMessages>
       <StNewMessageForm onSubmit={handleSubmit}>
         <StNewMessageInput
@@ -154,6 +198,7 @@ export const StNewMessageForm = styled.form`
   display: flex;
   width: 100%;
   padding: 10px;
+  background-color: white;
 `;
 export const StNewMessageInput = styled.input`
   flex: 1;

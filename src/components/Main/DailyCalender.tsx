@@ -41,12 +41,11 @@ const DailyCalender = () => {
     return quotesData;
   });
 
-  console.log(quotes);
+  // console.log(quotes);
 
   const { addTaskModalVisible, changeAddTaskModalstatus } = useModalStore();
 
   return (
-
     <>
       {addTaskModalVisible ? <AddTaskModal todayDefault={true} /> : null}
       <S.Header>

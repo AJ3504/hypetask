@@ -9,7 +9,7 @@ import Chat from "../pages/Chat";
 import ResetPassword from "../pages/ResetPassword";
 import FindPassword from "../pages/FindPassword";
 import FirstMain from "../pages/FirstMain";
-import { useUserStore } from "../components/Authentication/Login";
+import { useUserStore } from "../config/useUserStore";
 
 const Router = () => {
   const accessToken = useUserStore((state) => state.accessToken);

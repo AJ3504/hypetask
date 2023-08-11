@@ -1,11 +1,21 @@
+import { Chats } from "../Types";
 import supabase from "../config/supabaseClient";
 
-export const getChats = async ({ room }: { room: string }) => {
+export const getChats = async ({
+  room,
+  page,
+}: {
+  room: string;
+  page: number;
+}) => {
   const response = await supabase
     .from("chats")
     .select("*")
-    .eq("roomName", room);
-  // console.log(response);
+    .eq("roomName", room)
+    .range(page * 20, (page + 1) * 20 - 1)
+    .order("created_at", { ascending: false });
+
+  console.log(response);
   return response.data;
 };
 

@@ -24,6 +24,7 @@ const Register: React.FC = () => {
     try {
       setLoading(true);
 
+      // auth에 추가
       const signUpResult: any = await supabase.auth.signUp({
         email,
         password,
@@ -119,6 +120,74 @@ const Register: React.FC = () => {
       </RegisterContents>
     </CenteredContainer>
   );
+
+  // const [loading, setLoading] = useState(false);
+  // const [email, setEmail] = useState("");
+  // const [password, setPassword] = useState("");
+  // const [name, setName] = useState("");
+  // const [confirmPassword, setConfirmPassword] = useState("");
+  // const [error, setError] = useState("");
+
+  // const joinUsHandler = async (e: React.MouseEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+
+  //   try {
+  //     setLoading(true);
+  //     const { data, error } = await supabase.auth.signUp({
+  //       email,
+  //       password,
+  //       options: {
+  //         data: {
+  //           name,
+  //         },
+  //       },
+  //     });
+  //     console.log(data);
+  //   } catch (error) {
+  //     console.error(error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  // return (
+  //   <div>
+  //     Join Us !
+  //     <RegistFormContainer onSubmit={joinUsHandler}>
+  //       <input
+  //         type="text"
+  //         value={name}
+  //         onChange={(e) => setName(e.target.value)}
+  //         placeholder="user name"
+  //       />
+  //       <input
+  //         type="email"
+  //         value={email}
+  //         onChange={(e) => setEmail(e.target.value)}
+  //         placeholder="email"
+  //         autoComplete="username"
+  //       />
+  //       <input
+  //         type="password"
+  //         value={password}
+  //         onChange={(e) => setPassword(e.target.value)}
+  //         placeholder="password"
+  //         autoComplete="new-password"
+  //       />
+  //       <input
+  //         type="password"
+  //         value={confirmPassword}
+  //         onChange={(e) => setConfirmPassword(e.target.value)}
+  //         placeholder="비밀번호 확인"
+  //         autoComplete="new-password"
+  //       />
+  //       <button type="submit" disabled={loading}>
+  //         {loading ? "회원가입 중..." : "회원가입 완료"}
+  //       </button>
+  //       {error && <p style={{ color: "red" }}>{error}</p>}
+  //     </RegistFormContainer>
+  //   </div>
+  // );
 };
 
 const CenteredContainer = styled.div`

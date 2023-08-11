@@ -1,0 +1,138 @@
+
+
+const {
+    data: chats,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
+    queryKey: ["chats", room],
+    queryFn: () => getChats({ room }),
+    getNextPageParam: (lastPage) => {
+      if (lastPage.page < lastPage.total_pages) {
+        return lastPage.page + 1;
+      }
+    },
+    select: (data) => {
+      return data.pages.map((pageData) => pageData.results).flat()
+    }
+
+  });
+
+
+
+
+  const handleScroll = (container) => {
+    if (containerRef.current && typeof window !== "undefined") {
+      const container = containerRef.current;
+      const { bottom } = container.getBoundingClientRect();  // 컨테이너 엘리먼트의 위치와 크기 정보를 가져옴
+      const { innerHeight } = window;
+      setIsInView((prev) => bottom <= innerHeight);
+      setIsLast(false);
+    }
+  };
+
+  useEffect(() => {
+    const handleDebouncedScroll = debounce(
+      () => !isLast && handleScroll(),
+      200
+    );
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isInView) {
+      loadMoreChats(offset); // ?
+    }
+  }, [isInView]);
+
+  const loadMoreChats = async (offset: number) => {
+    setIsScrollLoading(true);
+    setOffset((prev) => prev + 1);
+    const newChats = await fetchChats({ room, offset, PAGE_COUNT });
+    setMessages((prevChats) => [...prevChats, ...newChats]);
+    setIsScrollLoading(false);
+
+    // Check if all tickets have been loaded
+    if (newChats.length < PAGE_COUNT) {
+      setIsLast(true);
+    }
+  };
+
+
+  return (
+    <StChatApp ref={containerRef}>
+      <StHeader>
+        <h1>Welcome to: {room.toUpperCase()}</h1>
+      </StHeader>
+      <StMessages>
+        {messages.map((message, index) => {
+          const recalculatedDelay =
+            index >= PAGE_COUNT * 2
+              ? (index - PAGE_COUNT * (offset - 1)) / 15
+              : index / 15;
+
+          return (
+            <motion.StMessage
+              key={message.chat_id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.4,
+                ease: [0.25, 0.25, 0, 1],
+                delay: recalculatedDelay,
+              }}
+            >
+              <StUser>{message.texter}:</StUser> {message.text}
+              <br />
+              <StDate>{prettierCreatedAt(message.created_at)}</StDate>
+            </motion.StMessage>
+          );
+        })}
+      </StMessages>
+      <StNewMessageForm onSubmit={handleSubmit}>
+        <StNewMessageInput
+          placeholder="메세지를 입력해주세요..."
+          onChange={(e) => setNewMessage(e.target.value)}
+          value={newMessage}
+        />
+        <StSendButton type="submit">전송</StSendButton>
+
+        {formError && <p className="error">{formError}</p>}
+      </StNewMessageForm>
+    </StChatApp>
+  );
+
+
+  const containerRef = useRef(null);
+  const [offset, setOffset] = useState(1);
+  const [isInView, setIsInView] = useState(false);
+  const [isScrollLoading, setIsScrollLoading] = useState(false);
+  const [isLast, setIsLast] = useState(false);
+
+  const PAGE_COUNT = 20;
+
+  //
+export const fetchChats = async ({
+  room,
+  offset,
+  PAGE_COUNT,
+}: {
+  room: string;
+  offset: number;
+  PAGE_COUNT: number;
+}) => {
+  const from = offset * PAGE_COUNT;
+  const to = from + PAGE_COUNT - 1;
+
+  const response = await supabase
+    .from("chats")
+    .select("*")
+    .eq("roomName", room)
+    .range(from, to);
+  console.log(response);
+  return response.data;
+};
