@@ -27,7 +27,7 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
     isError,
     data: chats,
   } = useQuery(["chats", room], () => getChats({ room }));
-  console.log(chats);
+  // console.log(chats);
   useEffect(() => {
     if (chats) {
       setMessages(chats);
