@@ -6,9 +6,11 @@ import AddTaskModal from "../modal/AddTaskModal";
 import MytasksCard from "./MyTasksCard";
 import TimeStampCard from "./TimeStampCard";
 
-import { useCurrentUserStore } from "../../config/useCurrentUserStore";
+import { useCurrentUserStore } from "../../config/useCurrentUserStore"
+import { Button } from "antd";
+import { PlusOutlined } from "@ant-design/icons"
 import FollowerTasksCard from "./OtherTasksCard";
-import Header from "./Header";
+import Header from "./Header"
 
 const DailyCalender = () => {
   const today = new Date().toISOString().slice(0, 10);
@@ -41,6 +43,18 @@ const DailyCalender = () => {
       {addTaskModalVisible ? (
         <AddTaskModal todayDefault={true} myId={currentUser!} />
       ) : null}
+      <S.Header>
+        <div>{quotes?.advice}</div>
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={changeAddTaskModalstatus}
+          style={{ backgroundColor: "#344CB7" }}
+          size="small"
+        >
+          추가
+        </Button>
+      </S.Header>
       <Header />
       <S.Container>
         <S.CalenderContainer>
@@ -72,10 +86,12 @@ const S = {
     align-items: center;
     justify-content: space-between;
     position: fixed;
-    background-color: white;
-    height: 100px;
+    background-color: #262286;
+    height: 55px;
     width: 100%;
     z-index: 2;
+    padding-right: 10px;
+    padding-left: 20px;
   `,
   Container: styled.div`
     display: flex;
@@ -84,7 +100,6 @@ const S = {
   CalenderContainer: styled.div`
     display: flex;
     flex-direction: row;
-    background-color: azure;
     padding: 10px;
     margin-top: 100px;
   `,

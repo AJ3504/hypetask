@@ -7,8 +7,9 @@ import { useModalStore } from "../config/useModalStore";
 import { getMyComments } from "../api/comments";
 import supabase from "../config/supabaseClient";
 import { useCurrentUserStore } from "../config/useCurrentUserStore";
-import { useEffect } from "react";
-import { useMainTabStore } from "../config/useMainTabStore";
+import { PoweroffOutlined } from "@ant-design/icons";
+import { Button, Space } from "antd";
+import { useState } from "react";
 
 export function Navbar() {
   const { currentUserId } = useCurrentUserStore();
@@ -56,22 +57,52 @@ export function Navbar() {
     (myComment) => myComment.checked === false
   );
 
+  console.log(notCheckedMyComments);
+
+  const [loadings, setLoadings] = useState<boolean[]>([]);
+  const enterLoading = (index: number) => {
+    setLoadings((prevLoadings) => {
+      const newLoadings = [...prevLoadings];
+      newLoadings[index] = true;
+      return newLoadings;
+    });
+
+    setTimeout(() => {
+      setLoadings((prevLoadings) => {
+        const newLoadings = [...prevLoadings];
+        newLoadings[index] = false;
+        return newLoadings;
+      });
+    }, 6000);
+  };
   return (
     <>
       <StNavBar>
         <StContainer>
           <StLeftNav>
             <StLeftNavInner>
-              <Logo>
-                <img src="로고" alt="HypeTask" width="60px" height="60px" />
-              </Logo>
-              <div
-                style={{ paddingRight: "20px" }}
-                onClick={() => setCurrentTab("main")}
-              >
-                친구
+              <Link to="/">
+                <Logo>
+                  <img
+                    src="./logo.png"
+                    alt="HypeTask"
+                    width="90px"
+                    height="40px"
+                  />
+                </Logo>
+              </Link>
+              <div style={{ marginTop: "20px" }}>
+                <span
+                  style={{
+                    paddingRight: "20px",
+                    paddingLeft: "35px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  친구
+                </span>
+                <span style={{ fontWeight: "bold" }}>탐색</span>
               </div>
-              <div onClick={() => setCurrentTab("explore")}>탐색</div>
             </StLeftNavInner>
           </StLeftNav>
           <StRightNav>
@@ -84,8 +115,10 @@ export function Navbar() {
                   style={{
                     width: "30px",
                     height: "30px",
-                    marginRight: "10px",
+                    marginRight: "11px",
                     cursor: "pointer",
+                    borderRadius: "50%",
+                    opacity: "0.8",
                   }}
                 />
                 {notCheckedMyComments?.length! > 0 ? (
@@ -93,8 +126,32 @@ export function Navbar() {
                 ) : null}
               </StImageWrapper>
 
-              <button onClick={signOutBtnHandler}>로그아웃</button>
-              <Link to="/chat" style={{ marginLeft: "10px" }}>
+              <Space direction="vertical">
+                <Space wrap>
+                  <Button
+                    type="primary"
+                    icon={<PoweroffOutlined />}
+                    loading={loadings[1]}
+                    style={{ backgroundColor: "#344CB7" }}
+                    onClick={() => {
+                      enterLoading(1);
+                      signOutBtnHandler();
+                    }}
+                  >
+                    로그아웃
+                  </Button>
+                </Space>
+              </Space>
+              <Link
+                to="/chat"
+                style={{
+                  marginLeft: "16px",
+                  marginTop: "10px",
+                  textDecoration: "none",
+                  color: "#c5c4d7dd",
+                  fontWeight: "bolder",
+                }}
+              >
                 하입톡💬
               </Link>
             </StRightNavInner>
@@ -115,9 +172,6 @@ export const StNavBar = styled.div`
   position: sticky;
   top: 0;
   width: 100%;
-  margin-bottom: 30px;
-  padding-bottom: 5px;
-  background-color: #050174dd;
   z-index: 999;
 `;
 export const StContainer = styled.div`
@@ -127,6 +181,7 @@ export const StContainer = styled.div`
   margin-left: auto;
   display: flex;
   justify-content: space-between;
+  background-color: #262286;
 `;
 export const StLeftNav = styled.div`
   display: flex;
@@ -152,11 +207,31 @@ export const StRightNav = styled.div`
 `;
 export const StRightNavInner = styled.div`
   display: flex;
+  margin-top: 9px;
 `;
 export const StImageWrapper = styled.div`
   display: flex;
   align-items: center;
 `;
+export const StButton = styled.div`
+  color: #000000c1;
+  font-weight: bold;
+  background-color: #ece8e8;
+  border: none;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: background-color 0.2s ease;
+  font-family: "NanumSquareNeo-Variable", sans-serif;
+  padding: 5px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  &:hover {
+    background-color: #a8b0c4da;
+  }
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 export const StAlertPoint = styled.span`
   position: absolute;
   color: red;

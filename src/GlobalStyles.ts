@@ -14,7 +14,7 @@ const GlobalStyle = createGlobalStyle`
 
   body {
     /* background-color: #040714; */
-    background-color: #050174dd;
+    background-color: #474D73;
     color: #f9f9f9;
 
     font-family: Avenir-Roman, sans-serif;
@@ -22,8 +22,11 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
   }
 
-  a {
+  a,
+  a:visited
+  {
     text-decoration: none;
+    transition: color 0.2s ease;
   }
 
   @media only screen and (min-width: 768px) {
