@@ -22,7 +22,6 @@ export function Navbar() {
       select: (myTasks) => myTasks?.map((myTask) => myTask.task_id),
     }
   );
-  console.log(myTaskIds);
 
   const { data: myComments } = useQuery(
     ["myComments"],
@@ -52,6 +51,8 @@ export function Navbar() {
   const notCheckedMyComments = myComments?.filter(
     (myComment) => myComment.checked === false
   );
+
+  console.log(notCheckedMyComments);
 
   return (
     <>
@@ -83,7 +84,7 @@ export function Navbar() {
                   }}
                 />
                 {notCheckedMyComments?.length! > 0 ? (
-                  <span style={{ position: "absolute" }}>🔴</span>
+                  <StAlertPoint>🔴</StAlertPoint>
                 ) : null}
               </StImageWrapper>
 
@@ -144,4 +145,11 @@ export const StRightNavInner = styled.div`
 export const StImageWrapper = styled.div`
   display: flex;
   align-items: center;
+`;
+export const StAlertPoint = styled.span`
+  position: absolute;
+  color: red;
+  right: 163px;
+  top: 5px;
+  font-size: 8px;
 `;

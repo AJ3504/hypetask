@@ -49,13 +49,13 @@ const AlertModal = ({ myTaskIds, myComments }: AlertModalProps) => {
           const comment = myComment.comment;
           return (
             <S.Cmt>
-              <div>
+              <S.CmtInfo>
                 <p>{writer}</p>
                 <p>{time}</p>
-              </div>
-              <div>
+              </S.CmtInfo>
+              <S.CmtBody>
                 <p>{comment}</p>
-              </div>
+              </S.CmtBody>
             </S.Cmt>
           );
         })}
@@ -89,5 +89,14 @@ const S = {
   `,
   Cmt: styled.div`
     border-bottom: 1px solid grey;
+  `,
+  CmtInfo: styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 10px 0;
+  `,
+  CmtBody: styled.div`
+    margin-bottom: 20px;
   `,
 };
