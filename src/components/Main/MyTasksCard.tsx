@@ -8,6 +8,7 @@ import TaskDetail from "./TaskDetail";
 import { MdCheckBoxOutlineBlank } from "react-icons/md";
 import { MdOutlineCheckBox } from "react-icons/md";
 import { BsSearch } from "react-icons/bs";
+import { useCurrentUserStore } from "../../config/useCurrentUserStore";
 
 export interface TasksProps {
   today: string;
@@ -21,6 +22,7 @@ const MyTasksCard = ({ today, myId }: TasksProps) => {
   });
 
   const { addTaskModalVisible, changeAddTaskModalstatus } = useModalStore();
+  const { currentUserId } = useCurrentUserStore();
 
   const updateDoneMutation = useMutation(
     ({ taskId, done }: { taskId: string; done: boolean }) =>
@@ -44,7 +46,9 @@ const MyTasksCard = ({ today, myId }: TasksProps) => {
 
   return (
     <>
-      {addTaskModalVisible ? <AddTaskModal todayDefault={true} /> : null}
+      {addTaskModalVisible ? (
+        <AddTaskModal todayDefault={true} myId={currentUserId!} />
+      ) : null}
       <S.TaskContainer>
         <S.TaskBox>My Task</S.TaskBox>
         {myTasks &&

@@ -9,6 +9,7 @@ export const writeComment = async (data: Comment | null) => {
       "test comment test commenttest comment test comment v test comment",
     ref_step: 1,
     ref_id: "f3f12dc7-3f40-44cf-bb15-50baf5d0ac49",
+    username: data?.username as string,
   };
   const result = await supabase.from("comments").insert(testData);
   console.log(result);

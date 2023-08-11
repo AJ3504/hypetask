@@ -20,6 +20,7 @@ export type Comment = {
   num_of_reply?: number;
   user?: User;
   checked?: boolean;
+  username: string;
 };
 export type User = {
   user_id: string;
