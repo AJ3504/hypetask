@@ -70,6 +70,7 @@ export async function addTask({
     user_id: user_id,
   };
   const result = await supabase.from("tasks").insert(data);
+  console.log(result);
   return result;
 }
 

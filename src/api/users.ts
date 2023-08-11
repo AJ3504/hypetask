@@ -15,3 +15,8 @@ export const getFollowers = async (
     .eq("to", myId);
   return followers;
 };
+
+export const getCurrentUser = async () => {
+  const { data } = await supabase.auth.getSession();
+  return data.session?.user.identities![0].id;
+};

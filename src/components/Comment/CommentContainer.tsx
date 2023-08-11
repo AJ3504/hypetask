@@ -24,25 +24,31 @@ function CommentContainer() {
 
   return (
     <StCommentContainer width={commentContainerWidth}>
-      <Typography.Title level={4}>댓글{numOfComment}개</Typography.Title>
+      <Typography.Title level={4}>
+        댓글 {numOfComment ? numOfComment : 0} 개
+      </Typography.Title>
       <CommentWriteForm ref_step={0} />
-      {comments.map((c) => {
-        return (
-          <CommentCard
-            comment_id={c.comment_id}
-            comment={c.comment}
-            ref_step={c.ref_step}
-            ref_id={c.ref_id}
-            user_id={c.user_id}
-            task_id={c.task_id}
-            created_at={c.created_at}
-            time_ref={c.time_ref}
-            replys={c.replys as Comment[]}
-            num_of_reply={c.num_of_reply}
-            user={c.user as User}
-          />
-        );
-      })}
+      {comments ? (
+        comments.map((c) => {
+          return (
+            <CommentCard
+              comment_id={c.comment_id}
+              comment={c.comment}
+              ref_step={c.ref_step}
+              ref_id={c.ref_id}
+              user_id={c.user_id}
+              task_id={c.task_id}
+              created_at={c.created_at}
+              time_ref={c.time_ref}
+              replys={c.replys as Comment[]}
+              num_of_reply={c.num_of_reply}
+              user={c.user as User}
+            />
+          );
+        })
+      ) : (
+        <></>
+      )}
     </StCommentContainer>
   );
 }

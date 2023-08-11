@@ -89,9 +89,7 @@ function CommentCard({
                   {esimateTimeElapsed(created_at!!)}
                 </Typography.Text>
                 <Typography.Link onClick={focusTime}>
-                  {timeTable[`${time_ref!!}`].label
-                    ? timeTable[`${time_ref!!}`].label + " 일정"
-                    : ""}
+                  {time_ref ? timeTable[`${time_ref!!}`].label + " 일정" : ""}
                 </Typography.Link>
               </Space>
               <Typography.Paragraph>

@@ -3,27 +3,13 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import { styled } from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import supabase from "../../config/supabaseClient";
-import { create } from "zustand";
+import { useUserStore } from "../../config/useUserStore";
 
 enum AuthProvider {
   Google = "google",
   Kakao = "kakao",
   GitHub = "github",
 }
-
-// zustand (이안진 추가)
-interface UserStore {
-  fullName: string;
-  accessToken: string | null;
-  setFullName: (name: string) => void;
-  setAccessToken: (token: string | null) => void;
-}
-export const useUserStore = create<UserStore>((set) => ({
-  fullName: "",
-  accessToken: null,
-  setFullName: (name) => set(() => ({ fullName: name })),
-  setAccessToken: (token) => set(() => ({ accessToken: token })),
-}));
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -65,7 +51,7 @@ const Login: React.FC = () => {
       // 토큰 저장 - 일반 로그인
       if (data.user) {
         const session = await supabase.auth.getSession();
-        // console.log("session>", session);
+        console.log(session);
 
         const accessToken = session?.data?.session?.access_token;
         if (accessToken) {

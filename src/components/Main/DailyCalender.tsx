@@ -6,7 +6,7 @@ import {
   updateDone,
 } from "../../api/tasks";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Followers, getFollowers } from "../../api/users";
+import { Followers, getCurrentUser, getFollowers } from "../../api/users";
 import { useModalStore } from "../../config/useModalStore";
 import AddTaskModal from "../modal/AddTaskModal";
 import { getQuotes } from "../../api/getQuotes";
@@ -17,10 +17,20 @@ import { MdCheckBoxOutlineBlank } from "react-icons/md";
 import { MdOutlineCheckBox } from "react-icons/md";
 import { BsSearch } from "react-icons/bs";
 import { queryClient } from "../../App";
+import { useCurrentUserStore } from "../../config/useCurrentUserStore";
 
 const DailyCalender = () => {
   const today = new Date().toISOString().slice(0, 10);
   const myId = "ae06168e-38d9-4a05-a2d6-41e5c0a7aac6";
+
+  const { currentUserId, setCurrentUserId } = useCurrentUserStore();
+  console.log("잘뜨니?", currentUserId);
+
+  const { data: currentUser } = useQuery(["currentUser"], async () => {
+    const currentUserData = await getCurrentUser();
+    setCurrentUserId(currentUserData as string);
+    return currentUserData;
+  });
 
   const { data: quotes } = useQuery(["quotes"], async () => {
     const quotesData = await getQuotes();
@@ -71,7 +81,6 @@ const DailyCalender = () => {
   );
 
   return (
-
     <>
       {addTaskModalVisible ? <AddTaskModal todayDefault={true} /> : null}
       <S.Header>

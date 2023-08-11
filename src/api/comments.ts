@@ -23,7 +23,7 @@ export const writeComment = async (data: Comment | null) => {
 export const getComments = async (
   task_id: string,
   page: number
-): Promise<Comment[]> => {
+): Promise<Comment[] | null> => {
   let { data: comments } = await supabase
     .from("comments")
     .select("* , user:users(*), num_of_reply:comments(count)")
@@ -36,13 +36,15 @@ export const getComments = async (
     comments![i].replys = temp;
     comments![i].num_of_reply = comments![i].num_of_reply[0].count;
   }
-  console.log(comments);
   return comments as Comment[];
 };
 
-export const getNumOfComments = async (task_id: string): Promise<number> => {
+export const getNumOfComments = async (
+  task_id: string
+): Promise<number | null> => {
   const { data: result } = await supabase.from("comments").select("count");
-  return result!![0].count;
+  const numOfComment = result ? result[0].count : 0;
+  return numOfComment;
 };
 /**
  *

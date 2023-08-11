@@ -23,9 +23,9 @@ export type Comment = {
 export type User = {
   user_id: string;
   created_at: string;
-  name: string;
-  img_url: string;
-  email: string;
+  full_name: string;
+  avatar_url: string;
+  username: string;
 };
 
 export interface Days {
