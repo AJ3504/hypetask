@@ -22,7 +22,7 @@ export const getMyTasks = async (
     .select("*")
     .eq("user_id", myId)
     .eq("date", date);
-  return tasks;
+  return tasks as Tasks[];
 };
 
 export const getFollowersTasks = async (
