@@ -39,27 +39,33 @@ const AlertModal = ({ myTaskIds, myComments }: AlertModalProps) => {
       <S.CloseBtn onClick={alertModalCloseBtnHandler}>
         <AiOutlineCloseCircle size="23" />
       </S.CloseBtn>
-      <S.CmtBox>
-        {myComments?.map((myComment) => {
-          const writer = myComment.username;
-          const time = myComment.created_at
-            ?.slice(6, 16)
-            .replace("T", " ")
-            .replace("-", "/");
-          const comment = myComment.comment;
-          return (
-            <S.Cmt>
-              <S.CmtInfo>
-                <p>{writer}</p>
-                <p>{time}</p>
-              </S.CmtInfo>
-              <S.CmtBody>
-                <p>{comment}</p>
-              </S.CmtBody>
-            </S.Cmt>
-          );
-        })}
-      </S.CmtBox>
+      {myComments.length > 0 ? (
+        <S.CmtBox>
+          {myComments?.map((myComment) => {
+            const writer = myComment.username;
+            const time = myComment.created_at
+              ?.slice(6, 16)
+              .replace("T", " ")
+              .replace("-", "/");
+            const comment = myComment.comment;
+            return (
+              <S.Cmt>
+                <S.CmtInfo>
+                  <p>{writer}</p>
+                  <p>{time}</p>
+                </S.CmtInfo>
+                <S.CmtBody>
+                  <p>{comment}</p>
+                </S.CmtBody>
+              </S.Cmt>
+            );
+          })}
+        </S.CmtBox>
+      ) : (
+        <S.CmtBox>
+          <p>새로운 댓글이 없습니다.</p>
+        </S.CmtBox>
+      )}
     </S.ModalBox>
   );
 };
@@ -70,7 +76,7 @@ const S = {
   ModalBox: styled.div`
     background-color: yellowgreen;
     width: 400px;
-    height: 300px;
+    max-height: 300px;
     padding: 10px;
     box-sizing: border-box;
 
@@ -88,7 +94,7 @@ const S = {
     overflow: auto;
   `,
   Cmt: styled.div`
-    border-bottom: 1px solid grey;
+    /* border-bottom: 1px solid grey; */
   `,
   CmtInfo: styled.div`
     display: flex;
