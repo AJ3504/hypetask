@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ChatRoom from "../components/Chat/ChatRoom";
 import { useUserStore } from "../config/useUserStore";
+import ChatRoom from "../components/Chat/ChatRoom";
 
 const Chat = () => {
   // 상단 hooks

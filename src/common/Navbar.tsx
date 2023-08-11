@@ -8,11 +8,10 @@ export function Navbar() {
         <StContainer>
           <StLeftNav>
             <StLeftNavInner>
-              <img
-                src="이미지_파일_경로.jpg"
-                alt="logo img"
-                style={{ width: "30px", height: "30px", marginRight: "10px" }}
-              />
+              <Logo>
+                <img src="로고" alt="HypeTask" width="60px" height="60px" />
+              </Logo>
+
               <div style={{ paddingRight: "20px" }}>친구</div>
               <div>탐색</div>
             </StLeftNavInner>
@@ -44,7 +43,8 @@ export const StNavBar = styled.div`
   top: 0;
   width: 100%;
   margin-bottom: 30px;
-  background-color: #faf7e1;
+  padding-bottom: 5px;
+  background-color: #050174dd;
   z-index: 999;
 `;
 export const StContainer = styled.div`
@@ -58,12 +58,18 @@ export const StContainer = styled.div`
 export const StLeftNav = styled.div`
   display: flex;
   padding: 0.5rem 1rem;
-  color: rgba(0, 0, 0, 0.55);
+  color: #c5c4d7dd;
   text-decoration: none;
   margin-right: auto;
 `;
 export const StLeftNavInner = styled.div`
   display: flex;
+`;
+export const Logo = styled.a`
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
 `;
 export const StRightNav = styled.div`
   padding: 0.5rem 1rem;
