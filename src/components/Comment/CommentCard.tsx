@@ -20,7 +20,6 @@ function CommentCard({
   replys,
   num_of_reply,
   user,
-  username,
 }: Comment) {
   const commentContainerWidth = useCommentStoreDev(
     (state) => state.parentCommentContainerWidth
@@ -166,7 +165,6 @@ function CommentCard({
                   replys={c.replys as Comment[]}
                   num_of_reply={c.num_of_reply}
                   user={c.user as User}
-                  username={c.username}
                 />
               );
             })}
