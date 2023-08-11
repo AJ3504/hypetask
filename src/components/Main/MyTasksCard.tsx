@@ -15,7 +15,7 @@ export interface TasksProps {
 }
 
 const MyTasksCard = ({ today, myId }: TasksProps) => {
-  const { data: MyTasks } = useQuery(["myTasks"], async () => {
+  const { data: myTasks } = useQuery(["myTasks"], async () => {
     const tasksData = await getMyTasks(myId, today);
     return tasksData;
   });
@@ -47,8 +47,8 @@ const MyTasksCard = ({ today, myId }: TasksProps) => {
       {addTaskModalVisible ? <AddTaskModal todayDefault={true} /> : null}
       <S.TaskContainer>
         <S.TaskBox>My Task</S.TaskBox>
-        {MyTasks &&
-          MyTasks.map((task) => {
+        {myTasks &&
+          myTasks.map((task) => {
             const endHour = task.end_time;
             const startHour = task.start_time;
             const height = (endHour - startHour) * 80;

@@ -1,7 +1,50 @@
+import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { styled } from "styled-components";
+import { getMyTasks } from "../api/tasks";
+import AlertModal, { MyComment } from "../components/modal/AlertModal";
+import { useModalStore } from "../config/useModalStore";
+import { getMyComments } from "../api/comments";
 
 export function Navbar() {
+  const myId = "ae06168e-38d9-4a05-a2d6-41e5c0a7aac6";
+  const today = new Date().toISOString().slice(0, 10);
+
+  const { data: myTaskIds } = useQuery(
+    ["myTaskIds"],
+    async () => {
+      const tasksData = await getMyTasks(myId, today);
+      return tasksData;
+    },
+    {
+      select: (myTasks) => myTasks?.map((myTask) => myTask.task_id),
+    }
+  );
+  console.log(myTaskIds);
+
+  const { data: myComments } = useQuery(
+    ["myComments"],
+    async () => {
+      const myCommentsData = await getMyComments(myTaskIds as string[]);
+      return myCommentsData;
+    },
+    {
+      select: (myComments) =>
+        myComments?.map((myComment) => ({
+          user_id: myComment.user_id,
+          created_at: myComment.created_at,
+          checked: myComment.checked,
+          comment: myComment.comment,
+        })),
+    }
+  );
+
+  const { alertModalVisible, changeAlertModalstatus } = useModalStore();
+
+  const notCheckedMyComments = myComments?.filter(
+    (myComment) => myComment.checked === false
+  );
+
   return (
     <>
       <StNavBar>
@@ -21,10 +64,19 @@ export function Navbar() {
             <StRightNavInner>
               <StImageWrapper>
                 <img
-                  src="이미지_파일_경로.jpg"
+                  onClick={() => changeAlertModalstatus(true)}
+                  src="https://www.studiopeople.kr/common/img/default_profile.png"
                   alt="img"
-                  style={{ width: "30px", height: "30px", marginRight: "10px" }}
+                  style={{
+                    width: "30px",
+                    height: "30px",
+                    marginRight: "10px",
+                    cursor: "pointer",
+                  }}
                 />
+                {notCheckedMyComments?.length! > 0 ? (
+                  <span style={{ position: "absolute" }}>🔴</span>
+                ) : null}
               </StImageWrapper>
 
               <div>로그아웃</div>
@@ -33,8 +85,14 @@ export function Navbar() {
               </Link>
             </StRightNavInner>
           </StRightNav>
-        </StContainer>
+        </StContainer>{" "}
       </StNavBar>
+      {alertModalVisible ? (
+        <AlertModal
+          myTaskIds={myTaskIds as string[]}
+          myComments={notCheckedMyComments as MyComment[]}
+        />
+      ) : null}
     </>
   );
 }
