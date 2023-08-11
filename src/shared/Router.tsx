@@ -9,6 +9,7 @@ import Chat from "../pages/Chat";
 import ResetPassword from "../pages/ResetPassword";
 import FindPassword from "../pages/FindPassword";
 import FirstMain from "../pages/FirstMain";
+import PrivateRoute from "./PrivateRouter";
 
 const Router = () => {
   return (
@@ -17,13 +18,38 @@ const Router = () => {
       <Layout>
         <Routes>
           <Route path="/first-main" element={<FirstMain />} />
-          <Route path="/" element={<Main />} />
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>
+                <Main />
+              </PrivateRoute>
+            }
+          />
           <Route path="/register" element={<Register />} />
           <Route path="/findpassword" element={<FindPassword />} />
           <Route path="/resetpassword" element={<ResetPassword />} />
 
-          <Route path="/detail/:id" element={<Detail />} />
-          <Route path="/my-page/:id" element={<Mypage />} />
+          <Route
+            path="/detail"
+            element={
+              <PrivateRoute>
+                <Detail />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/my-page/:id"
+            element={
+              <PrivateRoute>
+                <Mypage />
+              </PrivateRoute>
+            }
+          />
+          {/* <Route
+            path="chat"
+            element={accessToken ? <Chat /> : <Navigate to="/first-main" />}
+          /> */}
           <Route path="/chat" element={<Chat />} />
         </Routes>
       </Layout>

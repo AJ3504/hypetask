@@ -18,12 +18,14 @@ dayjs.locale("ko");
 type IModalProps = {
   todayDefault: boolean;
   task?: Tasks;
+  myId: string;
 };
 const today = dayjs(new Date());
 
 const AddTaskModal: React.FC<IModalProps> = ({
   todayDefault,
   task,
+  myId,
 }: IModalProps) => {
   const [title, setTitle, onChangeTitle] = useInput("");
   const [date, setDate] = useInput(
@@ -133,7 +135,7 @@ const AddTaskModal: React.FC<IModalProps> = ({
                     onChange={onChangeTitle}
                     size="large"
                     placeholder="제목을 입력해주세요"
-                    // defaultValue={}
+                    defaultValue={task ? task.title : ""}
                   />
                 </Form.Item>
 
@@ -150,6 +152,7 @@ const AddTaskModal: React.FC<IModalProps> = ({
                     size="large"
                     placeholder="내용을 입력해주세요"
                     autoSize={{ minRows: 6, maxRows: 10 }}
+                    defaultValue={task ? task.desc : ""}
                   />
                 </Form.Item>
               </div>
@@ -174,9 +177,11 @@ const AddTaskModal: React.FC<IModalProps> = ({
                     <Space direction="horizontal" size="small">
                       <Form.Item style={{ margin: "0px" }} name="startTime">
                         <Select
-                          defaultValue={startTime}
                           onChange={setStartTime}
                           options={timeTable}
+                          defaultValue={
+                            task ? String(task.start_time) : startTime
+                          }
                         />
                       </Form.Item>
                       <Typography.Text>시 부터~</Typography.Text>
@@ -187,7 +192,7 @@ const AddTaskModal: React.FC<IModalProps> = ({
                     <Space direction="horizontal" size="small">
                       <Form.Item style={{ margin: "0px" }} name="endTime">
                         <Select
-                          defaultValue={endTime}
+                          defaultValue={task ? String(task.end_time) : endTime}
                           onChange={setEndTime}
                           options={timeTable}
                         />

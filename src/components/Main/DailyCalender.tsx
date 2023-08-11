@@ -17,18 +17,14 @@ import { MdCheckBoxOutlineBlank } from "react-icons/md";
 import { MdOutlineCheckBox } from "react-icons/md";
 import { BsSearch } from "react-icons/bs";
 import { queryClient } from "../../App";
-import { useCurrentUserStore } from "../../config/useCurrentUserStore";
-
+import { useUserStore } from "../../config/useUserStore";
+import { today } from "../../consts/consts";
 const DailyCalender = () => {
-  const today = new Date().toISOString().slice(0, 10);
-  const myId = "ae06168e-38d9-4a05-a2d6-41e5c0a7aac6";
-
-  const { currentUserId, setCurrentUserId } = useCurrentUserStore();
-  console.log("잘뜨니?", currentUserId);
+  const { user_id, setUserId } = useUserStore();
 
   const { data: currentUser } = useQuery(["currentUser"], async () => {
     const currentUserData = await getCurrentUser();
-    setCurrentUserId(currentUserData as string);
+    setUserId(currentUserData as string);
     return currentUserData;
   });
 
@@ -40,12 +36,12 @@ const DailyCalender = () => {
   const { data: followers } = useQuery(
     ["followers"],
     async () => {
-      const followersData = await getFollowers(myId);
+      const followersData = await getFollowers(currentUser!);
       return followersData;
     },
     {
       select: (followers: Followers[] | null) =>
-        followers?.map((follower: Followers) => follower.from),
+        followers?.map((follower: Followers) => follower.to),
     }
   );
 
@@ -82,7 +78,9 @@ const DailyCalender = () => {
 
   return (
     <>
-      {addTaskModalVisible ? <AddTaskModal todayDefault={true} /> : null}
+      {addTaskModalVisible ? (
+        <AddTaskModal todayDefault={true} myId={currentUser!} />
+      ) : null}
       <S.Header>
         <div>{quotes?.advice}</div>
         <button onClick={changeAddTaskModalstatus}>버튼</button>
@@ -90,7 +88,7 @@ const DailyCalender = () => {
       <S.Container>
         <S.CalenderContainer>
           <TimeStampCard />
-          <MytasksCard today={today} myId={myId} />
+          <MytasksCard today={today} myId={currentUser!} />
         </S.CalenderContainer>
         <S.FollowersCalenderContainer>
           {followers &&
@@ -98,6 +96,7 @@ const DailyCalender = () => {
               const followerTasks = followersTasks?.filter(
                 (followersTask) => followersTask.user_id === follower
               );
+              console.log(followerTasks);
               if (followerTasks && followerTasks.length > 0)
                 return (
                   <S.TaskContainer>

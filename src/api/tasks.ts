@@ -17,6 +17,7 @@ export const getMyTasks = async (
   myId: string,
   date: string
 ): Promise<Tasks[] | null> => {
+  console.log(myId, date);
   const { data: tasks } = await supabase
     .from("tasks")
     .select("*")

@@ -2,7 +2,7 @@ import { useState } from "react";
 
 type UseInputResult<T> = [
   value: T,
-  setVlaue: React.Dispatch<React.SetStateAction<T>>,
+  setValue: React.Dispatch<React.SetStateAction<T>>,
   onChange: (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void,

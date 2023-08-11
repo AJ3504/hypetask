@@ -1,13 +1,25 @@
 import { create } from "zustand";
-interface UserStore {
-  fullName: string;
+import { persist } from "zustand/middleware";
+import { User } from "../Types";
+import { devtools } from "zustand/middleware";
+const StorageKey = "userStoreKey";
+type UserStore = {
+  user_id: string | null;
+  user: User | null;
   accessToken: string | null;
-  setFullName: (name: string) => void;
-  setAccessToken: (token: string | null) => void;
-}
-export const useUserStore = create<UserStore>((set) => ({
-  fullName: "",
+  setUserId: (uset_id: string) => void;
+  setAccessToken: (accessToken: string) => void;
+  setUser: (user: User) => void;
+};
+const store = (set: any) => ({
+  user_id: "",
+  user: null,
   accessToken: null,
-  setFullName: (name) => set(() => ({ fullName: name })),
-  setAccessToken: (token) => set(() => ({ accessToken: token })),
-}));
+  setUserId: (user_id: string) => set({ user_id: user_id }),
+  setAccessToken: (accessToken: string) => set({ accessToken: accessToken }),
+  setUser: (user: User) => set({ user: user }),
+});
+const persistStore = persist<UserStore>(store, {
+  name: StorageKey,
+});
+export const useUserStore = create(devtools(persistStore));

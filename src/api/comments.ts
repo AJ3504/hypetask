@@ -1,16 +1,7 @@
 import supabase from "../config/supabaseClient";
 import { Comment } from "../Types";
-
 export const writeComment = async (data: Comment | null) => {
-  let testData: Comment = {
-    user_id: "2d99d192-6ec8-4404-bc60-c0b680f45757",
-    task_id: "ba8cf7cd-926d-423b-897a-6b3c6deff9da",
-    comment:
-      "test comment test commenttest comment test comment v test comment",
-    ref_step: 1,
-    ref_id: "f3f12dc7-3f40-44cf-bb15-50baf5d0ac49",
-  };
-  const result = await supabase.from("comments").insert(testData);
+  const result = await supabase.from("comments").insert(data);
   console.log(result);
 };
 
@@ -21,28 +12,37 @@ export const writeComment = async (data: Comment | null) => {
  * @returns Array<Comments>
  */
 export const getComments = async (
-  task_id: string,
+  date: string,
+  user_id: string,
   page: number
 ): Promise<Comment[] | null> => {
   let { data: comments } = await supabase
     .from("comments")
-    .select("* , user:users(*), num_of_reply:comments(count)")
-    .eq("task_id", task_id)
+    .select("* , user:user_id(*)  ,num_of_reply:comments(count)")
+    .eq("date", date)
     .eq("ref_step", 0)
+    .eq("ref_user_id", user_id)
     .range(page * 10, (page + 1) * 10); //대댓글은 안가져옴
   let temp: Comment[] = [];
+  console.log(comments);
   const commentsLength = comments === null ? 0 : comments.length;
   for (let i = 0; i < commentsLength; i++) {
     comments![i].replys = temp;
     comments![i].num_of_reply = comments![i].num_of_reply[0].count;
   }
+
   return comments as Comment[];
 };
 
 export const getNumOfComments = async (
-  task_id: string
+  date: string,
+  user_id: string
 ): Promise<number | null> => {
-  const { data: result } = await supabase.from("comments").select("count");
+  const { data: result } = await supabase
+    .from("comments")
+    .select("count")
+    .eq("date", date)
+    .eq("ref_user_id", user_id);
   const numOfComment = result ? result[0].count : 0;
   return numOfComment;
 };
@@ -58,7 +58,7 @@ export const getReplys = async (
 ): Promise<Comment[]> => {
   let { data: comments } = await supabase
     .from("comments")
-    .select("* , user:users(*), num_of_reply:comments(count)")
+    .select("* , user:user_id(*), num_of_reply:comments(count)")
     .eq("ref_id", comment_id)
     .range(page * 10, (page + 1) * 10); //대댓글은 안가져옴
   let temp: Comment[] = [];

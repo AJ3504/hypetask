@@ -12,7 +12,7 @@ export const getFollowers = async (
   const { data: followers } = await supabase
     .from("followers")
     .select("*")
-    .eq("to", myId);
+    .eq("from", myId);
   return followers;
 };
 

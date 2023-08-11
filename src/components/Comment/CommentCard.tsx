@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react";
 import { Card, Space, Typography, Avatar, Button } from "antd";
 import { DownOutlined, EditFilled, UpOutlined } from "@ant-design/icons";
 import type { Comment, User } from "../../Types";
@@ -20,7 +20,9 @@ function CommentCard({
   replys,
   num_of_reply,
   user,
+  date,
 }: Comment) {
+  const ref = useRef<HTMLDivElement>(null);
   const commentContainerWidth = useCommentStoreDev(
     (state) => state.parentCommentContainerWidth
   );
@@ -81,10 +83,12 @@ function CommentCard({
           }}
         >
           <Space direction="horizontal">
-            <Avatar src={user?.img_url} />
+            <Avatar src={user?.avatar_url} />
             <Space direction="vertical">
               <Space direction="horizontal">
-                <Typography.Text type="secondary">{user?.name}</Typography.Text>
+                <Typography.Text type="secondary">
+                  {user?.username}
+                </Typography.Text>
                 <Typography.Text type="secondary" aria-setsize={5}>
                   {esimateTimeElapsed(created_at!!)}
                 </Typography.Text>
@@ -146,9 +150,11 @@ function CommentCard({
             </Space>
           </Space>
         </Card>
-        {writeForm && <CommentWriteForm ref_step={ref_step + 1} />}
+        {writeForm && (
+          <CommentWriteForm ref_step={ref_step + 1} ref_id={comment_id} />
+        )}
         {seeReply && (
-          <StCommentContainer width={commentContainerWidth}>
+          <StCommentContainer width={commentContainerWidth} ref={ref}>
             {replys!!.map((c) => {
               return (
                 <CommentCard
@@ -163,6 +169,8 @@ function CommentCard({
                   replys={c.replys as Comment[]}
                   num_of_reply={c.num_of_reply}
                   user={c.user as User}
+                  date={c.date}
+                  ref_user_id={c.ref_user_id}
                 />
               );
             })}

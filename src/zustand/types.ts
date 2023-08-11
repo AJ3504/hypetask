@@ -4,8 +4,9 @@ export type CommentStoreType = {
   comment: Comment[] | null;
   numOfComment: number | null;
   isLoading: boolean;
-  fetchComments: (task_id: string, page: number) => Promise<void>;
+  fetchComments: (date: string, user_id: string, page: number) => Promise<void>;
   fetchReplys: (comment_id: string, page: number) => Promise<number>;
+  addComment: (comment: Comment, ref?: HTMLDivElement | null) => void;
   setParentCommentContainerWidth: (width: number) => void;
-  setNumOfComment: (task_id: string) => Promise<void>;
+  setNumOfComment: (user_id: string, date: string) => Promise<void>;
 };

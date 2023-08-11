@@ -5,9 +5,10 @@ import CommentWriteForm from "./CommentWriteForm";
 import { Typography } from "antd";
 import { useCommentStoreDev } from "../../zustand/CommentStore";
 import type { Comment, User } from "../../Types";
+import { useSearchParams, useNavigate } from "react-router-dom";
 function CommentContainer() {
-  const testTaskId = "ba8cf7cd-926d-423b-897a-6b3c6deff9da";
-
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const commentContainerWidth = useCommentStoreDev(
     (state) => state.parentCommentContainerWidth
   );
@@ -18,8 +19,14 @@ function CommentContainer() {
   const setNumOfComment = useCommentStoreDev((state) => state.setNumOfComment);
   const fetchComments = useCommentStoreDev((state) => state.fetchComments);
   useEffect(() => {
-    setNumOfComment(testTaskId);
-    fetchComments(testTaskId, 0);
+    const uid = searchParams.get("uid");
+    const day = searchParams.get("day");
+    if (!uid || !day) {
+      alert("잘못된 접근입니다.");
+      navigate("/first-main");
+    }
+    setNumOfComment(uid!, day!);
+    fetchComments(day!, uid!, 0);
   }, []);
 
   return (
@@ -43,6 +50,8 @@ function CommentContainer() {
               replys={c.replys as Comment[]}
               num_of_reply={c.num_of_reply}
               user={c.user as User}
+              date={c.date}
+              ref_user_id={c.ref_user_id}
             />
           );
         })

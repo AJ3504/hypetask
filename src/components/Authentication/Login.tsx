@@ -4,7 +4,7 @@ import { styled } from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import supabase from "../../config/supabaseClient";
 import { useUserStore } from "../../config/useUserStore";
-
+import type { User } from "../../Types";
 enum AuthProvider {
   Google = "google",
   Kakao = "kakao",
@@ -16,17 +16,7 @@ const Login: React.FC = () => {
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-
-  // zustand - action
-  const setFullName = useUserStore((state) => state.setFullName);
-  const setAccessToken = useUserStore((state) => state.setAccessToken);
-
-  // zustand - state
-  const fullName = useUserStore((state) => state.fullName);
-  const accessToken = useUserStore((state) => state.accessToken);
-  console.log(fullName);
-  console.log(accessToken);
-
+  const { setUserId, setAccessToken, setUser } = useUserStore((state) => state);
   // 1. 일반 이메일 로그인 (provider = email)
   const loginHandler = async (e: FormEvent) => {
     e.preventDefault();
@@ -37,29 +27,34 @@ const Login: React.FC = () => {
         email,
         password,
       });
+
       if (error) {
         console.error((error as any).message);
         alert("로그인 정보를 다시 확인해주세요");
         return;
       }
-      // console.log("Successfully logged in:", data.user);
-      // console.log("full name?>", data.user.user_metadata.full_name);
-
-      // zustand
-      setFullName(data.user.user_metadata.full_name);
 
       // 토큰 저장 - 일반 로그인
       if (data.user) {
         const session = await supabase.auth.getSession();
         console.log(session);
-
         const accessToken = session?.data?.session?.access_token;
+        const userData = session?.data?.session?.user;
+        const user: User = {
+          user_id: userData!.id,
+          created_at: userData!.created_at,
+          avatar_url: userData?.user_metadata
+            ? userData?.user_metadata.avatar_url
+            : "",
+          username: userData?.user_metadata
+            ? userData.user_metadata.full_name
+            : "사용자",
+        };
+        setUserId(userData?.id!);
+        setAccessToken(accessToken!);
+        setUser(user);
         if (accessToken) {
           localStorage.setItem("accessToken", accessToken);
-          // console.log("Access token saved to localStorage.");
-
-          // zustand
-          setAccessToken(accessToken);
 
           alert("로그인에 성공했습니다. 메인페이지로 이동합니다.");
           navigate("/");
@@ -97,11 +92,14 @@ const Login: React.FC = () => {
         return;
       }
 
+      const session = await supabase.auth.getSession();
+
       const oauthData = data as OAuthResponse;
       if (oauthData.user || oauthData.profile) {
         const user = oauthData.user ?? oauthData.profile;
         if (user) {
           // 이안진 추가
+
           console.log(`Successfully Sociallogged in: ${provider} user:`, user);
 
           await supabase.from("users").upsert([

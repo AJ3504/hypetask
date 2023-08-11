@@ -16,7 +16,7 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
   const [formError, setFormError] = useState<string | null>(null);
   const [messages, setMessages] = useState<Chats[]>([]);
   const queryClient = useQueryClient();
-  const fullName = useUserStore((state) => state.fullName);
+  const { user } = useUserStore((state) => state);
 
   // useQuery
   // Get
@@ -56,7 +56,7 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
       return;
     }
 
-    addMutation.mutate({ newMessage, fullName, room });
+    addMutation.mutate({ newMessage, fullName: user!!.username, room });
     setNewMessage("");
   };
 

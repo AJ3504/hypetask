@@ -11,7 +11,7 @@ interface AlertModalProps {
 }
 
 export interface MyComment {
-  user_id: string;
+  username: string;
   created_at: string | undefined;
   checked: boolean | undefined;
   comment: string;
@@ -41,7 +41,7 @@ const AlertModal = ({ myTaskIds, myComments }: AlertModalProps) => {
       </S.CloseBtn>
       <S.CmtBox>
         {myComments?.map((myComment) => {
-          const writer = myComment.user_id;
+          const writer = myComment.username;
           const time = myComment.created_at
             ?.slice(6, 16)
             .replace("T", " ")

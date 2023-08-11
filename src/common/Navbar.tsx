@@ -5,15 +5,16 @@ import { getMyTasks } from "../api/tasks";
 import AlertModal, { MyComment } from "../components/modal/AlertModal";
 import { useModalStore } from "../config/useModalStore";
 import { getMyComments } from "../api/comments";
-
+import supabase from "../config/supabaseClient";
+import { useUserStore } from "../config/useUserStore";
+import { today } from "../consts/consts";
 export function Navbar() {
-  const myId = "ae06168e-38d9-4a05-a2d6-41e5c0a7aac6";
-  const today = new Date().toISOString().slice(0, 10);
+  const { user_id, user } = useUserStore((state) => state);
 
   const { data: myTaskIds } = useQuery(
     ["myTaskIds"],
     async () => {
-      const tasksData = await getMyTasks(myId, today);
+      const tasksData = await getMyTasks(user_id!, today);
       return tasksData;
     },
     {
@@ -31,13 +32,19 @@ export function Navbar() {
     {
       select: (myComments) =>
         myComments?.map((myComment) => ({
-          user_id: myComment.user_id,
+          username: myComment.user?.username,
           created_at: myComment.created_at,
           checked: myComment.checked,
           comment: myComment.comment,
         })),
     }
   );
+  console.log(myComments);
+
+  const signOutBtnHandler = async () => {
+    await supabase.auth.signOut();
+    window.location.reload();
+  };
 
   const { alertModalVisible, changeAlertModalstatus } = useModalStore();
 
@@ -52,7 +59,7 @@ export function Navbar() {
           <StLeftNav>
             <StLeftNavInner>
               <img
-                src="이미지_파일_경로.jpg"
+                src="로고이미지"
                 alt="logo img"
                 style={{ width: "30px", height: "30px", marginRight: "10px" }}
               />
@@ -65,7 +72,7 @@ export function Navbar() {
               <StImageWrapper>
                 <img
                   onClick={() => changeAlertModalstatus(true)}
-                  src="https://www.studiopeople.kr/common/img/default_profile.png"
+                  src={user?.avatar_url}
                   alt="img"
                   style={{
                     width: "30px",
@@ -79,7 +86,7 @@ export function Navbar() {
                 ) : null}
               </StImageWrapper>
 
-              <div>로그아웃</div>
+              <button onClick={signOutBtnHandler}>로그아웃</button>
               <Link to="/chat" style={{ marginLeft: "10px" }}>
                 하입톡💬
               </Link>
