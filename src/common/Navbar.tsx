@@ -23,6 +23,7 @@ export function Navbar() {
     },
     {
       select: (myTasks) => myTasks?.map((myTask) => myTask.task_id),
+      enabled: !!currentUserId,
     }
   );
 
@@ -40,9 +41,9 @@ export function Navbar() {
           checked: myComment.checked,
           comment: myComment.comment,
         })),
+      enabled: !!myTaskIds,
     }
   );
-  console.log(myComments);
 
   const signOutBtnHandler = async () => {
     await supabase.auth.signOut();
@@ -50,6 +51,7 @@ export function Navbar() {
   };
 
   const { alertModalVisible, changeAlertModalstatus } = useModalStore();
+  const { setCurrentTab } = useMainTabStore();
 
   const notCheckedMyComments = myComments?.filter(
     (myComment) => myComment.checked === false
@@ -73,7 +75,6 @@ export function Navbar() {
       });
     }, 6000);
   };
-
   return (
     <>
       <StNavBar>

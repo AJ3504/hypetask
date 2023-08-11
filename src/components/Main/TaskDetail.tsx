@@ -23,7 +23,7 @@ const TaskDetail = ({ task }: TaskDetailProps) => {
       updateDetailOn({ taskId, on }),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(["followersTasks"]);
+        queryClient.invalidateQueries(["followerTasks"]);
         queryClient.invalidateQueries(["myTasks"]);
       },
     }
@@ -34,7 +34,7 @@ const TaskDetail = ({ task }: TaskDetailProps) => {
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["myTasks"]);
-        queryClient.invalidateQueries(["followersTasks"]);
+        queryClient.invalidateQueries(["followerTasks"]);
         alert("삭제되었습니다!");
       },
     }
