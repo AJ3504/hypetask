@@ -3,7 +3,12 @@ import supabase from "../../config/supabaseClient";
 import { Chats } from "../../Types";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { useUserStore } from "../Authentication/Login";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { addChat, getChats } from "../../api/chats";
 import { styled } from "styled-components";
 
@@ -20,19 +25,33 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
   const queryClient = useQueryClient();
   const fullName = useUserStore((state) => state.fullName);
 
-  // useQuery
-  // Get
+  // useInfiniteQuery
+  // getChats -> fetchChats 재정의
+  const fetchChatsForPage = async ({ pageParam = 0 }): Promise<Chats[]> => {
+    const response = await getChats({ room, page: pageParam });
+    // console.log(response);
+    return response;
+  };
+
   const {
-    isLoading,
-    isError,
-    data: chats,
-  } = useQuery(["chats", room], () => getChats({ room }));
-  // console.log(chats);
-  useEffect(() => {
-    if (chats) {
-      setMessages(chats);
-    }
-  }, [chats]);
+    data,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    status,
+  } = useInfiniteQuery({
+    queryKey: ["chats", room],
+    queryFn: ({ pageParam }) => fetchChatsForPage({ pageParam }), // pageParam을 매개변수로 받아서 fetchChatsForPage를 호출
+    getNextPageParam: (lastPage) => {
+      // console.log("getNextPageParam 함수 호출>");
+      // console.log("lastPage> ", lastPage);
+      if (lastPage[0]?.lastPage.page < lastPage[0]?.lastPage.total_pages) {
+        return lastPage[0].lastPage.page + 1;
+      }
+    }, // fetchChatsForPage의 response -> 캐시 context 속 pages [], pageParams [] 속에 들어감
+  });
+  console.log("data>", data);
 
   // Post
   const addMutation = useMutation(addChat, {
@@ -40,14 +59,6 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
       queryClient.invalidateQueries(["chats", room]); // dB onsuccess시, 쿼리컨텍스트 속 stale data를 새것으로 교체해줘
     },
   });
-
-  if (isLoading || isLoading) {
-    return <h1>로딩중입니다.</h1>;
-  }
-
-  if (isError || isError) {
-    return <h1>오류가 발생했습니다.</h1>;
-  }
 
   // Event Handler
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -74,20 +85,27 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
     };
     return new Intl.DateTimeFormat("en-US", options).format(date);
   };
+
+  const fetchMore = () => {
+    if (!hasNextPage) return;
+    fetchNextPage();
+  };
+
   return (
     <StChatApp>
       <StHeader>
         <h1>Welcome to: {room.toUpperCase()}</h1>
       </StHeader>
       <StMessages>
-        {messages.map((message) => (
-          <StMessage key={message.chat_id}>
-            <StUser>{message.texter}:</StUser> {message.text}
+        {/* {data.map((chat) => (
+          <StMessage key={chat.chat_id}>
+            <StUser>{chat.texter}:</StUser> {chat.text}
             <br />
-            <StDate>{prettierCreatedAt(message.created_at)}</StDate>
+            <StDate>{prettierCreatedAt(chat.created_at)}</StDate>
           </StMessage>
-        ))}
+        ))} */}
       </StMessages>
+      <button onClick={fetchMore}>더보기</button>
       <StNewMessageForm onSubmit={handleSubmit}>
         <StNewMessageInput
           placeholder="메세지를 입력해주세요..."
