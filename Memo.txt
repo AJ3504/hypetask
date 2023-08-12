@@ -84,7 +84,7 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
       <StMessages>
         {messages.map((message) => (
           <StMessage key={message.chat_id}>
-            <StUser>{message.texter}:</StUser> {message.text}
+            <StUser>{message.username}:</StUser> {message.text}
             <br />
             <StDate>{prettierCreatedAt(message.created_at)}</StDate>
           </StMessage>
@@ -106,3 +106,18 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
 
 export default ChatRoom;
 
+
+// group 
+{/* {data?.pages.map((group, i) => {
+          return (
+            <Fragment key={i}>
+              {group.data.map((chat: Chats) => (
+                <StMessage key={chat.chat_id}>
+                  <StUser>{chat.username}:</StUser> {chat.text}
+                  <br />
+                  <StDate>{prettierCreatedAt(chat.created_at)}</StDate>
+                </StMessage>
+              ))}
+            </Fragment>
+          );
+        })} */}

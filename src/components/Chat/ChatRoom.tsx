@@ -1,9 +1,10 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, Fragment, useEffect, useState } from "react";
 import supabase from "../../config/supabaseClient";
 import { Chats } from "../../Types";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { useUserStore } from "../Authentication/Login";
 import {
+  InfiniteData,
   useInfiniteQuery,
   useMutation,
   useQuery,
@@ -27,8 +28,8 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
 
   // useInfiniteQuery
   // getChats -> fetchChats 재정의
-  const fetchChatsForPage = async ({ pageParam = 0 }): Promise<Chats[]> => {
-    const response = await getChats({ room, page: pageParam });
+  const fetchChatsForPage = async ({ pageParam = 1 }): Promise<Chats[]> => {
+    const response = await getChats({ room, pageParam });
     // console.log(response);
     return response;
   };
@@ -40,23 +41,24 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
     hasNextPage,
     isFetchingNextPage,
     status,
+    isFetching,
   } = useInfiniteQuery({
     queryKey: ["chats", room],
-    queryFn: ({ pageParam }) => fetchChatsForPage({ pageParam }), // pageParam을 매개변수로 받아서 fetchChatsForPage를 호출
-    getNextPageParam: (lastPage) => {
-      // console.log("getNextPageParam 함수 호출>");
-      // console.log("lastPage> ", lastPage);
-      if (lastPage[0]?.lastPage.page < lastPage[0]?.lastPage.total_pages) {
-        return lastPage[0].lastPage.page + 1;
+    queryFn: ({ pageParam }) => fetchChatsForPage({ pageParam }),
+    getNextPageParam: (_lastPage, pages) => {
+      if (pages.length < 4) {
+        return pages.length + 1;
+      } else {
+        return undefined;
       }
-    }, // fetchChatsForPage의 response -> 캐시 context 속 pages [], pageParams [] 속에 들어감
+    },
   });
   console.log("data>", data);
 
   // Post
   const addMutation = useMutation(addChat, {
     onSuccess: () => {
-      queryClient.invalidateQueries(["chats", room]); // dB onsuccess시, 쿼리컨텍스트 속 stale data를 새것으로 교체해줘
+      queryClient.invalidateQueries(["chats", room]);
     },
   });
 
@@ -69,7 +71,7 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
       return;
     }
 
-    addMutation.mutate({ newMessage, fullName, room });
+    addMutation.mutate({ newMessage, room });
     setNewMessage("");
   };
 
@@ -97,13 +99,15 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
         <h1>Welcome to: {room.toUpperCase()}</h1>
       </StHeader>
       <StMessages>
-        {/* {data.map((chat) => (
-          <StMessage key={chat.chat_id}>
-            <StUser>{chat.texter}:</StUser> {chat.text}
-            <br />
-            <StDate>{prettierCreatedAt(chat.created_at)}</StDate>
-          </StMessage>
-        ))} */}
+        {isFetching && !isFetchingNextPage ? "Fetching..." : null}
+        {data?.pages &&
+          data.pages[0].map((chat) => (
+            <StMessage key={chat.chat_id}>
+              <StUser>{chat.username}:</StUser> {chat.text}
+              <br />
+              <StDate>{prettierCreatedAt(chat.created_at)}</StDate>
+            </StMessage>
+          ))}
       </StMessages>
       <button onClick={fetchMore}>더보기</button>
       <StNewMessageForm onSubmit={handleSubmit}>

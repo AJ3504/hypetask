@@ -3,13 +3,13 @@ export interface Chats {
   text: string;
   created_at: string;
   user_id: string;
-  texter: string;
+  username?: string;
   roomName: string;
   // infinite scroll 위해 추가
-  lastPage: {
-    page: number;
-    total_pages: number;
-  };
+  // lastPage: {
+  //   page: number;
+  //   total_pages: number;
+  // };
 }
 
 export type Comment = {

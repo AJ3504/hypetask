@@ -25,17 +25,18 @@ import supabase from "../config/supabaseClient";
 
 export const getChats = async ({
   room,
-  page,
+  pageParam,
 }: {
   room: string;
-  page: number;
+  pageParam: number;
 }): Promise<Chats[]> => {
+  const itemsPerPage = 5;
   const response = await supabase
     .from("chats")
     .select("*")
-    .eq("roomName", room);
-  // .range(page * 2, (page + 1) * 2 - 1) // url?page=1과 비슷한 로직
-  // .order("created_at", { ascending: false });
+    .eq("roomName", room)
+    .range(pageParam * itemsPerPage, (pageParam + 1) * itemsPerPage - 1)
+    .order("created_at", { ascending: false });
 
   // console.log(response);
   return response.data as Chats[];
@@ -43,16 +44,14 @@ export const getChats = async ({
 
 export const addChat = async ({
   newMessage,
-  fullName,
   room,
 }: {
   newMessage: string;
-  fullName: string;
   room: string;
 }) => {
   const response = await supabase
     .from("chats")
-    .insert([{ text: newMessage, texter: fullName, roomName: room }])
+    .insert([{ text: newMessage, roomName: room }])
     .select();
   // console.log(response);
 };
