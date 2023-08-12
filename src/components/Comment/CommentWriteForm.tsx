@@ -2,8 +2,7 @@ import React from "react";
 import { Card, Space, Avatar, Typography, Input, Button } from "antd";
 import useInput from "../../hooks/useInput";
 import { EditOutlined } from "@ant-design/icons";
-import { useCommentStore } from "../../zustand/CommentStore";
-import { writeComment } from "../../api/comments";
+import { useCommentStoreDev } from "../../zustand/CommentStore";
 import { useUserStore } from "../../config/useUserStore";
 import type { Comment } from "../../Types";
 import { useSearchParams, useNavigate } from "react-router-dom";
@@ -15,16 +14,22 @@ type Props = {
 
 const CommentWriteForm = ({ ref_step, ref_id }: Props) => {
   const [comment, __, onChangeComment] = useInput<string>("");
-  const commentContainerWidth = useCommentStore(
+  const commentContainerWidth = useCommentStoreDev(
     (state) => state.parentCommentContainerWidth
   );
+  const writeComment = useCommentStoreDev((state) => state.writeComment);
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user, user_id } = useUserStore((state) => state);
   const writeCommentHandler = async () => {
+    if (!comment || comment.length === 0) {
+      alert("댓글을 작성해주세요");
+      return;
+    }
     if (!user || !searchParams.get("uid") || !searchParams.get("day")) {
       alert("잘못된 접근입니다.");
       navigate("/first-main");
+      return;
     }
     let data: Comment = {
       user_id: user_id!,

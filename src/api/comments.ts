@@ -1,8 +1,18 @@
 import supabase from "../config/supabaseClient";
 import { Comment } from "../Types";
-export const writeComment = async (data: Comment | null) => {
-  const result = await supabase.from("comments").insert(data);
-  console.log(result);
+export const writeComment = async (data: Comment | null): Promise<Comment> => {
+  let { data: comments } = await supabase
+    .from("comments")
+    .insert(data)
+    .select("* , user:user_id(*)  ,num_of_reply:comments(count)");
+
+  let temp: Comment[] = [];
+  const commentsLength = comments === null ? 0 : comments.length;
+  for (let i = 0; i < commentsLength; i++) {
+    comments![i].replys = temp;
+    comments![i].num_of_reply = comments![i].num_of_reply[0].count;
+  }
+  return comments![0] as Comment;
 };
 
 /**
@@ -24,7 +34,6 @@ export const getComments = async (
     .eq("ref_user_id", user_id)
     .range(page * 10, (page + 1) * 10); //대댓글은 안가져옴
   let temp: Comment[] = [];
-  console.log(comments);
   const commentsLength = comments === null ? 0 : comments.length;
   for (let i = 0; i < commentsLength; i++) {
     comments![i].replys = temp;

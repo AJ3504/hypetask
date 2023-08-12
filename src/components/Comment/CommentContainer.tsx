@@ -12,10 +12,8 @@ function CommentContainer() {
   const commentContainerWidth = useCommentStoreDev(
     (state) => state.parentCommentContainerWidth
   );
-  const comments: Comment[] = useCommentStoreDev((state) => state.comment);
-  const numOfComment: number = useCommentStoreDev(
-    (state) => state.numOfComment
-  );
+  const comments = useCommentStoreDev((state) => state.comment);
+  const numOfComment = useCommentStoreDev((state) => state.numOfComment);
   const setNumOfComment = useCommentStoreDev((state) => state.setNumOfComment);
   const fetchComments = useCommentStoreDev((state) => state.fetchComments);
   useEffect(() => {

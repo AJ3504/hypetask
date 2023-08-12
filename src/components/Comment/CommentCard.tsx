@@ -39,7 +39,6 @@ function CommentCard({
   const fetchReplysHandler = async () => {
     increasePage();
     const fetchedNum = await fetchReplys(comment_id!!, replyPage);
-    console.log(fetchedNum);
     if (fetchedNum < 11) {
       setSeeMoreReply(false);
     }
@@ -47,9 +46,11 @@ function CommentCard({
   const toggleSeeMore = () => {
     setSeeMore(!seeMore);
   };
-  const toggleSeeReply = () => {
+  const toggleSeeReply = async () => {
     setSeeReply(!seeReply);
-    if (prevReplyPage !== replyPage) fetchReplys(comment_id!!, replyPage);
+    if (prevReplyPage !== replyPage) {
+      await fetchReplysHandler();
+    }
   };
   const closeSeeReply = () => {
     setSeeReply(!seeReply);
@@ -122,39 +123,29 @@ function CommentCard({
                 )}
               </Typography.Paragraph>
               <Space direction="horizontal">
-                {num_of_reply!! > 0 && (
-                  <>
-                    {seeReply ? (
-                      <Typography.Link onClick={closeSeeReply}>
-                        댓글접기&nbsp;
-                        <UpOutlined />
-                      </Typography.Link>
-                    ) : (
-                      <Typography.Link onClick={toggleSeeReply}>
-                        댓글보기&nbsp;
-                        <DownOutlined />
-                      </Typography.Link>
-                    )}
-                  </>
-                )}
-                <Button
-                  shape="circle"
-                  onClick={toggleReplyForm}
-                  style={{
-                    border: "none",
-                  }}
-                >
-                  <EditFilled />
-                </Button>
+                <>
+                  {seeReply ? (
+                    <Typography.Link onClick={closeSeeReply}>
+                      댓글접기&nbsp;
+                      <UpOutlined />
+                    </Typography.Link>
+                  ) : (
+                    <Typography.Link onClick={toggleSeeReply}>
+                      댓글보기 ({num_of_reply}개)&nbsp;
+                      <DownOutlined />
+                    </Typography.Link>
+                  )}
+                </>
               </Space>
             </Space>
           </Space>
         </Card>
-        {writeForm && (
-          <CommentWriteForm ref_step={ref_step + 1} ref_id={comment_id} />
-        )}
         {seeReply && (
           <StCommentContainer width={commentContainerWidth} ref={ref}>
+            {/* 댓글달기창을 사용자가 열었을때는 안보임 */}
+            {!writeForm && (
+              <CommentWriteForm ref_step={ref_step + 1} ref_id={comment_id} />
+            )}
             {replys!!.map((c) => {
               return (
                 <CommentCard
