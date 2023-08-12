@@ -1,7 +1,8 @@
 import React from "react";
-import DailyCalender from "../components/main/DailyCalender";
-import ExplorePeople from "../components/main/ExplorePeople";
+
 import { useMainTabStore } from "../config/useMainTabStore";
+import DailyCalender from "../components/Main/DailyCalender";
+import ExplorePeople from "../components/Main/ExplorePeople";
 
 const Main = () => {
   const { currentTab } = useMainTabStore();

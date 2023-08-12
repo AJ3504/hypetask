@@ -10,6 +10,7 @@ import { useCurrentUserStore } from "../config/useCurrentUserStore";
 import { PoweroffOutlined } from "@ant-design/icons";
 import { Button, Space } from "antd";
 import { useState } from "react";
+import { useMainTabStore } from "../config/useMainTabStore";
 
 export function Navbar() {
   const { currentUserId } = useCurrentUserStore();

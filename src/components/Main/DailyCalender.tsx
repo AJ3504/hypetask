@@ -6,11 +6,11 @@ import AddTaskModal from "../modal/AddTaskModal";
 import MytasksCard from "./MyTasksCard";
 import TimeStampCard from "./TimeStampCard";
 
-import { useCurrentUserStore } from "../../config/useCurrentUserStore"
+import { useCurrentUserStore } from "../../config/useCurrentUserStore";
 import { Button } from "antd";
-import { PlusOutlined } from "@ant-design/icons"
+import { PlusOutlined } from "@ant-design/icons";
 import FollowerTasksCard from "./OtherTasksCard";
-import Header from "./Header"
+import Header from "./Header";
 
 const DailyCalender = () => {
   const today = new Date().toISOString().slice(0, 10);
@@ -43,18 +43,6 @@ const DailyCalender = () => {
       {addTaskModalVisible ? (
         <AddTaskModal todayDefault={true} myId={currentUser!} />
       ) : null}
-      <S.Header>
-        <div>{quotes?.advice}</div>
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={changeAddTaskModalstatus}
-          style={{ backgroundColor: "#344CB7" }}
-          size="small"
-        >
-          추가
-        </Button>
-      </S.Header>
       <Header />
       <S.Container>
         <S.CalenderContainer>
