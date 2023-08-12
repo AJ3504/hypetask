@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import { getMyTasks } from "../api/tasks";
 import AlertModal, { MyComment } from "../components/modal/AlertModal";
@@ -13,6 +13,8 @@ import { useState } from "react";
 import { useMainTabStore } from "../config/useMainTabStore";
 
 export function Navbar() {
+  const navigate = useNavigate();
+
   const { currentUserId } = useCurrentUserStore();
   const today = new Date().toISOString().slice(0, 10);
 
@@ -82,16 +84,25 @@ export function Navbar() {
         <StContainer>
           <StLeftNav>
             <StLeftNavInner>
-              <Link to="/">
+              <div
+                onClick={() => {
+                  if (location.pathname === "/") {
+                    window.location.reload();
+                  } else {
+                    navigate("/");
+                  }
+                }}
+              >
                 <Logo>
                   <img
-                    src="./logo.png"
+                    src="/logo.png"
                     alt="HypeTask"
                     width="90px"
                     height="40px"
                   />
                 </Logo>
-              </Link>
+              </div>
+
               <div style={{ marginTop: "20px" }}>
                 <span
                   style={{
@@ -199,6 +210,7 @@ export const Logo = styled.a`
   width: 40px;
   height: 40px;
   margin-right: 10px;
+  cursor: pointer;
 `;
 export const StRightNav = styled.div`
   padding: 0.5rem 1rem;
