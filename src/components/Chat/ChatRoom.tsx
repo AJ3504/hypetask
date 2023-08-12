@@ -28,7 +28,7 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
 
   // useInfiniteQuery
   // getChats -> fetchChats 재정의
-  const fetchChatsForPage = async ({ pageParam = 1 }): Promise<Chats[]> => {
+  const fetchChatsForPage = async ({ pageParam = 0 }): Promise<Chats[]> => {
     const response = await getChats({ room, pageParam });
     // console.log(response);
     return response;
@@ -46,7 +46,8 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
     queryKey: ["chats", room],
     queryFn: ({ pageParam }) => fetchChatsForPage({ pageParam }),
     getNextPageParam: (_lastPage, pages) => {
-      if (pages.length < 4) {
+      // 현재페이지 < 총 페이지수일때만 다음 페이지 가져옴
+      if (pages[pages.length - 1]?.length >= 5) {
         return pages.length + 1;
       } else {
         return undefined;
@@ -100,14 +101,24 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
       </StHeader>
       <StMessages>
         {isFetching && !isFetchingNextPage ? "Fetching..." : null}
-        {data?.pages &&
+        {/* {data?.pages &&
           data.pages[0].map((chat) => (
             <StMessage key={chat.chat_id}>
               <StUser>{chat.username}:</StUser> {chat.text}
               <br />
               <StDate>{prettierCreatedAt(chat.created_at)}</StDate>
             </StMessage>
-          ))}
+          ))} */}
+        {data?.pages &&
+          data.pages.map((page) =>
+            page.map((chat) => (
+              <StMessage key={chat.chat_id}>
+                <StUser>{chat.username}:</StUser> {chat.text}
+                <br />
+                <StDate>{prettierCreatedAt(chat.created_at)}</StDate>
+              </StMessage>
+            ))
+          )}
       </StMessages>
       <button onClick={fetchMore}>더보기</button>
       <StNewMessageForm onSubmit={handleSubmit}>

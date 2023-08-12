@@ -31,11 +31,14 @@ export const getChats = async ({
   pageParam: number;
 }): Promise<Chats[]> => {
   const itemsPerPage = 5;
+  const startIndex = pageParam * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage - 1;
+
   const response = await supabase
     .from("chats")
     .select("*")
     .eq("roomName", room)
-    .range(pageParam * itemsPerPage, (pageParam + 1) * itemsPerPage - 1)
+    .range(startIndex, endIndex) // 0~4, 5~9, 10~14, ...
     .order("created_at", { ascending: false });
 
   // console.log(response);
