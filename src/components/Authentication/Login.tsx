@@ -48,17 +48,11 @@ const Login: React.FC = () => {
   // 2. 소셜 로그인 (provider = google, github, kakao)
   const handleOAuthLogin = async (provider: AuthProvider, e: FormEvent) => {
     e.preventDefault();
-    const host = window.location.host;
-    console.log(`http://${host}`);
-    alert("fewa");
     try {
       const { data, error } = await (
         supabase.auth as SupabaseClient["auth"]
       ).signInWithOAuth({
         provider,
-        options: {
-          redirectTo: `http://${host}`,
-        },
       });
       if (error) {
         console.error(`${provider} 로그인 에러 발생:`, error);
