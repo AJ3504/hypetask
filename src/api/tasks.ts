@@ -35,8 +35,6 @@ export const getFollowerTasks = async (
     .select("*")
     .eq("date", date)
     .in("user_id", userIds);
-  console.log("followersTasks", data.data);
-  console.log(userIds);
   return data.data;
 };
 
@@ -73,7 +71,6 @@ export async function addTask({
     user_id: user_id,
   };
   const result = await supabase.from("tasks").insert(data);
-  console.log(result);
   return result;
 }
 

@@ -84,7 +84,7 @@ export function Navbar() {
               <div
                 onClick={() => {
                   if (window.location.pathname === "/") {
-                    window.location.reload();
+                    setCurrentTab("main");
                   } else {
                     navigate("/");
                   }
