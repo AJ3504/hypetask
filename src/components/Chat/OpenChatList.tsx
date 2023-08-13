@@ -6,14 +6,16 @@ import { styled } from "styled-components";
 
 type ChatRoomProps = {
   room: string;
+  roomPW: string;
 };
 
-const ChatLog: React.FC<ChatRoomProps> = (props) => {
+const OpenChatList: React.FC<ChatRoomProps> = (props) => {
   const { room } = props;
+  const { roomPW } = props;
 
   // useInfiniteQuery
   const fetchChatsForPage = async ({ pageParam = 0 }): Promise<Chats[]> => {
-    const response = await getChats({ room, pageParam });
+    const response = await getChats({ room, roomPW, pageParam });
     // console.log(response);
     return response;
   };
@@ -78,7 +80,7 @@ const ChatLog: React.FC<ChatRoomProps> = (props) => {
   );
 };
 
-export default ChatLog;
+export default OpenChatList;
 
 //-----------------------------------//
 

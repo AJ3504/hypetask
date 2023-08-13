@@ -109,11 +109,14 @@ export function Navbar() {
                     paddingRight: "20px",
                     paddingLeft: "35px",
                     fontWeight: "bold",
+                    cursor: "pointer",
                   }}
                 >
                   친구
                 </span>
-                <span style={{ fontWeight: "bold" }}>탐색</span>
+                <span style={{ fontWeight: "bold", cursor: "pointer" }}>
+                  탐색
+                </span>
               </div>
             </StLeftNavInner>
           </StLeftNav>

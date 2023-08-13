@@ -37,9 +37,11 @@ export const addChat = async ({
 // 2. 채팅내역 리스트방
 export const getChats = async ({
   room,
+  roomPW,
   pageParam,
 }: {
   room: string;
+  roomPW: string;
   pageParam: number;
 }): Promise<Chats[]> => {
   const itemsPerPage = 5;

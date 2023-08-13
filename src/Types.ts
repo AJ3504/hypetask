@@ -5,11 +5,7 @@ export interface Chats {
   user_id: string;
   username?: string;
   roomName: string;
-  // infinite scroll 위해 추가
-  // lastPage: {
-  //   page: number;
-  //   total_pages: number;
-  // };
+  roomPW: string;
 }
 
 export type Comment = {

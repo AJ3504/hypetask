@@ -1,5 +1,4 @@
 import { styled } from "styled-components";
-import ChatLog from "./ChatLog";
 import { FormEvent, Fragment, useEffect, useState } from "react";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
