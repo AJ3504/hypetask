@@ -2,7 +2,6 @@ import { Chats } from "../../Types";
 
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getChats } from "../../api/chats";
-import { styled } from "styled-components";
 import { useRoomStore } from "../../config/useRoomStore";
 import {
   StDate,
@@ -13,6 +12,7 @@ import {
   StText,
   StUser,
 } from "./chatstyle/OpenChatListStyle";
+import { useInView } from "react-intersection-observer";
 
 const OpenChatList: React.FC = () => {
   // zustand - room, roomPW
@@ -48,6 +48,13 @@ const OpenChatList: React.FC = () => {
       }
     },
   });
+  const { ref } = useInView({
+    threshold: 1,
+    onChange: (inView) => {
+      if (!inView || !hasNextPage || isFetchingNextPage) return;
+      fetchNextPage();
+    },
+  });
 
   // Event Handler
   const prettierCreatedAt = (createdAt: string) => {
@@ -63,10 +70,10 @@ const OpenChatList: React.FC = () => {
     return new Intl.DateTimeFormat("en-US", options).format(date);
   };
 
-  const fetchMore = () => {
-    if (!hasNextPage) return;
-    fetchNextPage();
-  };
+  // const fetchMore = () => {
+  //   if (!hasNextPage) return;
+  //   fetchNextPage();
+  // };
 
   return (
     <StOpenChatListContainer>
@@ -86,11 +93,20 @@ const OpenChatList: React.FC = () => {
             ))
           )}
       </StMessages>
-      <button onClick={fetchMore}>더보기</button>
+      {/* <button onClick={fetchMore}>더보기</button> */}
+      <div
+        style={{
+          textAlign: "center",
+          color: "black",
+          width: "100%",
+          height: 50,
+        }}
+        ref={ref} // useInView에서 반환한 ref를 적용
+      >
+        더보기…
+      </div>
     </StOpenChatListContainer>
   );
 };
 
 export default OpenChatList;
-
-//-----------------------------------//
