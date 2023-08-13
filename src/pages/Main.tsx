@@ -1,6 +1,6 @@
 import { useMainTabStore } from "../zustand/useMainTabStore";
-import DailyCalender from "../components/main/DailyCalender";
-import ExplorePeople from "../components/main/ExplorePeople";
+import DailyCalender from "../Components/Main/DailyCalender";
+import ExplorePeople from "../Components/Main/ExplorePeople";
 import { useCurrentFollowerStore } from "../zustand/useCurrentFollowerStore";
 import { useQuery } from "@tanstack/react-query";
 import { getCurrentUser, getFollowers } from "../api/users";

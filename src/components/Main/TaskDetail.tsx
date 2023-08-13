@@ -10,7 +10,7 @@ import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../../App";
 import { useModalStore } from "../../zustand/useModalStore";
 import AddTaskModal from "../modal/AddTaskModal";
-import S from "./MainStyles";
+import S from "./mainStyles";
 import { useUserStore } from "../../config/useUserStore";
 
 export interface TaskDetailProps {

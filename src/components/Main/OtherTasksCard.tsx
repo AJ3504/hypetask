@@ -14,7 +14,7 @@ import { MdOutlineCheckBox } from "react-icons/md";
 import { BsTextRight } from "react-icons/bs";
 import { useMainTabStore } from "../../zustand/useMainTabStore";
 import { addFollower, deleteFollower, getAllUser } from "../../api/users";
-import S from "./MainStyles";
+import S from "./mainStyles";
 import { useUserStore } from "../../config/useUserStore";
 import TaskDetail from "./TaskDetail";
 import { today } from "../../consts/consts";

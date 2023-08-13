@@ -7,14 +7,20 @@ const FindPassword: React.FC = () => {
   const [newPassword, setNewPassword] = useState(""); // 새 비밀번호 상태 변수
   const [showResetForm, setShowResetForm] = useState(false); // 비밀번호 재설정 폼 보여줄지 여부
 
-  const resetPasswordHandler = async () => {
+  const resetPasswordHandler = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) {
+      alert("이메일 칸을 채워주세요.");
+      return;
+    }
+
     try {
       const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: "http://localhost:3000/resetPassword",
       });
       console.log(data);
       if (!error) {
-        alert("Please check your email");
+        alert("이메일을 확인해주세요.");
         setEmail("");
       }
     } catch (error) {

@@ -1,6 +1,6 @@
-import CommentContainer from "../components/Comment/CommentContainer";
-import MyTasksCard from "../components/main/MyTasksCard";
-import TimeStampCard from "../components/main/TimeStampCard";
+import CommentContainer from "../Components/Comment/CommentContainer";
+import MyTasksCard from "../Components/Main/MyTasksCard";
+import TimeStampCard from "../Components/Main/TimeStampCard";
 import { useUserStore } from "../config/useUserStore";
 const Detail = () => {
   const { user_id } = useUserStore((state) => state);

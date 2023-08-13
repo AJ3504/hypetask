@@ -7,7 +7,7 @@ import AddTaskModal from "../modal/AddTaskModal";
 import { MdCheckBoxOutlineBlank } from "react-icons/md";
 import { MdOutlineCheckBox } from "react-icons/md";
 import { BsTextRight } from "react-icons/bs";
-import S from "./MainStyles";
+import S from "./mainStyles";
 import { useUserStore } from "../../config/useUserStore";
 import { useNavigate } from "react-router-dom";
 import TaskDetail from "./TaskDetail";

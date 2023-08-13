@@ -3,7 +3,7 @@ import GlobalStyle from "../GlobalStyles";
 import Layout from "../common/Layout";
 import Main from "../pages/Main";
 import Detail from "../pages/Detail";
-import Mypage from "../pages/Mypage";
+//import Mypage from "../pages/Mypage";
 import Register from "../pages/Register";
 import Chat from "../pages/Chat";
 import ResetPassword from "../pages/ResetPassword";
@@ -38,14 +38,7 @@ const Router = () => {
               </PrivateRoute>
             }
           />
-          <Route
-            path="/my-page/:id"
-            element={
-              <PrivateRoute>
-                <Mypage />
-              </PrivateRoute>
-            }
-          />
+
           {/* <Route
             path="chat"
             element={accessToken ? <Chat /> : <Navigate to="/first-main" />}

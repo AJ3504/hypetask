@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { styled } from "styled-components";
 import { getMyTasks } from "../api/tasks";
-import AlertModal, { MyComment } from "../components/modal/AlertModal";
+import AlertModal, { MyComment } from "../Components/modal/AlertModal";
 import { useModalStore } from "../zustand/useModalStore";
 import { getMyComments } from "../api/comments";
 import supabase from "../config/supabaseClient";

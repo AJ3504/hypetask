@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import supabase from "../../config/supabaseClient";
 import { useUserStore } from "../../config/useUserStore";
 import type { User } from "../../Types";
+import { IntroduceContainer, IntroduceTitle } from "./Introduce";
 enum AuthProvider {
   Google = "google",
   Kakao = "kakao",
@@ -117,9 +118,9 @@ const Login: React.FC = () => {
   };
   return (
     <div>
-      <div className="login-container">
-        <div className="login-title">Log in</div>
-        <div className="login-input">
+      <IntroduceContainer>
+        <IntroduceTitle>Log in</IntroduceTitle>
+        <LoginInput>
           <input
             type="text"
             placeholder="Email"
@@ -133,7 +134,7 @@ const Login: React.FC = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
           <button onClick={loginHandler}>Go!</button>
-        </div>
+        </LoginInput>
         <div className="login-guide">
           <Link to="/findpassword">forgot password?</Link>
           <Link to="/register">Join us</Link>
@@ -150,7 +151,7 @@ const Login: React.FC = () => {
             <LoginIcon src="/assets/kakao-talk.png" />
           </div>
         </div>
-      </div>
+      </IntroduceContainer>
     </div>
   );
 };
@@ -163,3 +164,9 @@ const LoginIcon = styled.img`
   border: solid 1px lightgray;
   border-radius: 8px;
 `;
+const LoginInput = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+const LoginBtn = styled.button``;

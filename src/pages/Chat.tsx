@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ChatRoom from "../components/Chat/ChatRoom";
+import ChatRoom from "../Components/Chat/ChatRoom";
 import { useUserStore } from "../config/useUserStore";
 
 const Chat = () => {
