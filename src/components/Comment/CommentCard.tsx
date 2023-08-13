@@ -26,6 +26,7 @@ function CommentCard({
   const commentContainerWidth = useCommentStoreDev(
     (state) => state.parentCommentContainerWidth
   );
+  console.log(user);
   const fetchReplys = useCommentStoreDev((state) => state.fetchReplys);
   const [seeMore, setSeeMore] = useState(false);
   const [seeReply, setSeeReply] = useState(false);
@@ -92,6 +93,7 @@ function CommentCard({
                 </Typography.Text>
                 <Typography.Text type="secondary" aria-setsize={5}>
                   {esimateTimeElapsed(created_at!!)}
+                  {"  "}
                 </Typography.Text>
                 <Typography.Link onClick={focusTime}>
                   {time_ref ? timeTable[`${time_ref!!}`].label + " 일정" : ""}

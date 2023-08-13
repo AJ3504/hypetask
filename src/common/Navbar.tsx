@@ -13,7 +13,7 @@ import { Button, Space } from "antd";
 import { useState } from "react";
 import { useMainTabStore } from "../config/useMainTabStore";
 export function Navbar() {
-  const { user_id, user } = useUserStore((state) => state);
+  const { user_id, user, logout } = useUserStore((state) => state);
   const location = useLocation();
   const navigate = useNavigate();
   const { data: myTaskIds } = useQuery(
@@ -138,18 +138,33 @@ export function Navbar() {
 
               <Space direction="vertical">
                 <Space wrap>
-                  <Button
-                    type="primary"
-                    icon={<PoweroffOutlined />}
-                    loading={loadings[1]}
-                    style={{ backgroundColor: "#344CB7" }}
-                    onClick={() => {
-                      enterLoading(1);
-                      signOutBtnHandler();
-                    }}
-                  >
-                    로그아웃
-                  </Button>
+                  {!user_id ? (
+                    <Button
+                      type="primary"
+                      icon={<PoweroffOutlined />}
+                      loading={loadings[1]}
+                      style={{ backgroundColor: "#344CB7" }}
+                      onClick={() => {
+                        navigate("/first-main");
+                      }}
+                    >
+                      로그인
+                    </Button>
+                  ) : (
+                    <Button
+                      type="primary"
+                      icon={<PoweroffOutlined />}
+                      loading={loadings[1]}
+                      style={{ backgroundColor: "#344CB7" }}
+                      onClick={() => {
+                        enterLoading(1);
+                        signOutBtnHandler();
+                        logout();
+                      }}
+                    >
+                      로그아웃
+                    </Button>
+                  )}
                 </Space>
               </Space>
               <Link

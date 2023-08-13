@@ -1,12 +1,8 @@
 import { styled } from "styled-components";
 import TaskDetail from "./TaskDetail";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import {
-  Tasks,
-  getFollowerTasks,
-  updateDetailOn,
-  updateDone,
-} from "../../api/tasks";
+import { getFollowerTasks, updateDetailOn, updateDone } from "../../api/tasks";
+import type { Tasks } from "../../Types";
 import { queryClient } from "../../App";
 import { MdCheckBoxOutlineBlank } from "react-icons/md";
 import { MdOutlineCheckBox } from "react-icons/md";

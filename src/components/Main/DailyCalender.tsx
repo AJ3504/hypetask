@@ -11,18 +11,12 @@ import FollowerTasksCard from "./OtherTasksCard";
 import Header from "./Header";
 
 const DailyCalender = () => {
-  const { user_id, setUserId } = useUserStore();
-
-  const { data: currentUser } = useQuery(["currentUser"], async () => {
-    const currentUserData = await getCurrentUser();
-    setUserId(currentUserData as string);
-    return currentUserData;
-  });
+  const { user_id } = useUserStore();
 
   const { data: followers } = useQuery(
     ["followers"],
     async () => {
-      const followersData = await getFollowers(currentUser!);
+      const followersData = await getFollowers(user_id!);
       return followersData;
     },
     {
@@ -31,20 +25,18 @@ const DailyCalender = () => {
     }
   );
 
-  console.log(followers);
-
   const { addTaskModalVisible } = useModalStore();
 
   return (
     <>
       {addTaskModalVisible ? (
-        <AddTaskModal todayDefault={true} myId={currentUser!} />
+        <AddTaskModal todayDefault={true} myId={user_id!} />
       ) : null}
       <Header />
       <S.Container>
         <S.CalenderContainer>
           <TimeStampCard />
-          <MytasksCard today={today} myId={currentUser!} />
+          <MytasksCard today={today} myId={user_id!} />
         </S.CalenderContainer>
         <S.FollowersCalenderContainer>
           {followers &&

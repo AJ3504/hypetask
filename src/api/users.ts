@@ -40,3 +40,22 @@ export const deleteFollower = async (
 ): Promise<void> => {
   await supabase.from("followers").delete().eq("from", from).eq("to", to);
 };
+
+export const addUser = async (userUid: string, metadata: any) => {
+  const { data, error } = await supabase.from("profiles").insert({
+    user_id: userUid,
+    username: metadata.username!,
+    img_url: metadata.avatar_url!,
+  });
+  console.log(data);
+  if (error) {
+    console.error(error);
+  }
+};
+export const checkUser = async (user_id: string) => {
+  const result = await supabase
+    .from("profiles")
+    .select("count")
+    .eq("user_id", user_id!);
+  return result.data![0].count;
+};

@@ -1,23 +1,10 @@
 import supabase from "../config/supabaseClient";
-
-export interface Tasks {
-  task_id: string | undefined;
-  created_at?: string;
-  title: string;
-  desc: string;
-  done?: boolean;
-  start_time: number;
-  end_time: number;
-  date: string;
-  user_id: string | undefined;
-  detail_on?: boolean;
-}
+import type { Tasks } from "../Types";
 
 export const getMyTasks = async (
   myId: string,
   date: string
 ): Promise<Tasks[] | null> => {
-  console.log(myId, date);
   const { data: tasks } = await supabase
     .from("tasks")
     .select("*")
@@ -30,7 +17,6 @@ export const getFollowerTasks = async (
   date: string,
   userIds: string[]
 ): Promise<Tasks[] | null> => {
-  console.log("asdfasdf", userIds);
   const { data: followersTasks } = await supabase
     .from("tasks")
     .select("*")

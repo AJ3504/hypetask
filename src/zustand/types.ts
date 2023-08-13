@@ -1,4 +1,5 @@
 import type { Comment } from "../Types";
+import type { Tasks } from "../Types";
 export type CommentStoreType = {
   parentCommentContainerWidth: number;
   comment: Comment[] | null;
@@ -9,4 +10,9 @@ export type CommentStoreType = {
   setParentCommentContainerWidth: (width: number) => void;
   setNumOfComment: (user_id: string, date: string) => Promise<void>;
   writeComment: (data: Comment) => Promise<void>;
+};
+
+export type CommentTimeStoreType = {
+  clickedTask: Tasks | null;
+  setClickedTime: (task: Tasks) => void;
 };
