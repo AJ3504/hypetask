@@ -1,22 +1,31 @@
-import { FormEvent, useEffect, useState } from "react";
-import { Chats } from "../../Types";
+import { FormEvent, useState } from "react";
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { addChat, getChats } from "../../api/chats";
-import { styled } from "styled-components";
+import { addChat, getRealTimeChats } from "../../api/chats";
 import { useUserStore } from "../../zustand/useUserStore";
+import { useRoomStore } from "../../config/useRoomStore";
+import {
+  StChatContainer,
+  StDate,
+  StHeader,
+  StMessage,
+  StMessages,
+  StNewMessageForm,
+  StNewMessageInput,
+  StSendButton,
+  StText,
+  StUser,
+} from "./chatstyle/ChatRoomStyle";
 
-type ChatRoomProps = {
-  room: string;
-};
-
-const ChatRoom: React.FC<ChatRoomProps> = (props) => {
-  const { room } = props;
+const ChatRoom: React.FC = () => {
   // useStates + hooks
   const [newMessage, setNewMessage] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
-  const [messages, setMessages] = useState<Chats[]>([]);
   const queryClient = useQueryClient();
-  const { user } = useUserStore((state) => state);
+  const user_id = useUserStore((state) => state.user_id);
+  // zustand - room, roomPW
+  const room = useRoomStore((state) => state.room);
+  const roomPW = useRoomStore((state) => state.roomPW);
 
   // useQuery
   // Get
@@ -24,18 +33,15 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
     isLoading,
     isError,
     data: chats,
-  } = useQuery(["chats", room], () => getChats({ room }));
+  } = useQuery(["chats", room, roomPW], () =>
+    getRealTimeChats({ room, roomPW })
+  );
   // console.log(chats);
-  useEffect(() => {
-    if (chats) {
-      setMessages(chats);
-    }
-  }, [chats]);
 
   // Post
   const addMutation = useMutation(addChat, {
     onSuccess: () => {
-      queryClient.invalidateQueries(["chats", room]); // dB onsuccess시, 쿼리컨텍스트 속 stale data를 새것으로 교체해줘
+      queryClient.invalidateQueries(["chats", room, roomPW]);
     },
   });
 
@@ -56,7 +62,7 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
       return;
     }
 
-    addMutation.mutate({ newMessage, fullName: user!!.username, room });
+    addMutation.mutate({ newMessage, room, roomPW, userId: user_id! });
     setNewMessage("");
   };
 
@@ -72,17 +78,18 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
     };
     return new Intl.DateTimeFormat("en-US", options).format(date);
   };
+
   return (
-    <StChatApp>
+    <StChatContainer>
       <StHeader>
         <h1>Welcome to: {room.toUpperCase()}</h1>
       </StHeader>
       <StMessages>
-        {messages.map((message) => (
-          <StMessage key={message.chat_id}>
-            <StUser>{message.texter}:</StUser> {message.text}
+        {chats?.map((chat) => (
+          <StMessage key={chat.chat_id}>
+            <StUser>{chat.user.username}:</StUser> <StText>{chat.text}</StText>
             <br />
-            <StDate>{prettierCreatedAt(message.created_at)}</StDate>
+            <StDate>{prettierCreatedAt(chat.created_at)}</StDate>
           </StMessage>
         ))}
       </StMessages>
@@ -96,78 +103,8 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
 
         {formError && <p className="error">{formError}</p>}
       </StNewMessageForm>
-    </StChatApp>
+    </StChatContainer>
   );
 };
 
 export default ChatRoom;
-
-export const StChatApp = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-family: sans-serif;
-  width: 90%;
-  margin: 0 auto;
-  border-radius: 5px;
-  overflow: hidden;
-  border: 2px solid #3b5998;
-  background-color: #b4b4cd;
-`;
-
-export const StHeader = styled.div`
-  background-color: #3b5998;
-  color: white;
-  width: 100%;
-  text-align: center;
-`;
-export const StMessages = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 100%;
-  height: 80%;
-  overflow-y: auto;
-  padding: 10px;
-  margin-bottom: 10px;
-`;
-export const StMessage = styled.div`
-  display: flex;
-  align-items: flex-start;
-  margin-bottom: 10px;
-`;
-export const StUser = styled.span`
-  font-weight: bold;
-  margin-right: 10px;
-  color: #333;
-`;
-export const StDate = styled.span`
-  font-size: 10px;
-  margin-left: 5px;
-  color: lightgray;
-  position: relative;
-  top: 3px;
-`;
-export const StNewMessageForm = styled.form`
-  display: flex;
-  width: 100%;
-  padding: 10px;
-`;
-export const StNewMessageInput = styled.input`
-  flex: 1;
-  border: none;
-  outline: none;
-  background: transparent;
-  font-size: 16px;
-  color: #333;
-  padding: 10px;
-  border-radius: 5px 0 0 5px;
-`;
-export const StSendButton = styled.button`
-  border: none;
-  outline: none;
-  background: #3b5998;
-  color: #fff;
-  font-size: 16px;
-  font-weight: bold;
-`;

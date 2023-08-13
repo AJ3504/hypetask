@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import GlobalStyle from "../GlobalStyles";
 import Layout from "../common/Layout";
 import Main from "../pages/Main";
@@ -10,7 +10,8 @@ import ResetPassword from "../pages/ResetPassword";
 import FindPassword from "../pages/FindPassword";
 import FirstMain from "../pages/FirstMain";
 import PrivateRoute from "./PrivateRouter";
-
+import OpenChatList from "../components/Chat/OpenChatList";
+import MyChatList from "../components/Chat/MyChatList";
 const Router = () => {
   return (
     <BrowserRouter>
@@ -45,11 +46,10 @@ const Router = () => {
               </PrivateRoute>
             }
           />
-          {/* <Route
-            path="chat"
-            element={accessToken ? <Chat /> : <Navigate to="/first-main" />}
-          /> */}
-          <Route path="/chat" element={<Chat />} />
+
+          <Route path="/chat/*" element={<Chat />} />
+          <Route path="/chat/openChat" element={<OpenChatList />} />
+          <Route path="/chat/myChat" element={<MyChatList />} />
         </Routes>
       </Layout>
     </BrowserRouter>
