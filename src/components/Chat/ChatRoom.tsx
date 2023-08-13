@@ -69,38 +69,36 @@ const ChatRoom: React.FC = () => {
   };
 
   return (
-    <>
-      <StChatApp>
-        <StHeader>
-          <h1>Welcome to: {room.toUpperCase()}</h1>
-        </StHeader>
-        <StMessages>
-          {chats?.map((chat) => (
-            <StMessage key={chat.chat_id}>
-              <StUser>{chat.username}:</StUser> {chat.text}
-              <br />
-              <StDate>{prettierCreatedAt(chat.created_at)}</StDate>
-            </StMessage>
-          ))}
-        </StMessages>
-        <StNewMessageForm onSubmit={handleSubmit}>
-          <StNewMessageInput
-            placeholder="메세지를 입력해주세요..."
-            onChange={(e) => setNewMessage(e.target.value)}
-            value={newMessage}
-          />
-          <StSendButton type="submit">전송</StSendButton>
+    <StChatContainer>
+      <StHeader>
+        <h1>Welcome to: {room.toUpperCase()}</h1>
+      </StHeader>
+      <StMessages>
+        {chats?.map((chat) => (
+          <StMessage key={chat.chat_id}>
+            <StUser>{chat.username}:</StUser> {chat.text}
+            <br />
+            <StDate>{prettierCreatedAt(chat.created_at)}</StDate>
+          </StMessage>
+        ))}
+      </StMessages>
+      <StNewMessageForm onSubmit={handleSubmit}>
+        <StNewMessageInput
+          placeholder="메세지를 입력해주세요..."
+          onChange={(e) => setNewMessage(e.target.value)}
+          value={newMessage}
+        />
+        <StSendButton type="submit">전송</StSendButton>
 
-          {formError && <p className="error">{formError}</p>}
-        </StNewMessageForm>
-      </StChatApp>
-    </>
+        {formError && <p className="error">{formError}</p>}
+      </StNewMessageForm>
+    </StChatContainer>
   );
 };
 
 export default ChatRoom;
 
-export const StChatApp = styled.div`
+export const StChatContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -9,8 +9,8 @@ const OpenChatList: React.FC = () => {
   // zustand - room, roomPW
   const room = useRoomStore((state) => state.room);
   const roomPW = useRoomStore((state) => state.roomPW);
-  console.log(room);
-  console.log(roomPW);
+  // console.log(room);
+  // console.log(roomPW);
 
   // useInfiniteQuery
   const fetchChatsForPage = async ({ pageParam = 0 }): Promise<Chats[]> => {

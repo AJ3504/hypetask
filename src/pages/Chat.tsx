@@ -3,6 +3,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import ChatRoom from "../components/Chat/ChatRoom";
 import { useUserStore } from "../components/Authentication/Login";
 import { useRoomStore } from "../config/useRoomStore";
+import { SB, ST } from "../components/Chat/chatstyle/ChatStyle";
 
 const Chat = () => {
   // 상단 hooks
@@ -37,71 +38,63 @@ const Chat = () => {
 
   return (
     <>
-      <div
-        className="상단_오픈채팅목록_페이지"
-        style={{ border: "solid", borderRadius: "10px", marginTop: "30px" }}
-      >
-        <section className="탭">
-          <div style={{ display: "flex" }}>
-            <span
-              style={{
-                backgroundColor:
-                  activeTab === "openChat" ? "darkolivegreen" : "transparent",
-                marginLeft: "20px",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                handleTabChange("openChat");
-                navigate("/chat/openChat");
-              }}
-            >
-              Open Chat
-            </span>
-            {/* ---- */}
-            <span
-              style={{
-                backgroundColor:
-                  activeTab === "myChat" ? "darkolivegreen" : "transparent",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                handleTabChange("myChat");
-                navigate("/chat/myChat");
-              }}
-            >
-              My Chat
-            </span>
-          </div>
-        </section>
-      </div>
+      <ST.TabContainer>
+        <ST.TabContainerInner>
+          <ST.OpenChatTab
+            style={{
+              padding: "3px",
+              backgroundColor:
+                activeTab === "openChat" ? "#4f6529" : "transparent",
+            }}
+            onClick={() => {
+              handleTabChange("openChat");
+              navigate("/chat/openChat");
+            }}
+          >
+            Open Chat
+          </ST.OpenChatTab>
+          <ST.MyChatTab
+            style={{
+              padding: "3px",
+              backgroundColor:
+                activeTab === "myChat" ? "#4f6529" : "transparent",
+            }}
+            onClick={() => {
+              handleTabChange("myChat");
+              navigate("/chat/myChat");
+            }}
+          >
+            My Chat
+          </ST.MyChatTab>
+        </ST.TabContainerInner>
+      </ST.TabContainer>
       {/* --------------------------------------------- */}
-      <div
-        className="하단_채팅방입장_페이지"
-        style={{ border: "solid", borderRadius: "10px", marginTop: "30px" }}
-      >
-        {!room || !roomPW ? (
-          <section>
-            <label>Enter Room Name:</label>
-            <input ref={roomInputRef} />
-            {/* ---------------------------- */}
-            <label style={{ marginLeft: "20px" }}>Enter Room Password:</label>
-            <input ref={roomPWInputRef} type="password" />
-            <button
-              onClick={() => {
-                if (roomInputRef.current && roomPWInputRef.current) {
-                  setRoom(roomInputRef.current.value);
-                  setRoomPW(roomPWInputRef.current.value);
-                }
-              }}
-              style={{ marginLeft: "20px" }}
-            >
-              Enter Chat
-            </button>
-          </section>
-        ) : (
-          <ChatRoom />
-        )}
-      </div>
+      <SB.ChatContainer>
+        <SB.ChatContainerInner>
+          {!room || !roomPW ? (
+            <SB.RoomInfoContainer>
+              <SB.RoomNameLabel>Enter Room Name:</SB.RoomNameLabel>
+              <SB.RoomNameInput ref={roomInputRef} />
+              <SB.RoomPWLabel>Enter Room Password:</SB.RoomPWLabel>
+              <SB.RoomPWInput ref={roomPWInputRef} type="password" />
+              <SB.Button
+                onClick={() => {
+                  if (roomInputRef.current && roomPWInputRef.current) {
+                    setRoom(roomInputRef.current.value);
+                    setRoomPW(roomPWInputRef.current.value);
+                  }
+                }}
+              >
+                Enter Chat
+              </SB.Button>
+            </SB.RoomInfoContainer>
+          ) : (
+            <SB.EnterChatContainerInner>
+              <ChatRoom />
+            </SB.EnterChatContainerInner>
+          )}
+        </SB.ChatContainerInner>
+      </SB.ChatContainer>
     </>
   );
 };
