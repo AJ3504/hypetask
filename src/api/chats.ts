@@ -53,6 +53,7 @@ export const getChats = async ({
     .from("chats")
     .select("*")
     .eq("roomName", room)
+    .eq("roomPW", roomPW)
     .range(startIndex, endIndex) // 0~4, 5~9, 10~14, ...
     .order("created_at");
 
