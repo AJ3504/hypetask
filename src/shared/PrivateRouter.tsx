@@ -2,7 +2,7 @@ import { getCurrentUser } from "../api/users";
 import { useNavigate } from "react-router-dom";
 import { ReactElement, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useUserStore } from "../config/useUserStore";
+import { useUserStore } from "../zustand/useUserStore";
 import supabase from "../config/supabaseClient";
 import type { User } from "../Types";
 import * as uApi from "../api/users";
@@ -20,6 +20,7 @@ const PrivateRoute = ({ children }: PrivateRouteProps) => {
       if (session.data.session) {
         const accessToken = session?.data?.session?.access_token;
         const userData = session?.data?.session?.user;
+
         const user: User = {
           email: userData!.email!,
           user_id: userData!.id,
@@ -27,7 +28,9 @@ const PrivateRoute = ({ children }: PrivateRouteProps) => {
           img_url: userData?.user_metadata.avatar_url,
           username: userData?.user_metadata.username,
         };
-        setUserId(userData?.id!);
+        console.log(session);
+        console.log(userData);
+        setUserId(userData!.id);
         setAccessToken(accessToken!);
         setUser(user);
 
@@ -59,8 +62,6 @@ const PrivateRoute = ({ children }: PrivateRouteProps) => {
   }
 
   if (!currentUser) {
-    // 컴포넌트를 렌더링하지 않고, 대신에 로그인 페이지나 안내 페이지를 렌더링하는 것이 좋습니다.
-    // 예: return <LoginPage />;
     alert("로그인 후 이용 가능합니다.");
     navigate("/first-main");
     return null;

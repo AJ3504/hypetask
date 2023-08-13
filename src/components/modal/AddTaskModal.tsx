@@ -10,7 +10,7 @@ import type { Tasks } from "../../Types";
 import dayjs from "dayjs";
 import { addTask, updateTask } from "../../api/tasks";
 import "dayjs/locale/ko";
-import { useModalStore } from "../../config/useModalStore";
+import { useModalStore } from "../../zustand/useModalStore";
 import { timeTable } from "../../consts/consts";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../../App";

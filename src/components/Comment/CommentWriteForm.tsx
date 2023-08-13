@@ -3,7 +3,7 @@ import { Card, Space, Avatar, Typography, Input, Button } from "antd";
 import useInput from "../../hooks/useInput";
 import { EditOutlined } from "@ant-design/icons";
 import { useCommentStoreDev } from "../../zustand/CommentStore";
-import { useUserStore } from "../../config/useUserStore";
+import { useUserStore } from "../../zustand/useUserStore";
 import { useCommentTimeStoreDev } from "../../zustand/CommentTimeStore";
 import type { Comment } from "../../Types";
 import { useSearchParams, useNavigate } from "react-router-dom";

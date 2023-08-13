@@ -7,6 +7,8 @@ import { timeTable } from "../../consts/consts";
 import { StCommentContainer } from "./CommentContainer";
 import { useCommentStoreDev } from "../../zustand/CommentStore";
 import CommentWriteForm from "./CommentWriteForm";
+import { useUserStore } from "../../zustand/useUserStore";
+import { DeleteOutlined } from "@ant-design/icons";
 dayjs.locale("ko");
 function CommentCard({
   comment_id,
@@ -28,6 +30,8 @@ function CommentCard({
   );
   console.log(user);
   const fetchReplys = useCommentStoreDev((state) => state.fetchReplys);
+  const deleteComment = useCommentStoreDev();
+  const my_user_id = useUserStore((state) => state.user_id);
   const [seeMore, setSeeMore] = useState(false);
   const [seeReply, setSeeReply] = useState(false);
   const [writeForm, setWriteForm] = useState(false);
@@ -53,6 +57,7 @@ function CommentCard({
       await fetchReplysHandler();
     }
   };
+  const deleteCommentHandler = async () => {};
   const closeSeeReply = () => {
     setSeeReply(!seeReply);
     setPrevReplyPage(replyPage);
@@ -135,6 +140,12 @@ function CommentCard({
                     <Typography.Link onClick={toggleSeeReply}>
                       댓글보기 ({num_of_reply}개)&nbsp;
                       <DownOutlined />
+                    </Typography.Link>
+                  )}
+                  {"   "}
+                  {user?.user_id === my_user_id && (
+                    <Typography.Link onClick={deleteCommentHandler}>
+                      <DeleteOutlined />
                     </Typography.Link>
                   )}
                 </>

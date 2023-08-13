@@ -3,15 +3,16 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { styled } from "styled-components";
 import { getMyTasks } from "../api/tasks";
 import AlertModal, { MyComment } from "../components/modal/AlertModal";
-import { useModalStore } from "../config/useModalStore";
+import { useModalStore } from "../zustand/useModalStore";
 import { getMyComments } from "../api/comments";
 import supabase from "../config/supabaseClient";
-import { useUserStore } from "../config/useUserStore";
+
+import { useUserStore } from "../zustand/useUserStore";
 import { today } from "../consts/consts";
 import { PoweroffOutlined } from "@ant-design/icons";
 import { Button, Space } from "antd";
 import { useState } from "react";
-import { useMainTabStore } from "../config/useMainTabStore";
+import { useMainTabStore } from "../zustand/useMainTabStore";
 export function Navbar() {
   const { user_id, user, logout } = useUserStore((state) => state);
   const location = useLocation();
@@ -58,8 +59,6 @@ export function Navbar() {
     (myComment) => myComment.checked === false
   );
 
-  console.log(notCheckedMyComments);
-
   const [loadings, setLoadings] = useState<boolean[]>([]);
   const enterLoading = (index: number) => {
     setLoadings((prevLoadings) => {
@@ -84,8 +83,8 @@ export function Navbar() {
             <StLeftNavInner>
               <div
                 onClick={() => {
-                  if (location.pathname === "/") {
-                    window.location.reload();
+                  if (window.location.pathname === "/") {
+                    setCurrentTab("main");
                   } else {
                     navigate("/");
                   }
@@ -103,15 +102,22 @@ export function Navbar() {
 
               <div style={{ marginTop: "20px" }}>
                 <span
+                  onClick={() => setCurrentTab("main")}
                   style={{
                     paddingRight: "20px",
                     paddingLeft: "35px",
                     fontWeight: "bold",
+                    cursor: "pointer",
                   }}
                 >
                   친구
                 </span>
-                <span style={{ fontWeight: "bold" }}>탐색</span>
+                <span
+                  onClick={() => setCurrentTab("explore")}
+                  style={{ fontWeight: "bold", cursor: "pointer" }}
+                >
+                  탐색
+                </span>
               </div>
             </StLeftNavInner>
           </StLeftNav>
@@ -135,7 +141,18 @@ export function Navbar() {
                   <StAlertPoint>🔴</StAlertPoint>
                 ) : null}
               </StImageWrapper>
-
+              <Link
+                to="/chat"
+                style={{
+                  marginRight: "16px",
+                  marginTop: "10px",
+                  textDecoration: "none",
+                  color: "#c5c4d7dd",
+                  fontWeight: "bolder",
+                }}
+              >
+                하입톡💬
+              </Link>
               <Space direction="vertical">
                 <Space wrap>
                   {!user_id ? (
@@ -167,18 +184,6 @@ export function Navbar() {
                   )}
                 </Space>
               </Space>
-              <Link
-                to="/chat"
-                style={{
-                  marginLeft: "16px",
-                  marginTop: "10px",
-                  textDecoration: "none",
-                  color: "#c5c4d7dd",
-                  fontWeight: "bolder",
-                }}
-              >
-                하입톡💬
-              </Link>
             </StRightNavInner>
           </StRightNav>
         </StContainer>{" "}

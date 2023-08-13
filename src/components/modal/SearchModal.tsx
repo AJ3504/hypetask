@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { styled } from "styled-components";
-import { useModalStore } from "../../config/useModalStore";
+import { useModalStore } from "../../zustand/useModalStore";
 import useInput from "../../hooks/useInput";
 import { useQuery } from "@tanstack/react-query";
 import { addFollower, getAllUser } from "../../api/users";
 import { User } from "../../Types";
-import { useUserStore } from "../../config/useUserStore";
-import { useMainTabStore } from "../../config/useMainTabStore";
+import { useMainTabStore } from "../../zustand/useMainTabStore";
+import { useUserStore } from "../../zustand/useUserStore";
 
 const SearchModal = () => {
   const { changeSearchModalstatus } = useModalStore();
@@ -18,7 +18,6 @@ const SearchModal = () => {
     return usersData;
   });
 
-  console.log(users);
   const user_id = useUserStore((state) => state.user_id);
   const { setCurrentTab } = useMainTabStore();
 
@@ -27,7 +26,6 @@ const SearchModal = () => {
     const searchedUsers = users
       ?.filter((user) => user.user_id !== user_id)
       .filter((user) => user.username?.includes(keyWord));
-    console.log(searchedUsers);
     setSearchedUsers(searchedUsers);
   };
 

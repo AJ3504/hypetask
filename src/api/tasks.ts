@@ -17,14 +17,12 @@ export const getFollowerTasks = async (
   date: string,
   userIds: string[]
 ): Promise<Tasks[] | null> => {
-  const { data: followersTasks } = await supabase
+  const data = await supabase
     .from("tasks")
     .select("*")
-    // .eq("date", date)
+    .eq("date", date)
     .in("user_id", userIds);
-  console.log("1111", userIds);
-  console.log("2222", followersTasks);
-  return followersTasks;
+  return data.data;
 };
 
 /**
@@ -60,7 +58,6 @@ export async function addTask({
     user_id: user_id,
   };
   const result = await supabase.from("tasks").insert(data);
-  console.log(result);
   return result;
 }
 

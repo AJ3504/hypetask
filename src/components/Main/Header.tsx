@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import React from "react";
 import { getQuotes } from "../../api/getQuotes";
 import { styled } from "styled-components";
-import { useModalStore } from "../../config/useModalStore";
-import { useMainTabStore } from "../../config/useMainTabStore";
+import { useModalStore } from "../../zustand/useModalStore";
+import { useMainTabStore } from "../../zustand/useMainTabStore";
 import { Button } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
+import S from "./MainStyles";
 
 const Header = () => {
   const { data: quotes } = useQuery(["quotes"], async () => {
@@ -27,7 +27,7 @@ const Header = () => {
   return (
     <>
       <S.Header>
-        <div>{quotes?.advice}</div>
+        <p style={{ fontSize: "18px" }}>{quotes?.advice}</p>
         {/* <button onClick={headerBtnHandler}>버튼</button> */}
         <Button
           type="primary"
@@ -36,7 +36,7 @@ const Header = () => {
           style={{ backgroundColor: "#344CB7" }}
           size="small"
         >
-          추가
+          {currentTab === "main" ? "추가" : "검색"}
         </Button>
       </S.Header>
     </>
@@ -44,18 +44,3 @@ const Header = () => {
 };
 
 export default Header;
-const S = {
-  Header: styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    position: fixed;
-    background-color: #262286;
-    height: 55px;
-    width: 100%;
-    z-index: 2;
-    padding-right: 10px;
-    padding-left: 20px;
-  `,
-};
