@@ -28,7 +28,9 @@ export const getComments = async (
 ): Promise<Comment[] | null> => {
   let { data: comments } = await supabase
     .from("comments")
-    .select("* , user:user_id(*)  ,num_of_reply:comments(count)")
+    .select(
+      "* , user:user_id(*)  ,num_of_reply:comments(count), task:task_id(*)"
+    )
     .eq("date", date)
     .eq("ref_step", 0)
     .eq("ref_user_id", user_id)
@@ -39,7 +41,7 @@ export const getComments = async (
     comments![i].replys = temp;
     comments![i].num_of_reply = comments![i].num_of_reply[0].count;
   }
-
+  console.log(comments);
   return comments as Comment[];
 };
 
@@ -67,7 +69,9 @@ export const getReplys = async (
 ): Promise<Comment[]> => {
   let { data: comments } = await supabase
     .from("comments")
-    .select("* , user:user_id(*), num_of_reply:comments(count)")
+    .select(
+      "* , user:user_id(*)  ,num_of_reply:comments(count), task:task_id(*)"
+    )
     .eq("ref_id", comment_id)
     .range(page * 10, (page + 1) * 10); //대댓글은 안가져옴
   let temp: Comment[] = [];
@@ -79,20 +83,19 @@ export const getReplys = async (
   return comments as Comment[];
 };
 
-export const getMyComments = async (
-  myTaskIds: string[]
-): Promise<Comment[]> => {
+export const getMyComments = async (myId: string): Promise<Comment[]> => {
   const { data: myComments } = await supabase
     .from("comments")
     .select("*")
-    .in("task_id", myTaskIds);
+    .eq("ref_user_id", myId);
+
   return myComments as Comment[];
 };
 
-export const updateChecked = async (taskIds: string[]): Promise<void> => {
+export const updateChecked = async (myId: string): Promise<void> => {
   await supabase
     .from("comments")
     .update({ checked: true })
-    .in("task_id", taskIds)
+    .eq("ref_user_id", myId)
     .select();
 };

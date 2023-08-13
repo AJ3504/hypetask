@@ -29,7 +29,6 @@ const Router = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/findpassword" element={<FindPassword />} />
           <Route path="/resetpassword" element={<ResetPassword />} />
-
           <Route
             path="/detail"
             element={

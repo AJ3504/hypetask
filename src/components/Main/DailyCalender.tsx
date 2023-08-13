@@ -1,12 +1,12 @@
 import { useModalStore } from "../../zustand/useModalStore";
 import AddTaskModal from "../modal/AddTaskModal";
-import { useUserStore } from "../../config/useUserStore";
 import Header from "./Header";
 import TimeStampCard from "./TimeStampCard";
 import MyTasksCard from "./MyTasksCard";
 import OtherTasksCard from "./OtherTasksCard";
 import { useCurrentFollowerStore } from "../../zustand/useCurrentFollowerStore";
 import S from "./mainStyles";
+import { useUserStore } from "../../zustand/useUserStore";
 
 const DailyCalender = () => {
   const { user_id } = useUserStore();

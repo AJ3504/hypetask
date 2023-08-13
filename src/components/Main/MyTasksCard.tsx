@@ -8,10 +8,11 @@ import { MdCheckBoxOutlineBlank } from "react-icons/md";
 import { MdOutlineCheckBox } from "react-icons/md";
 import { BsTextRight } from "react-icons/bs";
 import S from "./mainStyles";
-import { useUserStore } from "../../config/useUserStore";
 import { useNavigate } from "react-router-dom";
+import { useCommentTimeStoreDev } from "../../zustand/CommentTimeStore";
 import TaskDetail from "./TaskDetail";
 import { today } from "../../consts/consts";
+import { useUserStore } from "../../zustand/useUserStore";
 
 export interface TasksProps {
   myId: string;
@@ -23,7 +24,7 @@ const MyTasksCard = ({ myId }: TasksProps) => {
     const tasksData = await getMyTasks(myId, today);
     return tasksData;
   });
-
+  const { setClickedTime } = useCommentTimeStoreDev();
   const { addTaskModalVisible, changeAddTaskModalstatus } = useModalStore();
   const { user_id } = useUserStore();
 
@@ -68,7 +69,14 @@ const MyTasksCard = ({ myId }: TasksProps) => {
             const height = (endHour - startHour) * 80;
             const top = (startHour + 1) * 80;
             return (
-              <S.TaskBox height={height} top={top}>
+              <S.TaskBox
+                height={height}
+                top={top}
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  setClickedTime(task);
+                }}
+              >
                 {task.detail_on ? (
                   <TaskDetail task={task} />
                 ) : (

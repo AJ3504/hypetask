@@ -16,7 +16,7 @@ const FindPassword: React.FC = () => {
 
     try {
       const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: "http://localhost:3000/resetPassword",
+        redirectTo: process.env.REACT_APP_HOME_URL + "/resetPassword",
       });
       console.log(data);
       if (!error) {
@@ -54,16 +54,15 @@ const FindPassword: React.FC = () => {
     <CenteredContainer>
       <ResetPassword>
         <h1>비밀번호 변경</h1>
-        <PasswordFormContainer>
-          <form onSubmit={resetPasswordHandler}>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="이메일을 입력해주세요"
-            />
-            <button type="submit">Reset Password</button>
-          </form>
+
+        <PasswordFormContainer onSubmit={resetPasswordHandler}>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="이메일을 입력해주세요"
+          />
+          <button type="submit">Reset Password</button>
         </PasswordFormContainer>
       </ResetPassword>
     </CenteredContainer>

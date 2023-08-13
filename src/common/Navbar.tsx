@@ -7,32 +7,33 @@ import { useModalStore } from "../zustand/useModalStore";
 import { getMyComments } from "../api/comments";
 import supabase from "../config/supabaseClient";
 
-import { useUserStore } from "../config/useUserStore";
 import { today } from "../consts/consts";
 import { PoweroffOutlined } from "@ant-design/icons";
 import { Button, Space } from "antd";
 import { useState } from "react";
 import { useMainTabStore } from "../zustand/useMainTabStore";
+import { useUserStore } from "../zustand/useUserStore";
 export function Navbar() {
-  const { user_id, user } = useUserStore((state) => state);
+  const { user_id, user, logout } = useUserStore((state) => state);
   const location = useLocation();
   const navigate = useNavigate();
-  const { data: myTaskIds } = useQuery(
-    ["myTaskIds"],
-    async () => {
-      const tasksData = await getMyTasks(user_id!, today);
-      return tasksData;
-    },
-    {
-      select: (myTasks) => myTasks?.map((myTask) => myTask.task_id),
-      enabled: !!user_id,
-    }
-  );
+
+  // const { data: myTaskIds } = useQuery(
+  //   ["myTaskIds"],
+  //   async () => {
+  //     const tasksData = await getMyTasks(user_id!, today);
+  //     return tasksData;
+  //   },
+  //   {
+  //     select: (myTasks) => myTasks?.map((myTask) => myTask.task_id),
+  //     enabled: !!user_id,
+  //   }
+  // );
 
   const { data: myComments } = useQuery(
     ["myComments"],
     async () => {
-      const myCommentsData = await getMyComments(myTaskIds as string[]);
+      const myCommentsData = await getMyComments(user_id as string);
       return myCommentsData;
     },
     {
@@ -43,7 +44,7 @@ export function Navbar() {
           checked: myComment.checked,
           comment: myComment.comment,
         })),
-      enabled: !!myTaskIds,
+      enabled: !!user_id,
     }
   );
 
@@ -155,18 +156,33 @@ export function Navbar() {
               </Link>
               <Space direction="vertical">
                 <Space wrap>
-                  <Button
-                    type="primary"
-                    icon={<PoweroffOutlined />}
-                    loading={loadings[1]}
-                    style={{ backgroundColor: "#344CB7" }}
-                    onClick={() => {
-                      enterLoading(1);
-                      signOutBtnHandler();
-                    }}
-                  >
-                    로그아웃
-                  </Button>
+                  {!user_id ? (
+                    <Button
+                      type="primary"
+                      icon={<PoweroffOutlined />}
+                      loading={loadings[1]}
+                      style={{ backgroundColor: "#344CB7" }}
+                      onClick={() => {
+                        navigate("/first-main");
+                      }}
+                    >
+                      로그인
+                    </Button>
+                  ) : (
+                    <Button
+                      type="primary"
+                      icon={<PoweroffOutlined />}
+                      loading={loadings[1]}
+                      style={{ backgroundColor: "#344CB7" }}
+                      onClick={() => {
+                        enterLoading(1);
+                        signOutBtnHandler();
+                        logout();
+                      }}
+                    >
+                      로그아웃
+                    </Button>
+                  )}
                 </Space>
               </Space>
             </StRightNavInner>
@@ -175,7 +191,7 @@ export function Navbar() {
       </StNavBar>
       {alertModalVisible ? (
         <AlertModal
-          myTaskIds={myTaskIds as string[]}
+          myId={user_id as string}
           myComments={notCheckedMyComments as MyComment[]}
         />
       ) : null}
@@ -251,7 +267,7 @@ export const StButton = styled.div`
 export const StAlertPoint = styled.span`
   position: absolute;
   color: red;
-  right: 163px;
-  top: 5px;
+  right: 215px;
+  top: 10px;
   font-size: 8px;
 `;
