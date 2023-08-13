@@ -3,15 +3,14 @@ import { Chats } from "../../Types";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getChats } from "../../api/chats";
 import { styled } from "styled-components";
+import { useRoomStore } from "../../config/useRoomStore";
 
-type ChatRoomProps = {
-  room: string;
-  roomPW: string;
-};
-
-const OpenChatList: React.FC<ChatRoomProps> = (props) => {
-  const { room } = props;
-  const { roomPW } = props;
+const OpenChatList: React.FC = () => {
+  // zustand - room, roomPW
+  const room = useRoomStore((state) => state.room);
+  const roomPW = useRoomStore((state) => state.roomPW);
+  console.log(room);
+  console.log(roomPW);
 
   // useInfiniteQuery
   const fetchChatsForPage = async ({ pageParam = 0 }): Promise<Chats[]> => {

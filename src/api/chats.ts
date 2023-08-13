@@ -54,10 +54,8 @@ export const getChats = async ({
     .select("*")
     .eq("roomName", room)
     .range(startIndex, endIndex) // 0~4, 5~9, 10~14, ...
-    .order("created_at", { ascending: false });
+    .order("created_at");
 
   // console.log(response);
   return response.data as Chats[];
 };
-
-// 커밋용

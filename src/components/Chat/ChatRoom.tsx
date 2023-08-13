@@ -4,20 +4,17 @@ import { FormEvent, Fragment, useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { addChat, getRealTimeChats } from "../../api/chats";
 import { Chats } from "../../Types";
+import { useRoomStore } from "../../config/useRoomStore";
 
-type ChatRoomProps = {
-  room: string;
-  roomPW: string;
-};
-
-const ChatRoom: React.FC<ChatRoomProps> = (props) => {
-  const { room } = props;
-  const { roomPW } = props;
-
+const ChatRoom: React.FC = () => {
   // useStates + hooks
   const [newMessage, setNewMessage] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
   const queryClient = useQueryClient();
+
+  // zustand - room, roomPW
+  const room = useRoomStore((state) => state.room);
+  const roomPW = useRoomStore((state) => state.roomPW);
 
   // useQuery
   // Get

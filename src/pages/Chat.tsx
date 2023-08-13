@@ -8,12 +8,8 @@ const Chat = () => {
   // 상단 hooks
   const navigate = useNavigate();
 
-  // zustand - state
+  // zustand
   const accessToken = useUserStore((state) => state.accessToken);
-
-  // useStates
-  // const [room, setRoom] = useState<string | undefined>("");
-  // const [roomPW, setRoomPW] = useState<string | undefined>("");
   const room = useRoomStore((state) => state.room);
   const roomPW = useRoomStore((state) => state.roomPW);
   const setRoom = useRoomStore((state) => state.setRoom);
@@ -103,7 +99,7 @@ const Chat = () => {
             </button>
           </section>
         ) : (
-          <ChatRoom room={room} roomPW={roomPW} />
+          <ChatRoom />
         )}
       </div>
     </>

@@ -1,8 +1,8 @@
 import { create } from "zustand";
 
 type RoomStore = {
-  room: string | undefined;
-  roomPW: string | undefined;
+  room: string;
+  roomPW: string;
   setRoom: (room: string) => void;
   setRoomPW: (roomPW: string) => void;
 };
