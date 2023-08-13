@@ -121,7 +121,7 @@ const S = {
     align-items: center;
     justify-content: space-between;
     position: fixed;
-    background-color: white;
+    background-color: #262286;
     height: 100px;
     width: 100%;
     z-index: 99;
@@ -139,7 +139,10 @@ const S = {
   `,
 
   TaskContainer: styled.div`
-    background-color: beige;
+    background-color: #f3f3f3;
+    border-radius: 3px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+
     min-width: 400px;
     position: relative;
     margin: 0 10px;

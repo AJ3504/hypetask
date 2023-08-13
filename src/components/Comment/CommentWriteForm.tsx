@@ -55,7 +55,7 @@ const CommentWriteForm = ({ ref_step, ref_id }: Props) => {
     >
       {user ? (
         <Space direction="horizontal">
-          <Avatar src={user?.avatar_url} />
+          <Avatar src={user?.img_url} />
           <Input.TextArea
             placeholder="댓글을 남겨보세요."
             style={{

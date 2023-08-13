@@ -5,6 +5,8 @@ type ModalStore = {
   changeAddTaskModalstatus: () => void;
   alertModalVisible: boolean;
   changeAlertModalstatus: (status: boolean) => void;
+  searchModalVisible: boolean;
+  changeSearchModalstatus: () => void;
 };
 
 export const useModalStore = create<ModalStore>()((set) => ({
@@ -14,4 +16,7 @@ export const useModalStore = create<ModalStore>()((set) => ({
   alertModalVisible: false,
   changeAlertModalstatus: (status) =>
     set((state) => ({ alertModalVisible: status })),
+  searchModalVisible: false,
+  changeSearchModalstatus: () =>
+    set((state) => ({ searchModalVisible: !state.searchModalVisible })),
 }));

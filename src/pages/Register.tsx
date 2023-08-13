@@ -36,15 +36,13 @@ const Register: React.FC = () => {
         }
         return;
       }
+      const { data } = await supabase.auth.getUser();
+      console.log(data);
 
-      const user = signUpResult.user;
-
-      if (user) {
-        console.log("User registered:", user);
-        await addUser(user.id, name);
-
+      if (data) {
+        console.log("User registered:", data);
+        await addUser(data.user!.id, name);
         setError("");
-        console.log("User added to users table");
       }
     } catch (error) {
       console.error(error);
@@ -55,21 +53,15 @@ const Register: React.FC = () => {
 
   const addUser = async (userUid: string, userName: string) => {
     const { data, error } = await supabase
-      .from("users")
-      .upsert([{ user_id: userUid, name: userName }]);
+      .from("profiles")
+      .upsert({
+        user_id: userUid,
+        username: userName,
+        avatar_url: `http://gravatar.com/avatar/${userUid}?d=identicon`,
+      });
 
     if (error) {
       console.error(error);
-    } else {
-      console.log("User added:", data);
-      const { data: profileData, error: profileError } = await supabase
-        .from("profiles")
-        .upsert([{ user_id: userUid, name: userName }]);
-      if (profileError) {
-        console.error(profileError);
-      } else {
-        console.log("Profile added", profileData);
-      }
     }
   };
 

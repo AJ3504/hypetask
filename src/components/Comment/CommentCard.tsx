@@ -84,7 +84,7 @@ function CommentCard({
           }}
         >
           <Space direction="horizontal">
-            <Avatar src={user?.avatar_url} />
+            <Avatar src={user?.img_url} />
             <Space direction="vertical">
               <Space direction="horizontal">
                 <Typography.Text type="secondary">

@@ -28,9 +28,12 @@ function CommentContainer() {
   }, []);
 
   return (
-    <StCommentContainer width={commentContainerWidth}>
-      <Typography.Title level={4}>
-        댓글 {numOfComment ? numOfComment : 0} 개
+    <StCommentContainer
+      width={commentContainerWidth}
+      style={{ marginLeft: "20px" }}
+    >
+      <Typography.Title level={4} style={{ color: "rgba(0, 0, 0, 0.496)" }}>
+        댓글{numOfComment}개
       </Typography.Title>
       <CommentWriteForm ref_step={0} />
       {comments ? (

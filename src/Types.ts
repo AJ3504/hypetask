@@ -26,7 +26,9 @@ export type Comment = {
 export type User = {
   user_id: string;
   created_at: string;
-  avatar_url: string;
+  name: string;
+  img_url: string;
+  email: string;
   username: string;
 };
 

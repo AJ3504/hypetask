@@ -40,7 +40,6 @@ const store = (set: any, get: any) => ({
   parentCommentContainerWidth: 700,
   isLoading: false,
   numOfComment: 0,
-  changeOccured: false,
   fetchComments: async (date: string, user_id: string, page: number) => {
     set({ isLoading: true });
     set({ comment: await cApi.getComments(date, user_id, page) });

@@ -41,9 +41,11 @@ const Login: React.FC = () => {
         const accessToken = session?.data?.session?.access_token;
         const userData = session?.data?.session?.user;
         const user: User = {
+          name: "feaw",
+          email: "fawefe",
           user_id: userData!.id,
           created_at: userData!.created_at,
-          avatar_url: userData?.user_metadata
+          img_url: userData?.user_metadata
             ? userData?.user_metadata.avatar_url
             : "",
           username: userData?.user_metadata

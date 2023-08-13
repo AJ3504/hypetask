@@ -1,24 +1,15 @@
 import { styled } from "styled-components";
-import {
-  Tasks,
-  getFollowersTasks,
-  updateDetailOn,
-  updateDone,
-} from "../../api/tasks";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Followers, getCurrentUser, getFollowers } from "../../api/users";
 import { useModalStore } from "../../config/useModalStore";
 import AddTaskModal from "../modal/AddTaskModal";
-import { getQuotes } from "../../api/getQuotes";
 import MytasksCard from "./MyTasksCard";
 import TimeStampCard from "./TimeStampCard";
-import TaskDetail from "./TaskDetail";
-import { MdCheckBoxOutlineBlank } from "react-icons/md";
-import { MdOutlineCheckBox } from "react-icons/md";
-import { BsSearch } from "react-icons/bs";
-import { queryClient } from "../../App";
 import { useUserStore } from "../../config/useUserStore";
 import { today } from "../../consts/consts";
+import FollowerTasksCard from "./OtherTasksCard";
+import Header from "./Header";
+
 const DailyCalender = () => {
   const { user_id, setUserId } = useUserStore();
 
@@ -26,11 +17,6 @@ const DailyCalender = () => {
     const currentUserData = await getCurrentUser();
     setUserId(currentUserData as string);
     return currentUserData;
-  });
-
-  const { data: quotes } = useQuery(["quotes"], async () => {
-    const quotesData = await getQuotes();
-    return quotesData;
   });
 
   const { data: followers } = useQuery(
@@ -45,46 +31,16 @@ const DailyCalender = () => {
     }
   );
 
-  const { data: followersTasks } = useQuery(
-    ["followersTasks"],
-    async () => {
-      const followersTasksData = await getFollowersTasks(today, followers!);
-      return followersTasksData;
-    },
-    { enabled: !!followers }
-  );
+  console.log(followers);
 
-  const { addTaskModalVisible, changeAddTaskModalstatus } = useModalStore();
-
-  const updateDoneMutation = useMutation(
-    ({ taskId, done }: { taskId: string; done: boolean }) =>
-      updateDone({ taskId, done }),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["followersTasks"]);
-      },
-    }
-  );
-
-  const updateDetailOnMutation = useMutation(
-    ({ taskId, on }: { taskId: string; on: boolean }) =>
-      updateDetailOn({ taskId, on }),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["followersTasks"]);
-      },
-    }
-  );
+  const { addTaskModalVisible } = useModalStore();
 
   return (
     <>
       {addTaskModalVisible ? (
         <AddTaskModal todayDefault={true} myId={currentUser!} />
       ) : null}
-      <S.Header>
-        <div>{quotes?.advice}</div>
-        <button onClick={changeAddTaskModalstatus}>버튼</button>
-      </S.Header>
+      <Header />
       <S.Container>
         <S.CalenderContainer>
           <TimeStampCard />
@@ -93,60 +49,7 @@ const DailyCalender = () => {
         <S.FollowersCalenderContainer>
           {followers &&
             followers.map((follower: string) => {
-              const followerTasks = followersTasks?.filter(
-                (followersTask) => followersTask.user_id === follower
-              );
-              console.log(followerTasks);
-              if (followerTasks && followerTasks.length > 0)
-                return (
-                  <S.TaskContainer>
-                    {followerTasks &&
-                      followerTasks?.map((followerTask: Tasks) => {
-                        const endHour = followerTask.end_time;
-                        const startHour = followerTask.start_time;
-                        const height = (endHour - startHour) * 80;
-                        const top = (startHour + 1) * 80;
-                        return (
-                          <>
-                            <S.TaskBox>{followerTask.user_id}</S.TaskBox>
-                            <S.TaskBox height={height} top={top}>
-                              {followerTask.detail_on ? (
-                                <TaskDetail task={followerTask} />
-                              ) : (
-                                <S.Task>
-                                  <button
-                                    onClick={() =>
-                                      updateDoneMutation.mutate({
-                                        taskId: followerTask.task_id!,
-                                        done: followerTask.done!,
-                                      })
-                                    }
-                                  >
-                                    {followerTask.done ? (
-                                      <MdOutlineCheckBox size="25" />
-                                    ) : (
-                                      <MdCheckBoxOutlineBlank size="25" />
-                                    )}
-                                  </button>
-                                  <p>{followerTask.title}</p>
-                                  <span
-                                    onClick={() =>
-                                      updateDetailOnMutation.mutate({
-                                        taskId: followerTask.task_id!,
-                                        on: followerTask.detail_on!,
-                                      })
-                                    }
-                                  >
-                                    <BsSearch size="25" />
-                                  </span>
-                                </S.Task>
-                              )}
-                            </S.TaskBox>
-                          </>
-                        );
-                      })}
-                  </S.TaskContainer>
-                );
+              return <FollowerTasksCard userIds={followers} today={today} />;
             })}
         </S.FollowersCalenderContainer>
       </S.Container>
@@ -168,10 +71,12 @@ const S = {
     align-items: center;
     justify-content: space-between;
     position: fixed;
-    background-color: white;
-    height: 100px;
+    background-color: #262286;
+    height: 55px;
     width: 100%;
     z-index: 2;
+    padding-right: 10px;
+    padding-left: 20px;
   `,
   Container: styled.div`
     display: flex;
@@ -180,7 +85,6 @@ const S = {
   CalenderContainer: styled.div`
     display: flex;
     flex-direction: row;
-    background-color: azure;
     padding: 10px;
     margin-top: 100px;
   `,
