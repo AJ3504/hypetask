@@ -5,7 +5,7 @@ import { useModalStore } from "../../zustand/useModalStore";
 import { useMainTabStore } from "../../zustand/useMainTabStore";
 import { Button } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import S from "./MainStyles";
+import S from "./mainStyles";
 
 const Header = () => {
   const { data: quotes } = useQuery(["quotes"], async () => {

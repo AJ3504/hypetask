@@ -5,7 +5,7 @@ import TimeStampCard from "./TimeStampCard";
 import MyTasksCard from "./MyTasksCard";
 import OtherTasksCard from "./OtherTasksCard";
 import { useCurrentFollowerStore } from "../../zustand/useCurrentFollowerStore";
-import S from "./MainStyles";
+import S from "./mainStyles";
 import { useUserStore } from "../../zustand/useUserStore";
 
 const DailyCalender = () => {

@@ -1,5 +1,5 @@
 import { styled } from "styled-components";
-import S from "./MainStyles";
+import S from "./mainStyles";
 
 const TimeStampCard = () => {
   return (

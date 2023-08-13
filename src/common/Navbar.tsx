@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { styled } from "styled-components";
 import { getMyTasks } from "../api/tasks";
-import AlertModal, { MyComment } from "../components/modal/AlertModal";
+import AlertModal, { MyComment } from "../Components/modal/AlertModal";
 import { useModalStore } from "../zustand/useModalStore";
 import { getMyComments } from "../api/comments";
 import supabase from "../config/supabaseClient";
@@ -244,30 +244,4 @@ export const StRightNavInner = styled.div`
 export const StImageWrapper = styled.div`
   display: flex;
   align-items: center;
-`;
-export const StButton = styled.div`
-  color: #000000c1;
-  font-weight: bold;
-  background-color: #ece8e8;
-  border: none;
-  cursor: pointer;
-  border-radius: 3px;
-  transition: background-color 0.2s ease;
-  font-family: "NanumSquareNeo-Variable", sans-serif;
-  padding: 5px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  &:hover {
-    background-color: #a8b0c4da;
-  }
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-export const StAlertPoint = styled.span`
-  position: absolute;
-  color: red;
-  right: 215px;
-  top: 10px;
-  font-size: 8px;
 `;

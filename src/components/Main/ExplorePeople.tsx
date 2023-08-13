@@ -4,7 +4,7 @@ import { useModalStore } from "../../zustand/useModalStore";
 import SearchModal from "../modal/SearchModal";
 import { useCurrentFollowerStore } from "../../zustand/useCurrentFollowerStore";
 import Header from "./Header";
-import S from "./MainStyles";
+import S from "./mainStyles";
 import TimeStampCard from "./TimeStampCard";
 import OtherTasksCard from "./OtherTasksCard";
 import { useUserStore } from "../../zustand/useUserStore";
