@@ -46,10 +46,6 @@ const Router = () => {
               </PrivateRoute>
             }
           />
-          {/* <Route
-            path="chat"
-            element={accessToken ? <Chat /> : <Navigate to="/first-main" />}
-          /> */}
           <Route path="/chat" element={<Chat />} />
         </Routes>
       </Layout>

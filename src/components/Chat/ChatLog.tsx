@@ -1,16 +1,7 @@
-import { FormEvent, Fragment, useEffect, useState } from "react";
-import supabase from "../../config/supabaseClient";
 import { Chats } from "../../Types";
-import { SupabaseClient } from "@supabase/supabase-js";
-import { useUserStore } from "../Authentication/Login";
-import {
-  InfiniteData,
-  useInfiniteQuery,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
-import { addChat, getChats } from "../../api/chats";
+
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { getChats } from "../../api/chats";
 import { styled } from "styled-components";
 
 type ChatRoomProps = {

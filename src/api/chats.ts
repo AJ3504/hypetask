@@ -1,28 +1,40 @@
 import { Chats } from "../Types";
 import supabase from "../config/supabaseClient";
 
-//원래
-// const originalGetChats = async ({ room }: { room: string }) => {
-//   const response = await supabase
-//     .from("chats")
-//     .select("*")
-//     .eq("roomName", room);
-//   // console.log(response);
-//   return response.data;
-// };
+// 1. 실시간 채팅방
+export const getRealTimeChats = async ({
+  room,
+  roomPW,
+}: {
+  room: string;
+  roomPW: string;
+}) => {
+  const response = await supabase
+    .from("chats")
+    .select("*")
+    .eq("roomName", room)
+    .eq("roomPW", roomPW);
+  // console.log(response);
+  return response.data;
+};
 
-// const {
-//   isLoading,
-//   isError,
-//   data: chats,
-// } = useQuery(["chats", room], () => getChats({ room }));
-// // console.log(chats);
-// useEffect(() => {
-//   if (chats) {
-//     setMessages(chats);
-//   }
-// }, [chats]);
+export const addChat = async ({
+  newMessage,
+  room,
+  roomPW,
+}: {
+  newMessage: string;
+  room: string;
+  roomPW: string;
+}) => {
+  const response = await supabase
+    .from("chats")
+    .insert([{ text: newMessage, roomName: room, roomPW: roomPW }])
+    .select();
+  // console.log(response);
+};
 
+// 2. 채팅내역 리스트방
 export const getChats = async ({
   room,
   pageParam,
@@ -43,20 +55,6 @@ export const getChats = async ({
 
   // console.log(response);
   return response.data as Chats[];
-};
-
-export const addChat = async ({
-  newMessage,
-  room,
-}: {
-  newMessage: string;
-  room: string;
-}) => {
-  const response = await supabase
-    .from("chats")
-    .insert([{ text: newMessage, roomName: room }])
-    .select();
-  // console.log(response);
 };
 
 // 커밋용

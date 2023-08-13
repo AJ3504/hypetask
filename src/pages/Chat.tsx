@@ -12,8 +12,10 @@ const Chat = () => {
 
   // useStates
   const [room, setRoom] = useState<string | undefined>("");
+  const [roomPW, setRoomPW] = useState<string | undefined>("");
   const roomInputRef = useRef<HTMLInputElement | null>(null);
-  console.log(accessToken);
+  const roomPWInputRef = useRef<HTMLInputElement | null>(null);
+  // console.log(accessToken);
 
   if (!accessToken) {
     alert("로그인 해주세요!");
@@ -27,18 +29,24 @@ const Chat = () => {
 
   return (
     <div>
-      {room ? (
-        <ChatRoom room={room} />
+      {room && roomPW ? (
+        <ChatRoom room={room} roomPW={roomPW} />
       ) : (
         <div className="room">
           <label>Enter Room Name:</label>
           <br />
           <input ref={roomInputRef} />
           <br />
+          {/* ---------------------------- */}
+          <label>Enter Room Password:</label>
+          <br />
+          <input ref={roomPWInputRef} type="password" />
+          <br />
           <button
             onClick={() => {
-              if (roomInputRef.current) {
+              if (roomInputRef.current && roomPWInputRef.current) {
                 setRoom(roomInputRef.current.value);
+                setRoomPW(roomPWInputRef.current.value);
               }
             }}
           >
