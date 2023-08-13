@@ -31,7 +31,7 @@ const Router = () => {
           <Route path="/resetpassword" element={<ResetPassword />} />
 
           <Route
-            path="/detail/:id"
+            path="/detail"
             element={
               <PrivateRoute>
                 <Detail />

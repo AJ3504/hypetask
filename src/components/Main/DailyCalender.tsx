@@ -5,20 +5,17 @@ import { useModalStore } from "../../config/useModalStore";
 import AddTaskModal from "../modal/AddTaskModal";
 import MytasksCard from "./MyTasksCard";
 import TimeStampCard from "./TimeStampCard";
-
-import { useCurrentUserStore } from "../../config/useCurrentUserStore";
-import { Button } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { useUserStore } from "../../config/useUserStore";
+import { today } from "../../consts/consts";
 import FollowerTasksCard from "./OtherTasksCard";
 import Header from "./Header";
 
 const DailyCalender = () => {
-  const today = new Date().toISOString().slice(0, 10);
-  const { setCurrentUserId } = useCurrentUserStore();
+  const { user_id, setUserId } = useUserStore();
 
   const { data: currentUser } = useQuery(["currentUser"], async () => {
     const currentUserData = await getCurrentUser();
-    setCurrentUserId(currentUserData as string);
+    setUserId(currentUserData as string);
     return currentUserData;
   });
 

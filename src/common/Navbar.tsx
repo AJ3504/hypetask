@@ -1,32 +1,30 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { styled } from "styled-components";
 import { getMyTasks } from "../api/tasks";
 import AlertModal, { MyComment } from "../components/modal/AlertModal";
 import { useModalStore } from "../config/useModalStore";
 import { getMyComments } from "../api/comments";
 import supabase from "../config/supabaseClient";
-import { useCurrentUserStore } from "../config/useCurrentUserStore";
+import { useUserStore } from "../config/useUserStore";
+import { today } from "../consts/consts";
 import { PoweroffOutlined } from "@ant-design/icons";
 import { Button, Space } from "antd";
 import { useState } from "react";
 import { useMainTabStore } from "../config/useMainTabStore";
-
 export function Navbar() {
+  const { user_id, user } = useUserStore((state) => state);
+  const location = useLocation();
   const navigate = useNavigate();
-
-  const { currentUserId } = useCurrentUserStore();
-  const today = new Date().toISOString().slice(0, 10);
-
   const { data: myTaskIds } = useQuery(
     ["myTaskIds"],
     async () => {
-      const tasksData = await getMyTasks(currentUserId, today);
+      const tasksData = await getMyTasks(user_id!, today);
       return tasksData;
     },
     {
       select: (myTasks) => myTasks?.map((myTask) => myTask.task_id),
-      enabled: !!currentUserId,
+      enabled: !!user_id,
     }
   );
 
@@ -39,7 +37,7 @@ export function Navbar() {
     {
       select: (myComments) =>
         myComments?.map((myComment) => ({
-          // username: myComment.username,
+          username: myComment.user?.username,
           created_at: myComment.created_at,
           checked: myComment.checked,
           comment: myComment.comment,
@@ -122,7 +120,7 @@ export function Navbar() {
               <StImageWrapper>
                 <img
                   onClick={() => changeAlertModalstatus(true)}
-                  src="https://www.studiopeople.kr/common/img/default_profile.png"
+                  src={user?.img_url}
                   alt="img"
                   style={{
                     width: "30px",

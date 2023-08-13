@@ -13,7 +13,7 @@ import { MdOutlineCheckBox } from "react-icons/md";
 import { BsSearch } from "react-icons/bs";
 import { useMainTabStore } from "../../config/useMainTabStore";
 import { addFollower, deleteFollower } from "../../api/users";
-import { useCurrentUserStore } from "../../config/useCurrentUserStore";
+import { useUserStore } from "../../config/useUserStore";
 
 interface otherTasksCardProps {
   userIds: string[];
@@ -73,7 +73,7 @@ const OtherTasksCard = ({ userIds, today }: otherTasksCardProps) => {
   };
 
   const { currentTab, setCurrentTab } = useMainTabStore();
-  const { currentUserId } = useCurrentUserStore();
+  const user_id = useUserStore((state) => state.user_id);
 
   return (
     <>
@@ -86,16 +86,12 @@ const OtherTasksCard = ({ userIds, today }: otherTasksCardProps) => {
               <span>{userId}</span>
               <span>
                 {currentTab === "explore" ? (
-                  <button
-                    onClick={() => followBtnHandler(currentUserId, userId)}
-                  >
+                  <button onClick={() => followBtnHandler(user_id!, userId)}>
                     팔로우
                   </button>
                 ) : (
                   <button
-                    onClick={() =>
-                      deleteFollowBtnHandler(currentUserId, userId)
-                    }
+                    onClick={() => deleteFollowBtnHandler(user_id!, userId)}
                   >
                     팔로우 취소
                   </button>

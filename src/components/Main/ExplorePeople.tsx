@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getAllUser } from "../../api/users";
-import { useCurrentUserStore } from "../../config/useCurrentUserStore";
+import { useUserStore } from "../../config/useUserStore";
 import OtherTasksCard from "./OtherTasksCard";
 import { styled } from "styled-components";
 import TimeStampCard from "./TimeStampCard";
@@ -21,10 +21,10 @@ const ExplorePeople = () => {
     { select: (usersData) => usersData.map((userData) => userData.user_id) }
   );
 
-  const { currentUserId } = useCurrentUserStore();
+  const user_id = useUserStore((state) => state.user_id);
   const { searchModalVisible } = useModalStore();
 
-  const filteredUsers = users?.filter((userId) => userId !== currentUserId);
+  const filteredUsers = users?.filter((userId) => userId !== user_id);
 
   return (
     <>
