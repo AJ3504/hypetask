@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { styled } from "styled-components";
-import { useModalStore } from "../../config/useModalStore";
+import { useModalStore } from "../../zustand/useModalStore";
 import useInput from "../../hooks/useInput";
 import { useQuery } from "@tanstack/react-query";
 import { addFollower, getAllUser } from "../../api/users";
 import { User } from "../../Types";
+import { useMainTabStore } from "../../zustand/useMainTabStore";
 import { useUserStore } from "../../config/useUserStore";
-import { useMainTabStore } from "../../config/useMainTabStore";
 
 const SearchModal = () => {
   const { changeSearchModalstatus } = useModalStore();

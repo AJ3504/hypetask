@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { styled } from "styled-components";
 import { updateChecked } from "../../api/comments";
 import { queryClient } from "../../App";
-import { useModalStore } from "../../config/useModalStore";
+import { useModalStore } from "../../zustand/useModalStore";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 
 interface AlertModalProps {
@@ -51,11 +51,11 @@ const AlertModal = ({ myTaskIds, myComments }: AlertModalProps) => {
             return (
               <S.Cmt>
                 <S.CmtInfo>
-                  <p>{writer}</p>
-                  <p>{time}</p>
+                  <S.AlertText>{writer}</S.AlertText>
+                  <S.AlertText>{time}</S.AlertText>
                 </S.CmtInfo>
                 <S.CmtBody>
-                  <p>{comment}</p>
+                  <S.AlertText>{comment}</S.AlertText>
                 </S.CmtBody>
               </S.Cmt>
             );
@@ -63,7 +63,7 @@ const AlertModal = ({ myTaskIds, myComments }: AlertModalProps) => {
         </S.CmtBox>
       ) : (
         <S.CmtBox>
-          <p>새로운 댓글이 없습니다.</p>
+          <S.AlertText>새로운 댓글이 없습니다.</S.AlertText>
         </S.CmtBox>
       )}
     </S.ModalBox>
@@ -74,16 +74,17 @@ export default AlertModal;
 
 const S = {
   ModalBox: styled.div`
-    background-color: yellowgreen;
+    background-color: #f3f3f3;
     width: 400px;
     max-height: 300px;
     padding: 10px;
     box-sizing: border-box;
+    border-radius: 3px;
 
     position: absolute;
     top: 70px;
     right: 0px;
-    z-index: 99;
+    z-index: 9999;
   `,
   CloseBtn: styled.button`
     background-color: transparent;
@@ -92,6 +93,8 @@ const S = {
   `,
   CmtBox: styled.div`
     overflow: auto;
+    text-align: center;
+    margin-bottom: 10px;
   `,
   Cmt: styled.div`
     /* border-bottom: 1px solid grey; */
@@ -104,5 +107,8 @@ const S = {
   `,
   CmtBody: styled.div`
     margin-bottom: 20px;
+  `,
+  AlertText: styled.p`
+    color: black;
   `,
 };

@@ -9,7 +9,7 @@ import type { DatePickerProps } from "antd";
 import dayjs from "dayjs";
 import { Tasks, addTask, updateTask } from "../../api/tasks";
 import "dayjs/locale/ko";
-import { useModalStore } from "../../config/useModalStore";
+import { useModalStore } from "../../zustand/useModalStore";
 import { timeTable } from "../../consts/consts";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../../App";
