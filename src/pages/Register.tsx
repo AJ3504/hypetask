@@ -52,7 +52,7 @@ const Register: React.FC = () => {
   };
 
   const addUser = async (userUid: string, userName: string) => {
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("profiles")
       .upsert({ user_id: userUid, username: userName });
 

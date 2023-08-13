@@ -1,18 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
 import { getAllUser } from "../../api/users";
-import { useCurrentUserStore } from "../../config/useCurrentUserStore";
-import OtherTasksCard from "./OtherTasksCard";
+import { useCurrentUserStore } from "../../zustand/useCurrentUserStore";
 import { styled } from "styled-components";
-import TimeStampCard from "./TimeStampCard";
-import Header from "./Header";
-import { useModalStore } from "../../config/useModalStore";
+
+import { useModalStore } from "../../zustand/useModalStore";
 import SearchModal from "../modal/SearchModal";
+import Header from "./Header";
+import TimeStampCard from "./TimeStampCard";
+import OtherTasksCard from "./OtherTasksCard";
+import S from "./mainStyles";
 
 const ExplorePeople = () => {
   // const today = new Date().toISOString().slice(0, 10);
   const today = "2023-08-12";
 
-  const { data: users } = useQuery(
+  // 모든 유저
+  const { data: users, isLoading } = useQuery(
     ["users"],
     async () => {
       const usersData = await getAllUser();
@@ -21,10 +24,22 @@ const ExplorePeople = () => {
     { select: (usersData) => usersData.map((userData) => userData.user_id) }
   );
 
-  const { currentUserId } = useCurrentUserStore();
+  const { currentUserId, currentUserFollowers } = useCurrentUserStore();
   const { searchModalVisible } = useModalStore();
 
-  const filteredUsers = users?.filter((userId) => userId !== currentUserId);
+  if (isLoading) {
+    return <div style={{ backgroundColor: "#262286" }}>로딩중...</div>;
+  }
+
+  const exceptUser = [...currentUserFollowers, currentUserId];
+  const fillteredUsers = [...(users as string[])];
+
+  exceptUser?.forEach((user) => {
+    const index = fillteredUsers?.indexOf(user);
+    fillteredUsers.splice(index, 1);
+  });
+
+  console.log("여기", fillteredUsers);
 
   return (
     <>
@@ -35,7 +50,7 @@ const ExplorePeople = () => {
           <TimeStampCard />
         </S.CalenderContainer>
         <S.FollowersCalenderContainer>
-          <OtherTasksCard userIds={filteredUsers as string[]} today={today} />;
+          <OtherTasksCard userIds={fillteredUsers} />;
         </S.FollowersCalenderContainer>
       </S.Container>
     </>
@@ -43,66 +58,3 @@ const ExplorePeople = () => {
 };
 
 export default ExplorePeople;
-
-interface styleProps {
-  height?: number;
-  top?: number;
-}
-
-const S = {
-  Header: styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    position: fixed;
-    background-color: white;
-    height: 100px;
-    width: 100%;
-    z-index: 2;
-  `,
-  Container: styled.div`
-    display: flex;
-    flex-direction: row;
-  `,
-  CalenderContainer: styled.div`
-    display: flex;
-    flex-direction: row;
-    background-color: azure;
-    padding: 10px;
-    margin-top: 100px;
-  `,
-  TaskContainer: styled.div`
-    background-color: beige;
-    min-width: 400px;
-    position: relative;
-    margin: 0 10px;
-  `,
-  FollowersCalenderContainer: styled.div`
-    display: flex;
-    flex-direction: row;
-    background-color: azure;
-    overflow-x: scroll;
-    overflow-y: hidden;
-    padding: 10px;
-    margin-top: 100px;
-  `,
-  TaskBox: styled.div<styleProps>`
-    height: ${(props) => props.height}px;
-    width: 100%;
-    padding: 5px;
-    box-sizing: border-box;
-
-    position: absolute;
-    top: ${(props) => props.top}px;
-  `,
-  Task: styled.div`
-    background-color: red;
-    height: 100%;
-    border-radius: 15px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  `,
-};

@@ -1,21 +1,23 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getMyTasks, updateDetailOn, updateDone } from "../../api/tasks";
 import { styled } from "styled-components";
-import { useModalStore } from "../../config/useModalStore";
+import { useModalStore } from "../../zustand/useModalStore";
 import { queryClient } from "../../App";
 import AddTaskModal from "../modal/AddTaskModal";
-import TaskDetail from "./TaskDetail";
 import { MdCheckBoxOutlineBlank } from "react-icons/md";
 import { MdOutlineCheckBox } from "react-icons/md";
-import { BsSearch } from "react-icons/bs";
-import { useCurrentUserStore } from "../../config/useCurrentUserStore";
+import { BsTextRight } from "react-icons/bs";
+import { useCurrentUserStore } from "../../zustand/useCurrentUserStore";
+import TaskDetail from "./TaskDetail";
+import S from "./mainStyles";
 
 export interface TasksProps {
-  today: string;
   myId: string;
 }
 
-const MyTasksCard = ({ today, myId }: TasksProps) => {
+const MyTasksCard = ({ myId }: TasksProps) => {
+  const today = new Date().toISOString().slice(0, 10);
+
   const { data: myTasks } = useQuery(["myTasks"], async () => {
     const tasksData = await getMyTasks(myId, today);
     return tasksData;
@@ -50,7 +52,9 @@ const MyTasksCard = ({ today, myId }: TasksProps) => {
         <AddTaskModal todayDefault={true} myId={currentUserId!} />
       ) : null}
       <S.TaskContainer>
-        <S.TaskBox>My Task</S.TaskBox>
+        <S.TaskBox>
+          <S.Text>My Task</S.Text>
+        </S.TaskBox>
         {myTasks &&
           myTasks.map((task) => {
             const endHour = task.end_time;
@@ -63,7 +67,7 @@ const MyTasksCard = ({ today, myId }: TasksProps) => {
                   <TaskDetail task={task} />
                 ) : (
                   <S.Task>
-                    <button
+                    <S.DoneCheckBtn
                       onClick={() =>
                         updateDoneMutation.mutate({
                           taskId: task.task_id!,
@@ -76,7 +80,7 @@ const MyTasksCard = ({ today, myId }: TasksProps) => {
                       ) : (
                         <MdCheckBoxOutlineBlank size="25" />
                       )}
-                    </button>
+                    </S.DoneCheckBtn>
                     <p>{task.title}</p>
                     <span
                       onClick={() =>
@@ -86,83 +90,16 @@ const MyTasksCard = ({ today, myId }: TasksProps) => {
                         })
                       }
                     >
-                      <BsSearch size="25" />
+                      <BsTextRight size="23" />
                     </span>
                   </S.Task>
                 )}
               </S.TaskBox>
             );
-          })}{" "}
+          })}
       </S.TaskContainer>
     </>
   );
 };
 
 export default MyTasksCard;
-
-interface styleProps {
-  height?: number;
-  top?: number;
-}
-
-const S = {
-  Header: styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    position: fixed;
-    background-color: #262286;
-    height: 100px;
-    width: 100%;
-    z-index: 99;
-  `,
-  Container: styled.div`
-    display: flex;
-    flex-direction: row;
-  `,
-  CalenderContainer: styled.div`
-    display: flex;
-    flex-direction: row;
-    background-color: azure;
-    padding: 10px;
-    margin-top: 100px;
-  `,
-
-  TaskContainer: styled.div`
-    background-color: #f3f3f3;
-    border-radius: 3px;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-
-    min-width: 400px;
-    position: relative;
-    margin: 0 10px;
-  `,
-  FollowersCalenderContainer: styled.div`
-    display: flex;
-    flex-direction: row;
-    background-color: azure;
-    overflow-x: scroll;
-    overflow-y: hidden;
-    padding: 10px;
-    margin-top: 100px;
-  `,
-  TaskBox: styled.div<styleProps>`
-    height: ${(props) => props.height}px;
-    width: 100%;
-    padding: 5px;
-    box-sizing: border-box;
-
-    position: absolute;
-    top: ${(props) => props.top}px;
-  `,
-  Task: styled.div`
-    background-color: red;
-    height: 100%;
-    border-radius: 15px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  `,
-};

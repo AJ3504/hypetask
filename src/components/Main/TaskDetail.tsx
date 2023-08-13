@@ -1,4 +1,3 @@
-import React from "react";
 import { Tasks, deleteTask, updateDetailOn } from "../../api/tasks";
 import { styled } from "styled-components";
 import { MdTitle } from "react-icons/md";
@@ -10,9 +9,10 @@ import { BsTrash3 } from "react-icons/bs";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../../App";
-import { useModalStore } from "../../config/useModalStore";
+import { useModalStore } from "../../zustand/useModalStore";
 import AddTaskModal from "../modal/AddTaskModal";
-import { useCurrentUserStore } from "../../config/useCurrentUserStore";
+import { useCurrentUserStore } from "../../zustand/useCurrentUserStore";
+import S from "./mainStyles";
 
 export interface TaskDetailProps {
   task: Tasks | undefined | null;
@@ -102,11 +102,3 @@ const TaskDetail = ({ task }: TaskDetailProps) => {
 };
 
 export default TaskDetail;
-
-const S = {
-  TaskDetailBox: styled.div`
-    background-color: antiquewhite;
-    width: 400px;
-    height: 400px;
-  `,
-};

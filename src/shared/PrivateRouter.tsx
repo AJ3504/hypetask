@@ -24,8 +24,6 @@ const PrivateRoute = ({ children }: PrivateRouteProps) => {
   }
 
   if (!currentUser) {
-    // 컴포넌트를 렌더링하지 않고, 대신에 로그인 페이지나 안내 페이지를 렌더링하는 것이 좋습니다.
-    // 예: return <LoginPage />;
     alert("로그인 후 이용 가능합니다.");
     navigate("/first-main");
     return null;

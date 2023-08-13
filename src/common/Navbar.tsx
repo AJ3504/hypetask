@@ -3,14 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import { getMyTasks } from "../api/tasks";
 import AlertModal, { MyComment } from "../components/modal/AlertModal";
-import { useModalStore } from "../config/useModalStore";
+import { useModalStore } from "../zustand/useModalStore";
 import { getMyComments } from "../api/comments";
 import supabase from "../config/supabaseClient";
-import { useCurrentUserStore } from "../config/useCurrentUserStore";
+import { useCurrentUserStore } from "../zustand/useCurrentUserStore";
 import { PoweroffOutlined } from "@ant-design/icons";
 import { Button, Space } from "antd";
 import { useState } from "react";
-import { useMainTabStore } from "../config/useMainTabStore";
+import { useMainTabStore } from "../zustand/useMainTabStore";
 
 export function Navbar() {
   const navigate = useNavigate();
@@ -55,6 +55,7 @@ export function Navbar() {
 
   const { alertModalVisible, changeAlertModalstatus } = useModalStore();
   const { setCurrentTab } = useMainTabStore();
+  console.log(alertModalVisible);
 
   const notCheckedMyComments = myComments?.filter(
     (myComment) => myComment.checked === false
@@ -86,7 +87,7 @@ export function Navbar() {
             <StLeftNavInner>
               <div
                 onClick={() => {
-                  if (location.pathname === "/") {
+                  if (window.location.pathname === "/") {
                     window.location.reload();
                   } else {
                     navigate("/");
@@ -105,6 +106,7 @@ export function Navbar() {
 
               <div style={{ marginTop: "20px" }}>
                 <span
+                  onClick={() => setCurrentTab("main")}
                   style={{
                     paddingRight: "20px",
                     paddingLeft: "35px",
@@ -113,7 +115,12 @@ export function Navbar() {
                 >
                   친구
                 </span>
-                <span style={{ fontWeight: "bold" }}>탐색</span>
+                <span
+                  onClick={() => setCurrentTab("explore")}
+                  style={{ fontWeight: "bold" }}
+                >
+                  탐색
+                </span>
               </div>
             </StLeftNavInner>
           </StLeftNav>
@@ -137,7 +144,18 @@ export function Navbar() {
                   <StAlertPoint>🔴</StAlertPoint>
                 ) : null}
               </StImageWrapper>
-
+              <Link
+                to="/chat"
+                style={{
+                  marginRight: "16px",
+                  marginTop: "10px",
+                  textDecoration: "none",
+                  color: "#c5c4d7dd",
+                  fontWeight: "bolder",
+                }}
+              >
+                하입톡💬
+              </Link>
               <Space direction="vertical">
                 <Space wrap>
                   <Button
@@ -154,18 +172,6 @@ export function Navbar() {
                   </Button>
                 </Space>
               </Space>
-              <Link
-                to="/chat"
-                style={{
-                  marginLeft: "16px",
-                  marginTop: "10px",
-                  textDecoration: "none",
-                  color: "#c5c4d7dd",
-                  fontWeight: "bolder",
-                }}
-              >
-                하입톡💬
-              </Link>
             </StRightNavInner>
           </StRightNav>
         </StContainer>{" "}
