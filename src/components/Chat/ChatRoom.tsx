@@ -1,5 +1,4 @@
 import { FormEvent, Fragment, useEffect, useState } from "react";
-
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { addChat, getRealTimeChats } from "../../api/chats";
 import { Chats } from "../../Types";

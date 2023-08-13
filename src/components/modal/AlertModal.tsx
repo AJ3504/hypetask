@@ -2,11 +2,12 @@ import { useMutation } from "@tanstack/react-query";
 import { styled } from "styled-components";
 import { updateChecked } from "../../api/comments";
 import { queryClient } from "../../App";
-import { useModalStore } from "../../config/useModalStore";
+import { useModalStore } from "../../zustand/useModalStore";
 import { AiOutlineCloseCircle } from "react-icons/ai";
+import { useUserStore } from "../../zustand/useUserStore";
 
 interface AlertModalProps {
-  myTaskIds: string[] | undefined | [];
+  myId: string;
   myComments: MyComment[];
 }
 
@@ -17,9 +18,9 @@ export interface MyComment {
   comment: string;
 }
 
-const AlertModal = ({ myTaskIds, myComments }: AlertModalProps) => {
+const AlertModal = ({ myComments }: AlertModalProps) => {
   const updateCheckedMutation = useMutation(
-    (myTaskIds: string[]) => updateChecked(myTaskIds as string[]),
+    (myId: string) => updateChecked(myId as string),
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["myComments"]);
@@ -28,10 +29,11 @@ const AlertModal = ({ myTaskIds, myComments }: AlertModalProps) => {
   );
 
   const { changeAlertModalstatus } = useModalStore();
+  const { user_id } = useUserStore((state) => state);
 
   const alertModalCloseBtnHandler = () => {
     changeAlertModalstatus(false);
-    updateCheckedMutation.mutate(myTaskIds!);
+    updateCheckedMutation.mutate(user_id!);
   };
 
   return (
@@ -50,20 +52,16 @@ const AlertModal = ({ myTaskIds, myComments }: AlertModalProps) => {
             const comment = myComment.comment;
             return (
               <S.Cmt>
-                <S.CmtInfo>
-                  <p>{writer}</p>
-                  <p>{time}</p>
-                </S.CmtInfo>
-                <S.CmtBody>
-                  <p>{comment}</p>
-                </S.CmtBody>
+                <S.AlertText>{comment}</S.AlertText>
+                <S.AlertText>{writer}</S.AlertText>
+                <S.AlertText>{time}</S.AlertText>
               </S.Cmt>
             );
           })}
         </S.CmtBox>
       ) : (
         <S.CmtBox>
-          <p>새로운 댓글이 없습니다.</p>
+          <S.AlertText>새로운 댓글이 없습니다.</S.AlertText>
         </S.CmtBox>
       )}
     </S.ModalBox>
@@ -74,16 +72,19 @@ export default AlertModal;
 
 const S = {
   ModalBox: styled.div`
-    background-color: yellowgreen;
+    background-color: #f3f3f3;
     width: 400px;
     max-height: 300px;
     padding: 10px;
     box-sizing: border-box;
+    border-radius: 3px;
 
     position: absolute;
     top: 70px;
     right: 0px;
-    z-index: 99;
+    z-index: 9999;
+
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
   `,
   CloseBtn: styled.button`
     background-color: transparent;
@@ -92,17 +93,16 @@ const S = {
   `,
   CmtBox: styled.div`
     overflow: auto;
+    text-align: center;
+    margin-bottom: 10px;
   `,
   Cmt: styled.div`
-    /* border-bottom: 1px solid grey; */
-  `,
-  CmtInfo: styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    margin: 10px 0;
+    margin: 15px 0;
   `,
-  CmtBody: styled.div`
-    margin-bottom: 20px;
+  AlertText: styled.p`
+    color: black;
   `,
 };

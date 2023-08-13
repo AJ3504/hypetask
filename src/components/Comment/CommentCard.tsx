@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react";
 import { Card, Space, Typography, Avatar, Button } from "antd";
 import { DownOutlined, EditFilled, UpOutlined } from "@ant-design/icons";
 import type { Comment, User } from "../../Types";
@@ -7,6 +7,8 @@ import { timeTable } from "../../consts/consts";
 import { StCommentContainer } from "./CommentContainer";
 import { useCommentStoreDev } from "../../zustand/CommentStore";
 import CommentWriteForm from "./CommentWriteForm";
+import { useUserStore } from "../../zustand/useUserStore";
+import { DeleteOutlined } from "@ant-design/icons";
 dayjs.locale("ko");
 function CommentCard({
   comment_id,
@@ -20,11 +22,16 @@ function CommentCard({
   replys,
   num_of_reply,
   user,
+  date,
 }: Comment) {
+  const ref = useRef<HTMLDivElement>(null);
   const commentContainerWidth = useCommentStoreDev(
     (state) => state.parentCommentContainerWidth
   );
+  console.log(user);
   const fetchReplys = useCommentStoreDev((state) => state.fetchReplys);
+  const deleteComment = useCommentStoreDev((state) => state.deleteComment);
+  const my_user_id = useUserStore((state) => state.user_id);
   const [seeMore, setSeeMore] = useState(false);
   const [seeReply, setSeeReply] = useState(false);
   const [writeForm, setWriteForm] = useState(false);
@@ -37,7 +44,6 @@ function CommentCard({
   const fetchReplysHandler = async () => {
     increasePage();
     const fetchedNum = await fetchReplys(comment_id!!, replyPage);
-    console.log(fetchedNum);
     if (fetchedNum < 11) {
       setSeeMoreReply(false);
     }
@@ -45,9 +51,15 @@ function CommentCard({
   const toggleSeeMore = () => {
     setSeeMore(!seeMore);
   };
-  const toggleSeeReply = () => {
+  const toggleSeeReply = async () => {
     setSeeReply(!seeReply);
-    if (prevReplyPage !== replyPage) fetchReplys(comment_id!!, replyPage);
+    if (prevReplyPage !== replyPage) {
+      await fetchReplysHandler();
+    }
+  };
+  const deleteCommentHandler = () => {
+    console.log("불림");
+    deleteComment(comment_id!);
   };
   const closeSeeReply = () => {
     setSeeReply(!seeReply);
@@ -65,9 +77,6 @@ function CommentCard({
     return `${Math.floor(daysElapsed)}일 전`;
   };
   const focusTime = () => {};
-  const toggleReplyForm = async () => {
-    setWriteForm(!writeForm);
-  };
   return (
     <>
       <>
@@ -84,14 +93,15 @@ function CommentCard({
             <Avatar src={user?.img_url} />
             <Space direction="vertical">
               <Space direction="horizontal">
-                <Typography.Text type="secondary">{user?.name}</Typography.Text>
+                <Typography.Text type="secondary">
+                  {user?.username}
+                </Typography.Text>
                 <Typography.Text type="secondary" aria-setsize={5}>
                   {esimateTimeElapsed(created_at!!)}
+                  {"  "}
                 </Typography.Text>
                 <Typography.Link onClick={focusTime}>
-                  {timeTable[`${time_ref!!}`].label
-                    ? timeTable[`${time_ref!!}`].label + " 일정"
-                    : ""}
+                  {time_ref ? timeTable[`${time_ref!!}`].label + " 일정" : ""}
                 </Typography.Link>
               </Space>
               <Typography.Paragraph>
@@ -120,37 +130,40 @@ function CommentCard({
                 )}
               </Typography.Paragraph>
               <Space direction="horizontal">
-                {num_of_reply!! > 0 && (
-                  <>
-                    {seeReply ? (
-                      <Typography.Link onClick={closeSeeReply}>
-                        댓글접기&nbsp;
-                        <UpOutlined />
-                      </Typography.Link>
-                    ) : (
-                      <Typography.Link onClick={toggleSeeReply}>
-                        댓글보기&nbsp;
-                        <DownOutlined />
-                      </Typography.Link>
-                    )}
-                  </>
-                )}
-                <Button
-                  shape="circle"
-                  onClick={toggleReplyForm}
-                  style={{
-                    border: "none",
-                  }}
-                >
-                  <EditFilled />
-                </Button>
+                <>
+                  {seeReply ? (
+                    <Typography.Link onClick={closeSeeReply}>
+                      댓글접기&nbsp;
+                      <UpOutlined />
+                    </Typography.Link>
+                  ) : (
+                    <Typography.Link onClick={toggleSeeReply}>
+                      댓글보기 ({num_of_reply}개)&nbsp;
+                      <DownOutlined />
+                    </Typography.Link>
+                  )}
+                  {"   "}
+                  {user?.user_id === my_user_id && (
+                    <Typography.Link
+                      onClick={() => {
+                        deleteCommentHandler();
+                        console.log("feafwe");
+                      }}
+                    >
+                      <DeleteOutlined />
+                    </Typography.Link>
+                  )}
+                </>
               </Space>
             </Space>
           </Space>
         </Card>
-        {writeForm && <CommentWriteForm ref_step={ref_step + 1} />}
         {seeReply && (
-          <StCommentContainer width={commentContainerWidth}>
+          <StCommentContainer width={commentContainerWidth} ref={ref}>
+            {/* 댓글달기창을 사용자가 열었을때는 안보임 */}
+            {!writeForm && (
+              <CommentWriteForm ref_step={ref_step + 1} ref_id={comment_id} />
+            )}
             {replys!!.map((c) => {
               return (
                 <CommentCard
@@ -165,6 +178,8 @@ function CommentCard({
                   replys={c.replys as Comment[]}
                   num_of_reply={c.num_of_reply}
                   user={c.user as User}
+                  date={c.date}
+                  ref_user_id={c.ref_user_id}
                 />
               );
             })}

@@ -3,7 +3,7 @@ import GlobalStyle from "../GlobalStyles";
 import Layout from "../common/Layout";
 import Main from "../pages/Main";
 import Detail from "../pages/Detail";
-import Mypage from "../pages/Mypage";
+//import Mypage from "../pages/Mypage";
 import Register from "../pages/Register";
 import Chat from "../pages/Chat";
 import ResetPassword from "../pages/ResetPassword";
@@ -32,9 +32,8 @@ const Router = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/findpassword" element={<FindPassword />} />
           <Route path="/resetpassword" element={<ResetPassword />} />
-
           <Route
-            path="/detail/:id"
+            path="/detail"
             element={
               <PrivateRoute>
                 <Detail />
@@ -52,6 +51,7 @@ const Router = () => {
           <Route path="/chat/*" element={<Chat />} />
           <Route path="/chat/openChat" element={<OpenChatList />} />
           <Route path="/chat/myChat" element={<MyChatList />} />
+
         </Routes>
       </Layout>
     </BrowserRouter>

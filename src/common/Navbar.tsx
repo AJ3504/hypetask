@@ -1,50 +1,50 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { styled } from "styled-components";
 import { getMyTasks } from "../api/tasks";
-import AlertModal, { MyComment } from "../components/modal/AlertModal";
-import { useModalStore } from "../config/useModalStore";
+import AlertModal, { MyComment } from "../Components/modal/AlertModal";
+import { useModalStore } from "../zustand/useModalStore";
 import { getMyComments } from "../api/comments";
 import supabase from "../config/supabaseClient";
-import { useCurrentUserStore } from "../config/useCurrentUserStore";
+
+import { today } from "../consts/consts";
 import { PoweroffOutlined } from "@ant-design/icons";
 import { Button, Space } from "antd";
 import { useState } from "react";
-import { useMainTabStore } from "../config/useMainTabStore";
-
+import { useMainTabStore } from "../zustand/useMainTabStore";
+import { useUserStore } from "../zustand/useUserStore";
 export function Navbar() {
+  const { user_id, user, logout } = useUserStore((state) => state);
+  const location = useLocation();
   const navigate = useNavigate();
 
-  const { currentUserId } = useCurrentUserStore();
-  const today = new Date().toISOString().slice(0, 10);
-
-  const { data: myTaskIds } = useQuery(
-    ["myTaskIds"],
-    async () => {
-      const tasksData = await getMyTasks(currentUserId, today);
-      return tasksData;
-    },
-    {
-      select: (myTasks) => myTasks?.map((myTask) => myTask.task_id),
-      enabled: !!currentUserId,
-    }
-  );
+  // const { data: myTaskIds } = useQuery(
+  //   ["myTaskIds"],
+  //   async () => {
+  //     const tasksData = await getMyTasks(user_id!, today);
+  //     return tasksData;
+  //   },
+  //   {
+  //     select: (myTasks) => myTasks?.map((myTask) => myTask.task_id),
+  //     enabled: !!user_id,
+  //   }
+  // );
 
   const { data: myComments } = useQuery(
     ["myComments"],
     async () => {
-      const myCommentsData = await getMyComments(myTaskIds as string[]);
+      const myCommentsData = await getMyComments(user_id as string);
       return myCommentsData;
     },
     {
       select: (myComments) =>
         myComments?.map((myComment) => ({
-          // username: myComment.username,
+          username: myComment.user?.username,
           created_at: myComment.created_at,
           checked: myComment.checked,
           comment: myComment.comment,
         })),
-      enabled: !!myTaskIds,
+      enabled: !!user_id,
     }
   );
 
@@ -59,8 +59,6 @@ export function Navbar() {
   const notCheckedMyComments = myComments?.filter(
     (myComment) => myComment.checked === false
   );
-
-  console.log(notCheckedMyComments);
 
   const [loadings, setLoadings] = useState<boolean[]>([]);
   const enterLoading = (index: number) => {
@@ -86,8 +84,8 @@ export function Navbar() {
             <StLeftNavInner>
               <div
                 onClick={() => {
-                  if (location.pathname === "/") {
-                    window.location.reload();
+                  if (window.location.pathname === "/") {
+                    setCurrentTab("main");
                   } else {
                     navigate("/");
                   }
@@ -105,6 +103,7 @@ export function Navbar() {
 
               <div style={{ marginTop: "20px" }}>
                 <span
+                  onClick={() => setCurrentTab("main")}
                   style={{
                     paddingRight: "20px",
                     paddingLeft: "35px",
@@ -114,7 +113,11 @@ export function Navbar() {
                 >
                   친구
                 </span>
-                <span style={{ fontWeight: "bold", cursor: "pointer" }}>
+
+                <span
+                  onClick={() => setCurrentTab("explore")}
+                  style={{ fontWeight: "bold", cursor: "pointer" }}
+                >
                   탐색
                 </span>
               </div>
@@ -125,7 +128,7 @@ export function Navbar() {
               <StImageWrapper>
                 <img
                   onClick={() => changeAlertModalstatus(true)}
-                  src="https://www.studiopeople.kr/common/img/default_profile.png"
+                  src={user?.img_url}
                   alt="img"
                   style={{
                     width: "30px",
@@ -140,27 +143,10 @@ export function Navbar() {
                   <StAlertPoint>🔴</StAlertPoint>
                 ) : null}
               </StImageWrapper>
-
-              <Space direction="vertical">
-                <Space wrap>
-                  <Button
-                    type="primary"
-                    icon={<PoweroffOutlined />}
-                    loading={loadings[1]}
-                    style={{ backgroundColor: "#344CB7" }}
-                    onClick={() => {
-                      enterLoading(1);
-                      signOutBtnHandler();
-                    }}
-                  >
-                    로그아웃
-                  </Button>
-                </Space>
-              </Space>
               <Link
                 to="/chat"
                 style={{
-                  marginLeft: "16px",
+                  marginRight: "16px",
                   marginTop: "10px",
                   textDecoration: "none",
                   color: "#c5c4d7dd",
@@ -169,13 +155,44 @@ export function Navbar() {
               >
                 하입톡💬
               </Link>
+              <Space direction="vertical">
+                <Space wrap>
+                  {!user_id ? (
+                    <Button
+                      type="primary"
+                      icon={<PoweroffOutlined />}
+                      loading={loadings[1]}
+                      style={{ backgroundColor: "#344CB7" }}
+                      onClick={() => {
+                        navigate("/first-main");
+                      }}
+                    >
+                      로그인
+                    </Button>
+                  ) : (
+                    <Button
+                      type="primary"
+                      icon={<PoweroffOutlined />}
+                      loading={loadings[1]}
+                      style={{ backgroundColor: "#344CB7" }}
+                      onClick={() => {
+                        enterLoading(1);
+                        signOutBtnHandler();
+                        logout();
+                      }}
+                    >
+                      로그아웃
+                    </Button>
+                  )}
+                </Space>
+              </Space>
             </StRightNavInner>
           </StRightNav>
         </StContainer>{" "}
       </StNavBar>
       {alertModalVisible ? (
         <AlertModal
-          myTaskIds={myTaskIds as string[]}
+          myId={user_id as string}
           myComments={notCheckedMyComments as MyComment[]}
         />
       ) : null}
@@ -228,30 +245,4 @@ export const StRightNavInner = styled.div`
 export const StImageWrapper = styled.div`
   display: flex;
   align-items: center;
-`;
-export const StButton = styled.div`
-  color: #000000c1;
-  font-weight: bold;
-  background-color: #ece8e8;
-  border: none;
-  cursor: pointer;
-  border-radius: 3px;
-  transition: background-color 0.2s ease;
-  font-family: "NanumSquareNeo-Variable", sans-serif;
-  padding: 5px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  &:hover {
-    background-color: #a8b0c4da;
-  }
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-export const StAlertPoint = styled.span`
-  position: absolute;
-  color: red;
-  right: 163px;
-  top: 5px;
-  font-size: 8px;
 `;

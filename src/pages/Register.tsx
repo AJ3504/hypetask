@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import supabase from "../config/supabaseClient";
 import { styled } from "styled-components";
+import * as uApi from "../api/users";
 interface FormEvent extends React.FormEvent<HTMLFormElement> {}
 const Register: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -24,40 +25,48 @@ const Register: React.FC = () => {
     try {
       setLoading(true);
 
+      const userMetadata = {
+        username: name,
+        avatar_url: `http://gravatar.com/avatar/${
+          name + Math.random().toString()
+        }?d=identicon`,
+      };
       const signUpResult: any = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          data: userMetadata,
+        },
       });
 
       if (signUpResult.error) {
         console.error(signUpResult.error);
         if (signUpResult.error.message.includes("Email rate limit exceeded")) {
           alert("이메일 발송 제한이 초과되었습니다. 나중에 다시 시도해주세요.");
+        } else if (
+          signUpResult.error.message.includes("User already registered")
+        ) {
+          alert("이미 가입된 이메일 주소입니다.");
+        } else if (
+          signUpResult.error.message.includes(
+            "Password should be at least 6 characters"
+          )
+        ) {
+          alert("비밀번호는 최소 6자 이상이어야 합니다.");
         }
         return;
       }
       const { data } = await supabase.auth.getUser();
-      console.log(data);
 
       if (data) {
         console.log("User registered:", data);
-        await addUser(data.user!.id, name);
+        await uApi.addUser(data.user!.id, userMetadata);
         setError("");
       }
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const addUser = async (userUid: string, userName: string) => {
-    const { data, error } = await supabase
-      .from("profiles")
-      .upsert({ user_id: userUid, username: userName });
-
-    if (error) {
-      console.error(error);
     }
   };
 
