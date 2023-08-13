@@ -10,8 +10,10 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { addChat, getChats } from "../../api/chats";
+import { getChats } from "../../api/chats";
 import { styled } from "styled-components";
+import ChatInputForm from "./ChatInputForm";
+import ChatLog from "./ChatLog";
 
 type ChatRoomProps = {
   room: string;
@@ -19,118 +21,14 @@ type ChatRoomProps = {
 
 const ChatRoom: React.FC<ChatRoomProps> = (props) => {
   const { room } = props;
-  // useStates + hooks
-  const [newMessage, setNewMessage] = useState("");
-  const [formError, setFormError] = useState<string | null>(null);
-  const [messages, setMessages] = useState<Chats[]>([]);
-  const queryClient = useQueryClient();
-  const fullName = useUserStore((state) => state.fullName);
-
-  // useInfiniteQuery
-  // getChats -> fetchChats 재정의
-  const fetchChatsForPage = async ({ pageParam = 0 }): Promise<Chats[]> => {
-    const response = await getChats({ room, pageParam });
-    // console.log(response);
-    return response;
-  };
-
-  const {
-    data,
-    error,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    status,
-    isFetching,
-  } = useInfiniteQuery({
-    queryKey: ["chats", room],
-    queryFn: ({ pageParam }) => fetchChatsForPage({ pageParam }),
-    getNextPageParam: (_lastPage, pages) => {
-      // 현재페이지 < 총 페이지수일때만 다음 페이지 가져옴
-      if (pages[pages.length - 1]?.length >= 5) {
-        return pages.length + 1;
-      } else {
-        return undefined;
-      }
-    },
-  });
-  console.log("data>", data);
-
-  // Post
-  const addMutation = useMutation(addChat, {
-    onSuccess: () => {
-      queryClient.invalidateQueries(["chats", room]);
-    },
-  });
-
-  // Event Handler
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (!newMessage) {
-      setFormError("메시지를 정확히 입력해주세요!");
-      return;
-    }
-
-    addMutation.mutate({ newMessage, room });
-    setNewMessage("");
-  };
-
-  const prettierCreatedAt = (createdAt: string) => {
-    const date = new Date(createdAt);
-    const options: Intl.DateTimeFormatOptions = {
-      // year: "numeric",
-      // month: "long",
-      // day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-      // second: "numeric",
-    };
-    return new Intl.DateTimeFormat("en-US", options).format(date);
-  };
-
-  const fetchMore = () => {
-    if (!hasNextPage) return;
-    fetchNextPage();
-  };
 
   return (
     <StChatApp>
       <StHeader>
         <h1>Welcome to: {room.toUpperCase()}</h1>
       </StHeader>
-      <StMessages>
-        {isFetching && !isFetchingNextPage ? "Fetching..." : null}
-        {/* {data?.pages &&
-          data.pages[0].map((chat) => (
-            <StMessage key={chat.chat_id}>
-              <StUser>{chat.username}:</StUser> {chat.text}
-              <br />
-              <StDate>{prettierCreatedAt(chat.created_at)}</StDate>
-            </StMessage>
-          ))} */}
-        {data?.pages &&
-          data.pages.map((page) =>
-            page.map((chat) => (
-              <StMessage key={chat.chat_id}>
-                <StUser>{chat.username}:</StUser> {chat.text}
-                <br />
-                <StDate>{prettierCreatedAt(chat.created_at)}</StDate>
-              </StMessage>
-            ))
-          )}
-      </StMessages>
-      <button onClick={fetchMore}>더보기</button>
-      <StNewMessageForm onSubmit={handleSubmit}>
-        <StNewMessageInput
-          placeholder="메세지를 입력해주세요..."
-          onChange={(e) => setNewMessage(e.target.value)}
-          value={newMessage}
-        />
-        <StSendButton type="submit">전송</StSendButton>
-
-        {formError && <p className="error">{formError}</p>}
-      </StNewMessageForm>
+      <ChatLog room={room} />
+      <ChatInputForm room={room} />
     </StChatApp>
   );
 };

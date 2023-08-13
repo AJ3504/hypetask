@@ -121,3 +121,14 @@ export default ChatRoom;
             </Fragment>
           );
         })} */}
+
+        {/* {data?.pages &&
+          data.pages[0].map((chat) => (
+            <StMessage key={chat.chat_id}>
+              <StUser>{chat.username}:</StUser> {chat.text}
+              <br />
+              <StDate>{prettierCreatedAt(chat.created_at)}</StDate>
+            </StMessage>
+          ))} */}
+
+const [messages, setMessages] = useState<Chats[]>([]);
