@@ -10,6 +10,9 @@ import ResetPassword from "../pages/ResetPassword";
 import FindPassword from "../pages/FindPassword";
 import FirstMain from "../pages/FirstMain";
 import PrivateRoute from "./PrivateRouter";
+import ChatRoom from "../components/Chat/ChatRoom";
+import OpenChatList from "../components/Chat/OpenChatList";
+import MyChatList from "../components/Chat/MyChatList";
 
 const Router = () => {
   return (
@@ -37,12 +40,18 @@ const Router = () => {
               </PrivateRoute>
             }
           />
+          <Route
+            path="/my-page/:id"
+            element={
+              <PrivateRoute>
+                <Mypage />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/chat/*" element={<Chat />} />
+          <Route path="/chat/openChat" element={<OpenChatList />} />
+          <Route path="/chat/myChat" element={<MyChatList />} />
 
-          {/* <Route
-            path="chat"
-            element={accessToken ? <Chat /> : <Navigate to="/first-main" />}
-          /> */}
-          <Route path="/chat" element={<Chat />} />
         </Routes>
       </Layout>
     </BrowserRouter>

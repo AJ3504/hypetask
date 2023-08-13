@@ -113,6 +113,7 @@ export function Navbar() {
                 >
                   친구
                 </span>
+
                 <span
                   onClick={() => setCurrentTab("explore")}
                   style={{ fontWeight: "bold", cursor: "pointer" }}

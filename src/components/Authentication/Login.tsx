@@ -18,6 +18,7 @@ const Login: React.FC = () => {
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+
   const { setUserId, setAccessToken, setUser } = useUserStore((state) => state);
   // 1. 일반 이메일 로그인 (provider = email)
   const loginHandler = async (e: FormEvent) => {

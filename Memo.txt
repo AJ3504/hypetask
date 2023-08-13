@@ -1,0 +1,19 @@
+<StMessages>
+        {data.pages.map((page) =>
+          page.map((chat) => (
+            <StMessage key={chat.chat_id}>
+              <StUser>{chat.username}:</StUser> {chat.text}
+              <br />
+              <StDate>{prettierCreatedAt(chat.created_at)}</StDate>
+            </StMessage>
+          ))
+        )}
+      </StMessages>
+=> 에러
+
+
+<네브바 컬러>
+#262286
+
+<버튼 컬러>
+#344cb7
