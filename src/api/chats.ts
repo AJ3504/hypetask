@@ -13,7 +13,8 @@ export const getRealTimeChats = async ({
     .from("chats")
     .select("*")
     .eq("roomName", room)
-    .eq("roomPW", roomPW);
+    .eq("roomPW", roomPW)
+    .order("created_at");
   // console.log(response);
   return response.data;
 };

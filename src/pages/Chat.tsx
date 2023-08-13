@@ -2,8 +2,7 @@ import { useRef, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import ChatRoom from "../components/Chat/ChatRoom";
 import { useUserStore } from "../components/Authentication/Login";
-import OpenChatList from "../components/Chat/OpenChatList";
-import MyChatList from "../components/Chat/MyChatList";
+import { useRoomStore } from "../config/useRoomStore";
 
 const Chat = () => {
   // 상단 hooks
@@ -13,8 +12,13 @@ const Chat = () => {
   const accessToken = useUserStore((state) => state.accessToken);
 
   // useStates
-  const [room, setRoom] = useState<string | undefined>("");
-  const [roomPW, setRoomPW] = useState<string | undefined>("");
+  // const [room, setRoom] = useState<string | undefined>("");
+  // const [roomPW, setRoomPW] = useState<string | undefined>("");
+  const room = useRoomStore((state) => state.room);
+  const roomPW = useRoomStore((state) => state.roomPW);
+  const setRoom = useRoomStore((state) => state.setRoom);
+  const setRoomPW = useRoomStore((state) => state.setRoomPW);
+
   const roomInputRef = useRef<HTMLInputElement | null>(null);
   const roomPWInputRef = useRef<HTMLInputElement | null>(null);
   const [activeTab, setActiveTab] = useState<"openChat" | "myChat">("openChat");
@@ -38,35 +42,7 @@ const Chat = () => {
   return (
     <>
       <div
-        className="상단_채팅방입장_페이지"
-        style={{ border: "solid", borderRadius: "10px" }}
-      >
-        {!room || !roomPW ? (
-          <section style={{ marginBottom: "30px" }}>
-            <label>Enter Room Name:</label>
-            <input ref={roomInputRef} />
-            {/* ---------------------------- */}
-            <label style={{ marginLeft: "20px" }}>Enter Room Password:</label>
-            <input ref={roomPWInputRef} type="password" />
-            <button
-              onClick={() => {
-                if (roomInputRef.current && roomPWInputRef.current) {
-                  setRoom(roomInputRef.current.value);
-                  setRoomPW(roomPWInputRef.current.value);
-                }
-              }}
-              style={{ marginLeft: "20px" }}
-            >
-              Enter Chat
-            </button>
-          </section>
-        ) : (
-          <ChatRoom room={room} roomPW={roomPW} />
-        )}
-      </div>
-      {/* --------------------------------------------- */}
-      <div
-        className="하단_오픈채팅목록_페이지"
+        className="상단_오픈채팅목록_페이지"
         style={{ border: "solid", borderRadius: "10px", marginTop: "30px" }}
       >
         <section className="탭">
@@ -101,6 +77,34 @@ const Chat = () => {
             </span>
           </div>
         </section>
+      </div>
+      {/* --------------------------------------------- */}
+      <div
+        className="하단_채팅방입장_페이지"
+        style={{ border: "solid", borderRadius: "10px", marginTop: "30px" }}
+      >
+        {!room || !roomPW ? (
+          <section>
+            <label>Enter Room Name:</label>
+            <input ref={roomInputRef} />
+            {/* ---------------------------- */}
+            <label style={{ marginLeft: "20px" }}>Enter Room Password:</label>
+            <input ref={roomPWInputRef} type="password" />
+            <button
+              onClick={() => {
+                if (roomInputRef.current && roomPWInputRef.current) {
+                  setRoom(roomInputRef.current.value);
+                  setRoomPW(roomPWInputRef.current.value);
+                }
+              }}
+              style={{ marginLeft: "20px" }}
+            >
+              Enter Chat
+            </button>
+          </section>
+        ) : (
+          <ChatRoom room={room} roomPW={roomPW} />
+        )}
       </div>
     </>
   );

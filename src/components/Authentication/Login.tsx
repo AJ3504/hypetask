@@ -38,8 +38,8 @@ const Login: React.FC = () => {
   // zustand - state
   const fullName = useUserStore((state) => state.fullName);
   const accessToken = useUserStore((state) => state.accessToken);
-  console.log(fullName);
-  console.log(accessToken);
+  // console.log(fullName);
+  // console.log(accessToken);
 
   // 1. 일반 이메일 로그인 (provider = email)
   const loginHandler = async (e: FormEvent) => {

@@ -50,7 +50,6 @@ const Router = () => {
             }
           />
           <Route path="/chat/*" element={<Chat />} />
-          {/* 다음의 경로들에 대해서 OpenChatList와 MyChatList로 연결 */}
           <Route path="/chat/openChat" element={<OpenChatList />} />
           <Route path="/chat/myChat" element={<MyChatList />} />
         </Routes>
