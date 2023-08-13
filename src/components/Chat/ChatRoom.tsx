@@ -1,8 +1,6 @@
 import { FormEvent, useEffect, useState } from "react";
-import supabase from "../../config/supabaseClient";
 import { Chats } from "../../Types";
-import { SupabaseClient } from "@supabase/supabase-js";
-import { useUserStore } from "../Authentication/Login";
+import { useUserStore } from "../../config/useUserStore";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { addChat, getChats } from "../../api/chats";
 import { styled } from "styled-components";
@@ -18,7 +16,7 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
   const [formError, setFormError] = useState<string | null>(null);
   const [messages, setMessages] = useState<Chats[]>([]);
   const queryClient = useQueryClient();
-  const fullName = useUserStore((state) => state.fullName);
+  const { user } = useUserStore((state) => state);
 
   // useQuery
   // Get
@@ -58,7 +56,7 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
       return;
     }
 
-    addMutation.mutate({ newMessage, fullName, room });
+    addMutation.mutate({ newMessage, fullName: user!!.username, room });
     setNewMessage("");
   };
 

@@ -1,27 +1,28 @@
 import { useModalStore } from "../../zustand/useModalStore";
 import AddTaskModal from "../modal/AddTaskModal";
-
-import { useCurrentUserStore } from "../../zustand/useCurrentUserStore";
+import { useUserStore } from "../../config/useUserStore";
 import Header from "./Header";
 import TimeStampCard from "./TimeStampCard";
 import MyTasksCard from "./MyTasksCard";
 import OtherTasksCard from "./OtherTasksCard";
-import S from "./mainStyles";
+import { useCurrentFollowerStore } from "../../zustand/useCurrentFollowerStore";
+import S from "./MainStyles";
 
 const DailyCalender = () => {
+  const { user_id } = useUserStore();
   const { addTaskModalVisible } = useModalStore();
-  const { currentUserId, currentUserFollowers } = useCurrentUserStore();
+  const { currentUserFollowers } = useCurrentFollowerStore();
 
   return (
     <>
       {addTaskModalVisible ? (
-        <AddTaskModal todayDefault={true} myId={currentUserId!} />
+        <AddTaskModal todayDefault={true} myId={user_id!} />
       ) : null}
       <Header />
       <S.Container>
         <S.CalenderContainer>
           <TimeStampCard />
-          <MyTasksCard myId={currentUserId!} />
+          <MyTasksCard myId={user_id!} />
         </S.CalenderContainer>
         <S.FollowersCalenderContainer>
           {currentUserFollowers &&

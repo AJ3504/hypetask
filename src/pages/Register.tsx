@@ -54,7 +54,11 @@ const Register: React.FC = () => {
   const addUser = async (userUid: string, userName: string) => {
     const { error } = await supabase
       .from("profiles")
-      .upsert({ user_id: userUid, username: userName });
+      .upsert({
+        user_id: userUid,
+        username: userName,
+        avatar_url: `http://gravatar.com/avatar/${userUid}?d=identicon`,
+      });
 
     if (error) {
       console.error(error);

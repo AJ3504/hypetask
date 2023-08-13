@@ -7,9 +7,10 @@ import AddTaskModal from "../modal/AddTaskModal";
 import { MdCheckBoxOutlineBlank } from "react-icons/md";
 import { MdOutlineCheckBox } from "react-icons/md";
 import { BsTextRight } from "react-icons/bs";
-import { useCurrentUserStore } from "../../zustand/useCurrentUserStore";
+import S from "./MainStyles";
+import { useUserStore } from "../../config/useUserStore";
+import { useNavigate } from "react-router-dom";
 import TaskDetail from "./TaskDetail";
-import S from "./mainStyles";
 
 export interface TasksProps {
   myId: string;
@@ -18,13 +19,14 @@ export interface TasksProps {
 const MyTasksCard = ({ myId }: TasksProps) => {
   const today = new Date().toISOString().slice(0, 10);
 
+  const navigate = useNavigate();
   const { data: myTasks } = useQuery(["myTasks"], async () => {
     const tasksData = await getMyTasks(myId, today);
     return tasksData;
   });
 
   const { addTaskModalVisible, changeAddTaskModalstatus } = useModalStore();
-  const { currentUserId } = useCurrentUserStore();
+  const { user_id } = useUserStore();
 
   const updateDoneMutation = useMutation(
     ({ taskId, done }: { taskId: string; done: boolean }) =>
@@ -49,10 +51,15 @@ const MyTasksCard = ({ myId }: TasksProps) => {
   return (
     <>
       {addTaskModalVisible ? (
-        <AddTaskModal todayDefault={true} myId={currentUserId!} />
+        <AddTaskModal todayDefault={true} myId={user_id!} />
       ) : null}
       <S.TaskContainer>
-        <S.TaskBox>
+        <S.TaskBox
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            navigate(`/detail?uid=${user_id}&day=${today}`);
+          }}
+        >
           <S.Text>My Task</S.Text>
         </S.TaskBox>
         {myTasks &&

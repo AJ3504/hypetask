@@ -1,5 +1,4 @@
 import { Tasks, deleteTask, updateDetailOn } from "../../api/tasks";
-import { styled } from "styled-components";
 import { MdTitle } from "react-icons/md";
 import { BiTimeFive } from "react-icons/bi";
 import { BsTextLeft } from "react-icons/bs";
@@ -11,8 +10,8 @@ import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../../App";
 import { useModalStore } from "../../zustand/useModalStore";
 import AddTaskModal from "../modal/AddTaskModal";
-import { useCurrentUserStore } from "../../zustand/useCurrentUserStore";
-import S from "./mainStyles";
+import S from "./MainStyles";
+import { useUserStore } from "../../config/useUserStore";
 
 export interface TaskDetailProps {
   task: Tasks | undefined | null;
@@ -41,15 +40,15 @@ const TaskDetail = ({ task }: TaskDetailProps) => {
   );
 
   const { addTaskModalVisible, changeAddTaskModalstatus } = useModalStore();
-  const { currentUserId } = useCurrentUserStore();
+  const { user_id } = useUserStore();
   return (
     <S.TaskDetailBox>
       {addTaskModalVisible ? (
-        <AddTaskModal todayDefault={true} task={task!} myId={currentUserId!} />
+        <AddTaskModal todayDefault={true} task={task!} myId={user_id!} />
       ) : null}
 
       <div>
-        {currentUserId === task?.user_id ? (
+        {user_id === task?.user_id ? (
           <>
             <span onClick={changeAddTaskModalstatus}>
               <BiPencil />

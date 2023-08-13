@@ -1,18 +1,19 @@
 import { useMainTabStore } from "../zustand/useMainTabStore";
 import DailyCalender from "../components/main/DailyCalender";
 import ExplorePeople from "../components/main/ExplorePeople";
-import { useCurrentUserStore } from "../zustand/useCurrentUserStore";
+import { useCurrentFollowerStore } from "../zustand/useCurrentFollowerStore";
 import { useQuery } from "@tanstack/react-query";
 import { getCurrentUser, getFollowers } from "../api/users";
 import { Followers } from "../Types";
+import { useUserStore } from "../config/useUserStore";
 
 const Main = () => {
-  const today = new Date().toISOString().slice(0, 10);
-  const { setCurrentUserId, setCurrentUserFollowers } = useCurrentUserStore();
+  const { setCurrentUserFollowers } = useCurrentFollowerStore();
+  const { setUserId } = useUserStore();
 
   const { data: currentUser } = useQuery(["currentUser"], async () => {
     const currentUserData = await getCurrentUser();
-    setCurrentUserId(currentUserData as string);
+    setUserId(currentUserData as string);
   });
 
   const { data: followers } = useQuery(
@@ -27,8 +28,6 @@ const Main = () => {
       select: (data: Followers[]) => data.map((follower) => follower.to),
     }
   );
-
-  console.log("팔로워들", followers);
 
   const { currentTab } = useMainTabStore();
   return <>{currentTab === "main" ? <DailyCalender /> : <ExplorePeople />}</>;

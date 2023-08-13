@@ -94,6 +94,7 @@ const S = {
   `,
   TaskDetailBox: styled.div`
     background-color: #262286;
+    border-radius: 10px;
     width: 100%;
     height: 300px;
     box-sizing: border-box;

@@ -13,6 +13,7 @@ import { useModalStore } from "../../zustand/useModalStore";
 import { timeTable } from "../../consts/consts";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../../App";
+import supabase from "../../config/supabaseClient";
 dayjs.locale("ko");
 type IModalProps = {
   todayDefault: boolean;
@@ -32,42 +33,44 @@ const AddTaskModal: React.FC<IModalProps> = ({
   );
   const [desc, setDesc, onChangeDesc] = useInput("");
   const [startTime, setStartTime] = useInput(
-    dayjs(new Date()).locale("ko").format("hh")
+    dayjs(new Date()).locale("ko").format("a:hh")
   );
   const [endTime, setEndTime] = useInput(
-    dayjs(new Date()).locale("ko").format("hh")
+    dayjs(new Date()).locale("ko").format("a:hh")
   );
   const onChangeDate: DatePickerProps["onChange"] = (date, dateString) => {
     setDate(dateString);
   };
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const submitHandler = async () => {
-    setIsLoading(true);
-    if (startTime >= endTime) {
-      alert("종료시간은 시작시간보다 커야합니다.");
-      setIsLoading(false);
-      return;
-    }
-    console.log(title, desc, date, startTime, endTime);
     const soj = startTime.indexOf("후") === -1 ? 0 : 12;
     const eoj = endTime.indexOf("후") === -1 ? 0 : 12;
     const startTimeParsed: number = parseInt(startTime.slice(-2)) + soj;
     const endTimeParsed: number = parseInt(endTime.slice(-2)) + eoj;
+    setIsLoading(true);
+    if (startTimeParsed >= endTimeParsed) {
+      alert("종료시간은 시작시간보다 커야합니다.");
+      setIsLoading(false);
+      return;
+    }
     if (!title || !desc) {
       setIsLoading(false);
       return;
     }
-    await addTask({
-      title,
-      desc,
-      date,
-      start_time: startTimeParsed,
-      end_time: endTimeParsed,
-      user_id: myId,
-    });
-    setIsLoading(false);
-    alert("작성되었습니다");
-    changeAddTaskModalstatus();
+    const { data, error } = await supabase.auth.getSession();
+    if (data.session) {
+      await addTask({
+        title,
+        desc,
+        date,
+        start_time: startTimeParsed,
+        end_time: endTimeParsed,
+        user_id: data.session!!.user.id,
+      });
+      setIsLoading(false);
+      alert("작성되었습니다");
+      changeAddTaskModalstatus();
+    }
   };
 
   const updateTaskMutation = useMutation(
@@ -200,30 +203,23 @@ const AddTaskModal: React.FC<IModalProps> = ({
                 </Space>
               </div>
               <div>
-                {isLoading ? (
-                  <Button
-                    type="primary"
-                    style={{ position: "relative", left: "280px" }}
-                    loading
-                  >
-                    제출중
-                  </Button>
-                ) : (
-                  <Button
-                    type="primary"
-                    style={{ position: "relative", left: "280px" }}
-                    htmlType="submit"
-                  >
-                    제출
-                  </Button>
-                )}
-                <Button
-                  type="primary"
-                  style={{ position: "relative", left: "350px" }}
-                  onClick={changeAddTaskModalstatus}
+                <Space
+                  direction="horizontal"
+                  style={{ position: "relative", left: "300px" }}
                 >
-                  닫기
-                </Button>
+                  {isLoading ? (
+                    <Button type="primary" loading>
+                      제출중
+                    </Button>
+                  ) : (
+                    <Button type="primary" htmlType="submit">
+                      제출
+                    </Button>
+                  )}
+                  <Button type="primary" onClick={changeAddTaskModalstatus}>
+                    닫기
+                  </Button>
+                </Space>
               </div>
             </Space>
           </Form>

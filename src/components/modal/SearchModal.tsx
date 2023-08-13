@@ -5,8 +5,8 @@ import useInput from "../../hooks/useInput";
 import { useQuery } from "@tanstack/react-query";
 import { addFollower, getAllUser } from "../../api/users";
 import { User } from "../../Types";
-import { useCurrentUserStore } from "../../zustand/useCurrentUserStore";
 import { useMainTabStore } from "../../zustand/useMainTabStore";
+import { useUserStore } from "../../config/useUserStore";
 
 const SearchModal = () => {
   const { changeSearchModalstatus } = useModalStore();
@@ -19,13 +19,13 @@ const SearchModal = () => {
   });
 
   console.log(users);
-  const { currentUserId } = useCurrentUserStore();
+  const user_id = useUserStore((state) => state.user_id);
   const { setCurrentTab } = useMainTabStore();
 
   const searchOnsubmitHandler = (e: { preventDefault: () => void }) => {
     e.preventDefault();
     const searchedUsers = users
-      ?.filter((user) => user.user_id !== currentUserId)
+      ?.filter((user) => user.user_id !== user_id)
       .filter((user) => user.username?.includes(keyWord));
     console.log(searchedUsers);
     setSearchedUsers(searchedUsers);
@@ -60,7 +60,7 @@ const SearchModal = () => {
                 <span>{searchedUser.username}</span>
                 <button
                   onClick={() => {
-                    followBtnHandler(currentUserId, searchedUser.user_id);
+                    followBtnHandler(user_id!, searchedUser.user_id);
                   }}
                 >
                   팔로우

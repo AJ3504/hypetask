@@ -1,15 +1,14 @@
 import CommentContainer from "../components/Comment/CommentContainer";
 import MyTasksCard from "../components/main/MyTasksCard";
 import TimeStampCard from "../components/main/TimeStampCard";
-
+import { useUserStore } from "../config/useUserStore";
 const Detail = () => {
-  console.log(new Date().toISOString()); //9시간
+  const { user_id } = useUserStore((state) => state);
   return (
     <>
       <div style={{ display: "flex" }}>
         <TimeStampCard />
-
-        <MyTasksCard myId="2d99d192-6ec8-4404-bc60-c0b680f45757" />
+        <MyTasksCard myId={user_id as string} />
         <CommentContainer />
       </div>
     </>

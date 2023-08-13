@@ -10,16 +10,18 @@ export interface Chats {
 export type Comment = {
   user_id: string;
   comment_id?: string;
-  task_id: string;
+  task_id?: string;
   created_at?: string;
   comment: string;
   ref_step: number;
-  ref_id?: string;
+  ref_id?: string | null;
   time_ref?: number;
   replys?: Comment[];
   num_of_reply?: number;
   user?: User;
+  date: string;
   checked?: boolean;
+  ref_user_id: string;
 };
 export type User = {
   user_id: string;

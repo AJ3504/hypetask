@@ -11,9 +11,9 @@ import { MdOutlineCheckBox } from "react-icons/md";
 import { BsTextRight } from "react-icons/bs";
 import { useMainTabStore } from "../../zustand/useMainTabStore";
 import { addFollower, deleteFollower } from "../../api/users";
-import { useCurrentUserStore } from "../../zustand/useCurrentUserStore";
+import S from "./MainStyles";
+import { useUserStore } from "../../config/useUserStore";
 import TaskDetail from "./TaskDetail";
-import S from "./mainStyles";
 
 interface OtherTasksCardProps {
   userIds: string[];
@@ -21,7 +21,7 @@ interface OtherTasksCardProps {
 
 const OtherTasksCard = ({ userIds }: OtherTasksCardProps) => {
   const today = new Date().toISOString().slice(0, 10);
-  const { currentUserId } = useCurrentUserStore();
+  const { user_id } = useUserStore();
   const { currentTab, setCurrentTab } = useMainTabStore();
 
   const { data: followersTasks } = useQuery(
@@ -30,7 +30,7 @@ const OtherTasksCard = ({ userIds }: OtherTasksCardProps) => {
       const followerTasksData = await getFollowerTasks(today, userIds!);
       return followerTasksData;
     },
-    { enabled: !!currentUserId }
+    { enabled: !!user_id }
   );
 
   const updateDoneMutation = useMutation(
@@ -100,12 +100,16 @@ const OtherTasksCard = ({ userIds }: OtherTasksCardProps) => {
             <S.Text>{userId}</S.Text>
             <span>
               {currentTab === "explore" ? (
-                <button onClick={() => followBtnHandler(currentUserId, userId)}>
+                <button
+                  onClick={() => followBtnHandler(user_id as string, userId)}
+                >
                   팔로우
                 </button>
               ) : (
                 <button
-                  onClick={() => deleteFollowBtnHandler(currentUserId, userId)}
+                  onClick={() =>
+                    deleteFollowBtnHandler(user_id as string, userId)
+                  }
                 >
                   팔로우 취소
                 </button>

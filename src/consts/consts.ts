@@ -25,3 +25,8 @@ export const timeTable = [
   { value: "22", label: "오후:10" },
   { value: "23", label: "오후:11" },
 ];
+
+export const offset = 1000 * 60 * 60 * 9;
+export const today = new Date(new Date().getTime() + offset)
+  .toISOString()
+  .slice(0, 10);

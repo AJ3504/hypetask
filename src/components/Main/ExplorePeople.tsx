@@ -1,14 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { getAllUser } from "../../api/users";
-import { useCurrentUserStore } from "../../zustand/useCurrentUserStore";
-import { styled } from "styled-components";
-
 import { useModalStore } from "../../zustand/useModalStore";
 import SearchModal from "../modal/SearchModal";
+import { useCurrentFollowerStore } from "../../zustand/useCurrentFollowerStore";
+import { useUserStore } from "../../config/useUserStore";
 import Header from "./Header";
+import S from "./MainStyles";
 import TimeStampCard from "./TimeStampCard";
 import OtherTasksCard from "./OtherTasksCard";
-import S from "./mainStyles";
 
 const ExplorePeople = () => {
   // const today = new Date().toISOString().slice(0, 10);
@@ -24,22 +23,21 @@ const ExplorePeople = () => {
     { select: (usersData) => usersData.map((userData) => userData.user_id) }
   );
 
-  const { currentUserId, currentUserFollowers } = useCurrentUserStore();
+  const { currentUserFollowers } = useCurrentFollowerStore();
+  const user_id = useUserStore((state) => state.user_id);
   const { searchModalVisible } = useModalStore();
 
   if (isLoading) {
     return <div style={{ backgroundColor: "#262286" }}>로딩중...</div>;
   }
 
-  const exceptUser = [...currentUserFollowers, currentUserId];
+  const exceptUser = [...currentUserFollowers, user_id];
   const fillteredUsers = [...(users as string[])];
 
   exceptUser?.forEach((user) => {
-    const index = fillteredUsers?.indexOf(user);
+    const index = fillteredUsers?.indexOf(user as string);
     fillteredUsers.splice(index, 1);
   });
-
-  console.log("여기", fillteredUsers);
 
   return (
     <>
