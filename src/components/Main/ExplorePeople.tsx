@@ -10,9 +10,6 @@ import TimeStampCard from "./TimeStampCard";
 import OtherTasksCard from "./OtherTasksCard";
 
 const ExplorePeople = () => {
-  // const today = new Date().toISOString().slice(0, 10);
-  const today = "2023-08-12";
-
   // 모든 유저
   const { data: users, isLoading } = useQuery(
     ["users"],
@@ -38,6 +35,8 @@ const ExplorePeople = () => {
     const index = fillteredUsers?.indexOf(user as string);
     fillteredUsers.splice(index, 1);
   });
+
+  console.log("여기", fillteredUsers);
 
   return (
     <>

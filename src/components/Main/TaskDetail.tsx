@@ -47,55 +47,66 @@ const TaskDetail = ({ task }: TaskDetailProps) => {
         <AddTaskModal todayDefault={true} task={task!} myId={user_id!} />
       ) : null}
 
-      <div>
+      <S.DetailBtnBox>
         {user_id === task?.user_id ? (
           <>
-            <span onClick={changeAddTaskModalstatus}>
+            <S.DetailBtn
+              onClick={changeAddTaskModalstatus}
+              style={{ cursor: "pointer" }}
+            >
               <BiPencil />
-            </span>
-            <span onClick={() => deleteTaskMutaion.mutate(task?.task_id!)}>
+            </S.DetailBtn>
+            <S.DetailBtn
+              onClick={() => deleteTaskMutaion.mutate(task?.task_id!)}
+              style={{ cursor: "pointer" }}
+            >
               <BsTrash3 />
-            </span>
+            </S.DetailBtn>
           </>
         ) : null}
 
-        <span
+        <S.DetailBtn
           onClick={() =>
             updateDetailOnMutation.mutate({
               taskId: task?.task_id!,
               on: task?.detail_on!,
             })
           }
+          style={{ cursor: "pointer" }}
         >
           <AiOutlineCloseCircle />
-        </span>
-      </div>
-      <div>
-        <span>
-          <MdTitle />
-        </span>
-        <span>{task?.title}</span>
-      </div>
-      <div>
-        <span>
-          <BiTimeFive />
-        </span>
-        <span>
-          {task?.start_time}:00 ~ {task?.end_time}:00
-        </span>
-      </div>
-      <div>
-        <span>
-          <BsTextLeft />
-        </span>
-        <span>{task?.desc}</span>
-      </div>
-      <div>
-        <span>
-          <AiOutlineCheckCircle />
-        </span>
-        <span>{task?.done ? "완료" : "미완료"}</span>
-      </div>
+        </S.DetailBtn>
+      </S.DetailBtnBox>
+      <S.ContentsBox>
+        <S.Contents style={{ marginBottom: "10px" }}>
+          <S.ContentsImo>
+            <MdTitle size="25" />
+          </S.ContentsImo>
+          <S.ContentsText fontSize={20}>{task?.title}</S.ContentsText>
+        </S.Contents>
+
+        <S.Contents>
+          <S.ContentsImo>
+            <BiTimeFive size="20" />
+          </S.ContentsImo>
+          <S.ContentsText>
+            {task?.start_time}:00 ~ {task?.end_time}:00
+          </S.ContentsText>
+        </S.Contents>
+
+        <S.Contents>
+          <S.ContentsImo>
+            <BsTextLeft size="20" />
+          </S.ContentsImo>
+          <S.ContentsText>{task?.desc}</S.ContentsText>
+        </S.Contents>
+        <S.Contents>
+          <S.ContentsImo>
+            <AiOutlineCheckCircle size="20" />
+          </S.ContentsImo>
+          <S.ContentsText>{task?.done ? "완료" : "미완료"}</S.ContentsText>
+        </S.Contents>
+      </S.ContentsBox>
     </S.TaskDetailBox>
   );
 };

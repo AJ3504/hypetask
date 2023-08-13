@@ -11,14 +11,13 @@ import S from "./MainStyles";
 import { useUserStore } from "../../config/useUserStore";
 import { useNavigate } from "react-router-dom";
 import TaskDetail from "./TaskDetail";
+import { today } from "../../consts/consts";
 
 export interface TasksProps {
   myId: string;
 }
 
 const MyTasksCard = ({ myId }: TasksProps) => {
-  const today = new Date().toISOString().slice(0, 10);
-
   const navigate = useNavigate();
   const { data: myTasks } = useQuery(["myTasks"], async () => {
     const tasksData = await getMyTasks(myId, today);
@@ -81,14 +80,17 @@ const MyTasksCard = ({ myId }: TasksProps) => {
                           done: task.done!,
                         })
                       }
+                      style={{ cursor: "pointer" }}
                     >
                       {task.done ? (
-                        <MdOutlineCheckBox size="25" />
+                        <MdOutlineCheckBox size="30" />
                       ) : (
-                        <MdCheckBoxOutlineBlank size="25" />
+                        <MdCheckBoxOutlineBlank size="30" />
                       )}
                     </S.DoneCheckBtn>
-                    <p>{task.title}</p>
+                    <p style={{ fontSize: "18px", fontWeight: "600" }}>
+                      {task.title}
+                    </p>
                     <span
                       onClick={() =>
                         updateDetailOnMutation.mutate({
@@ -96,8 +98,9 @@ const MyTasksCard = ({ myId }: TasksProps) => {
                           on: task.detail_on!,
                         })
                       }
+                      style={{ cursor: "pointer" }}
                     >
-                      <BsTextRight size="23" />
+                      <BsTextRight size="30" />
                     </span>
                   </S.Task>
                 )}

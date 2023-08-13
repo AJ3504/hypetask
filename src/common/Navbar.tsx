@@ -107,13 +107,14 @@ export function Navbar() {
                     paddingRight: "20px",
                     paddingLeft: "35px",
                     fontWeight: "bold",
+                    cursor: "pointer",
                   }}
                 >
                   친구
                 </span>
                 <span
                   onClick={() => setCurrentTab("explore")}
-                  style={{ fontWeight: "bold" }}
+                  style={{ fontWeight: "bold", cursor: "pointer" }}
                 >
                   탐색
                 </span>

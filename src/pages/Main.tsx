@@ -16,11 +16,12 @@ const Main = () => {
     setUserId(currentUserData as string);
   });
 
-  const { data: followers } = useQuery(
+  const { data: followers, isLoading } = useQuery(
     ["followers"],
     async () => {
       const followersData = await getFollowers(currentUser!);
       setCurrentUserFollowers(followers as string[]);
+      console.log("asa", followersData);
       return followersData;
     },
     {
@@ -30,6 +31,10 @@ const Main = () => {
   );
 
   const { currentTab } = useMainTabStore();
+
+  if (isLoading) {
+    return <div>로딩중...!</div>;
+  }
   return <>{currentTab === "main" ? <DailyCalender /> : <ExplorePeople />}</>;
 };
 

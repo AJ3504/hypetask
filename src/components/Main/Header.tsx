@@ -27,7 +27,7 @@ const Header = () => {
   return (
     <>
       <S.Header>
-        <div>{quotes?.advice}</div>
+        <p style={{ fontSize: "18px" }}>{quotes?.advice}</p>
         {/* <button onClick={headerBtnHandler}>버튼</button> */}
         <Button
           type="primary"

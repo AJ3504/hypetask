@@ -1,8 +1,12 @@
 import { styled } from "styled-components";
 
-interface styleProps {
+interface TaskBoxProps {
   height?: number;
   top?: number;
+}
+
+interface ContentsTextProps {
+  fontSize?: number;
 }
 
 const S = {
@@ -50,7 +54,7 @@ const S = {
     padding: 10px;
     margin-top: 100px;
   `,
-  TaskBox: styled.div<styleProps>`
+  TaskBox: styled.div<TaskBoxProps>`
     height: ${(props) => props.height}px;
     width: 100%;
     padding: 5px;
@@ -79,7 +83,7 @@ const S = {
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   `,
   Text: styled.span`
-    font-size: 14px;
+    font-size: 15px;
     font-weight: bold;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
     color: black;
@@ -99,6 +103,36 @@ const S = {
     height: 300px;
     box-sizing: border-box;
     border-radius: 3px;
+    padding: 10px;
+  `,
+  DetailBtnBox: styled.div`
+    float: right;
+  `,
+  DetailBtn: styled.button`
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    color: white;
+    font-size: 20px;
+  `,
+  ContentsBox: styled.div`
+    margin-top: 35px;
+  `,
+  ContentsImo: styled.span`
+    margin-bottom: 10px;
+  `,
+  ContentsText: styled.span<ContentsTextProps>`
+    margin: 4px 0 0 10px;
+    font-size: ${(props) => (props ? props.fontSize : 10)}px;
+  `,
+  Contents: styled.div`
+    display: flex;
+    text-align: center;
+  `,
+  FollowBtn: styled.button`
+    background-color: #262286;
+    border: none;
+    border-radius: 5px;
   `,
 };
 export default S;
