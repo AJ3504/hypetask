@@ -4,6 +4,15 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { getChats } from "../../api/chats";
 import { styled } from "styled-components";
 import { useRoomStore } from "../../config/useRoomStore";
+import {
+  StDate,
+  StHeader,
+  StMessage,
+  StMessages,
+  StOpenChatListContainer,
+  StText,
+  StUser,
+} from "./chatstyle/OpenChatListStyle";
 
 const OpenChatList: React.FC = () => {
   // zustand - room, roomPW
@@ -60,14 +69,17 @@ const OpenChatList: React.FC = () => {
   };
 
   return (
-    <>
+    <StOpenChatListContainer>
+      <StHeader>
+        <h1>Welcome to: {room.toUpperCase()}</h1>
+      </StHeader>
       <StMessages>
         {isFetching && !isFetchingNextPage ? "Fetching..." : null}
         {data?.pages &&
           data.pages.map((page) =>
             page.map((chat) => (
               <StMessage key={chat.chat_id}>
-                <StUser>{chat.username}:</StUser> {chat.text}
+                <StUser>{chat.username}:</StUser> <StText>{chat.text}</StText>
                 <br />
                 <StDate>{prettierCreatedAt(chat.created_at)}</StDate>
               </StMessage>
@@ -75,38 +87,10 @@ const OpenChatList: React.FC = () => {
           )}
       </StMessages>
       <button onClick={fetchMore}>더보기</button>
-    </>
+    </StOpenChatListContainer>
   );
 };
 
 export default OpenChatList;
 
 //-----------------------------------//
-
-export const StMessages = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 100%;
-  height: 80%;
-  overflow-y: auto;
-  padding: 10px;
-  margin-bottom: 10px;
-`;
-export const StMessage = styled.div`
-  display: flex;
-  align-items: flex-start;
-  margin-bottom: 10px;
-`;
-export const StUser = styled.span`
-  font-weight: bold;
-  margin-right: 10px;
-  color: #333;
-`;
-export const StDate = styled.span`
-  font-size: 10px;
-  margin-left: 5px;
-  color: lightgray;
-  position: relative;
-  top: 3px;
-`;

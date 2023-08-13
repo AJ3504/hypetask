@@ -15,7 +15,7 @@ export const ST = {
   `,
   OpenChatTab: styled.span`
     margin-left: "20px";
-    cursor: "pointer";
+    cursor: pointer;
     font-size: 15px;
     font-weight: bold;
   `,
@@ -111,7 +111,7 @@ export const SB = {
   EnterChatContainerInner: styled.section`
     border-width: 3px;
     border-radius: 5px;
-    width: 75%;
+    width: 90%;
     margin: 40px auto;
     padding: 20px;
   `,
