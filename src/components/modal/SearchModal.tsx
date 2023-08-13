@@ -43,32 +43,51 @@ const SearchModal = () => {
   return (
     <S.ModalBackGround>
       <S.ModalContent>
-        <form onSubmit={searchOnsubmitHandler}>
+        <form
+          onSubmit={searchOnsubmitHandler}
+          style={{ display: "flex", justifyContent: "space-between" }}
+        >
           <input
             onChange={onChangeKeyWord}
             placeholder="검색어를 입력해주세요"
             value={keyWord}
+            style={{ width: "300px", height: "30px", marginBottom: "20px" }}
           />
-          <button>검색</button>
+          <S.SearchBtn
+            style={{
+              height: "30px",
+              width: "80px",
+              marginLeft: "10px",
+            }}
+          >
+            검색
+          </S.SearchBtn>
         </form>
         {searchedUsers && searchedUsers.length > 0 ? (
           searchedUsers.map((searchedUser: User) => {
             return (
-              <div>
-                <span>{searchedUser.username}</span>
-                <button
+              <div
+                style={{
+                  marginBottom: "10px",
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                <span style={{ color: "black" }}>{searchedUser.username}</span>
+                <S.SearchBtn
                   onClick={() => {
                     followBtnHandler(user_id!, searchedUser.user_id);
                   }}
+                  style={{ height: "30px", width: "60px" }}
                 >
                   팔로우
-                </button>
+                </S.SearchBtn>
               </div>
             );
           })
         ) : (
           <div>
-            <p>존재하지 않는 유저입니다.</p>
+            <p style={{ color: "black" }}>존재하지 않는 유저입니다.</p>
           </div>
         )}
       </S.ModalContent>
@@ -94,9 +113,16 @@ const S = {
   `,
   ModalContent: styled.div`
     background-color: #fff;
-    padding: 20px;
+    padding: 30px;
     width: 420px;
     height: 500px;
     border-radius: 10px;
+    overflow: auto;
+  `,
+  SearchBtn: styled.button`
+    background-color: #262286;
+    color: white;
+    border: none;
+    border-radius: 7px;
   `,
 };

@@ -102,8 +102,9 @@ const OtherTasksCard = ({ userIds }: OtherTasksCardProps) => {
           const userFollowersTasks = followersTasks.filter(
             (task) => task.user_id === userId
           );
-          const userOnlyIds = userFollowersTasks.length > 0 ? [] : [userId];
           const userArr = users.filter((user) => user.user_id === userId);
+          const userOnlyIds = userFollowersTasks.length > 0 ? [] : [userId];
+
           return (
             <S.TaskContainer key={userId}>
               <S.TaskBox
@@ -118,27 +119,25 @@ const OtherTasksCard = ({ userIds }: OtherTasksCardProps) => {
                   {userArr[0].username}
                 </S.Text>
                 <span>
-                  {currentTab === "explore" ? (
-                    <S.FollowBtn
-                      onClick={() =>
-                        followBtnHandler(user_id as string, userId)
-                      }
-                      style={{ cursor: "pointer" }}
-                    >
+                  <S.FollowBtn
+                    onClick={
+                      currentTab === "explore"
+                        ? () => followBtnHandler(user_id as string, userId)
+                        : () =>
+                            deleteFollowBtnHandler(user_id as string, userId)
+                    }
+                    style={{ cursor: "pointer" }}
+                  >
+                    {currentTab === "explore" ? (
                       <RiUserFollowLine size="20" color="white" />
-                    </S.FollowBtn>
-                  ) : (
-                    <S.FollowBtn
-                      onClick={() =>
-                        deleteFollowBtnHandler(user_id as string, userId)
-                      }
-                      style={{ cursor: "pointer" }}
-                    >
+                    ) : (
                       <RiUserUnfollowLine size="20" color="white" />
-                    </S.FollowBtn>
-                  )}
+                    )}
+                  </S.FollowBtn>
                 </span>
               </S.TaskBox>
+
+              {/* userFollowersTasks.map 부분을 여기로 이동합니다 */}
               {userFollowersTasks.map((followerTask: Tasks) => {
                 const endHour = followerTask.end_time;
                 const startHour = followerTask.start_time;
@@ -187,6 +186,7 @@ const OtherTasksCard = ({ userIds }: OtherTasksCardProps) => {
                   </div>
                 );
               })}
+
               {userOnlyIds.map((onlyUserId) => (
                 <S.TaskBox key={onlyUserId} top={30}>
                   <S.Text style={{ color: "black", height: "20px" }}>
