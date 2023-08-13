@@ -8,23 +8,27 @@ import { today, timeTable } from "../../consts/consts";
 import { useUserStore } from "../../zustand/useUserStore";
 import { useCommentStoreDev } from "../../zustand/CommentStore";
 import { useCommentTimeStoreDev } from "../../zustand/CommentTimeStore";
+import { Form } from "antd";
+
 type Props = {
   ref_step: number;
   ref_id?: string;
 };
 
 const CommentWriteForm = ({ ref_step, ref_id }: Props) => {
-  const [comment, setComment, onChangeComment] = useInput<string>("");
+  const [comment, setComment, onChangeComment, reset] = useInput<string>("");
   const commentContainerWidth = useCommentStoreDev(
     (state) => state.parentCommentContainerWidth
   );
+  const [form] = Form.useForm();
   const { clickedTask } = useCommentTimeStoreDev();
-  console.log(clickedTask);
   const writeComment = useCommentStoreDev((state) => state.writeComment);
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+
   const { user, user_id } = useUserStore((state) => state);
   const writeCommentHandler = async () => {
+    form.resetFields();
     if (!comment || comment.length === 0) {
       alert("댓글을 작성해주세요");
       return;
@@ -44,6 +48,8 @@ const CommentWriteForm = ({ ref_step, ref_id }: Props) => {
       ref_user_id: searchParams.get("uid")!,
     };
     setComment("");
+    reset();
+
     await writeComment(data);
   };
   return (
@@ -71,19 +77,31 @@ const CommentWriteForm = ({ ref_step, ref_id }: Props) => {
 
           <Space direction="horizontal">
             <Avatar src={user?.img_url} />
-            <Input.TextArea
-              placeholder="댓글을 남겨보세요."
-              style={{
-                width: `${
-                  (commentContainerWidth - 120) * (1 - 0.14 * ref_step)
-                }px`,
-              }}
-              autoSize={{ minRows: 1, maxRows: 6 }}
-              onChange={onChangeComment}
-            ></Input.TextArea>
-            <Button type="primary" size="middle" onClick={writeCommentHandler}>
-              <EditOutlined />
-            </Button>
+            <Form form={form}>
+              <Space direction="horizontal">
+                <Form.Item style={{ marginBottom: "0px" }} name="come">
+                  <Input.TextArea
+                    placeholder="댓글을 남겨보세요."
+                    style={{
+                      width: `${
+                        (commentContainerWidth - 120) * (1 - 0.14 * ref_step)
+                      }px`,
+                      marginBottom: "0px",
+                    }}
+                    autoSize={{ minRows: 1, maxRows: 6 }}
+                    onChange={onChangeComment}
+                  ></Input.TextArea>
+                </Form.Item>
+                <Button
+                  type="primary"
+                  size="middle"
+                  onClick={writeCommentHandler}
+                  htmlType="submit"
+                >
+                  <EditOutlined />
+                </Button>
+              </Space>
+            </Form>
           </Space>
         </Space>
       ) : (

@@ -28,7 +28,6 @@ function CommentCard({
   const commentContainerWidth = useCommentStoreDev(
     (state) => state.parentCommentContainerWidth
   );
-  console.log(user);
   const fetchReplys = useCommentStoreDev((state) => state.fetchReplys);
   const deleteComment = useCommentStoreDev((state) => state.deleteComment);
   const my_user_id = useUserStore((state) => state.user_id);
@@ -58,7 +57,6 @@ function CommentCard({
     }
   };
   const deleteCommentHandler = () => {
-    console.log("불림");
     deleteComment(comment_id!);
   };
   const closeSeeReply = () => {
