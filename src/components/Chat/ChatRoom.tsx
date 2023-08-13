@@ -1,9 +1,9 @@
 import { FormEvent, useEffect, useState } from "react";
 import { Chats } from "../../Types";
-import { useUserStore } from "../../zustand/useUserStore";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { addChat, getChats } from "../../api/chats";
 import { styled } from "styled-components";
+import { useUserStore } from "../../zustand/useUserStore";
 
 type ChatRoomProps = {
   room: string;

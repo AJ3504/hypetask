@@ -4,9 +4,10 @@ import { updateChecked } from "../../api/comments";
 import { queryClient } from "../../App";
 import { useModalStore } from "../../zustand/useModalStore";
 import { AiOutlineCloseCircle } from "react-icons/ai";
+import { useUserStore } from "../../zustand/useUserStore";
 
 interface AlertModalProps {
-  myTaskIds: string[] | undefined | [];
+  myId: string;
   myComments: MyComment[];
 }
 
@@ -17,9 +18,9 @@ export interface MyComment {
   comment: string;
 }
 
-const AlertModal = ({ myTaskIds, myComments }: AlertModalProps) => {
+const AlertModal = ({ myComments }: AlertModalProps) => {
   const updateCheckedMutation = useMutation(
-    (myTaskIds: string[]) => updateChecked(myTaskIds as string[]),
+    (myId: string) => updateChecked(myId as string),
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["myComments"]);
@@ -28,10 +29,11 @@ const AlertModal = ({ myTaskIds, myComments }: AlertModalProps) => {
   );
 
   const { changeAlertModalstatus } = useModalStore();
+  const { user_id } = useUserStore((state) => state);
 
   const alertModalCloseBtnHandler = () => {
     changeAlertModalstatus(false);
-    updateCheckedMutation.mutate(myTaskIds!);
+    updateCheckedMutation.mutate(user_id!);
   };
 
   return (

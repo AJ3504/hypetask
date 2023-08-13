@@ -3,9 +3,9 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import { styled } from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import supabase from "../../config/supabaseClient";
-import { useUserStore } from "../../zustand/useUserStore";
 import type { User } from "../../Types";
-import { getCurrentUser } from "../../api/users";
+import { useUserStore } from "../../zustand/useUserStore";
+
 enum AuthProvider {
   Google = "google",
   Kakao = "kakao",
