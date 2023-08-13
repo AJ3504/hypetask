@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { addFollower, getAllUser } from "../../api/users";
 import { User } from "../../Types";
 import { useMainTabStore } from "../../zustand/useMainTabStore";
-import { useUserStore } from "../../config/useUserStore";
+import { useUserStore } from "../../zustand/useUserStore";
 
 const SearchModal = () => {
   const { changeSearchModalstatus } = useModalStore();

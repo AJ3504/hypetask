@@ -1,6 +1,6 @@
 import { useModalStore } from "../../zustand/useModalStore";
 import AddTaskModal from "../modal/AddTaskModal";
-import { useUserStore } from "../../config/useUserStore";
+import { useUserStore } from "../../zustand/useUserStore";
 import Header from "./Header";
 import TimeStampCard from "./TimeStampCard";
 import MyTasksCard from "./MyTasksCard";

@@ -1,18 +1,5 @@
 import supabase from "../config/supabaseClient";
-
-export interface Tasks {
-  task_id: string | undefined;
-  created_at?: string;
-  title: string;
-  desc: string;
-  done?: boolean;
-  start_time: number;
-  end_time: number;
-  date: string;
-  user_id: string | undefined;
-  detail_on?: boolean;
-  username?: string;
-}
+import type { Tasks } from "../Types";
 
 export const getMyTasks = async (
   myId: string,

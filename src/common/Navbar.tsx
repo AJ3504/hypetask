@@ -7,14 +7,14 @@ import { useModalStore } from "../zustand/useModalStore";
 import { getMyComments } from "../api/comments";
 import supabase from "../config/supabaseClient";
 
-import { useUserStore } from "../config/useUserStore";
+import { useUserStore } from "../zustand/useUserStore";
 import { today } from "../consts/consts";
 import { PoweroffOutlined } from "@ant-design/icons";
 import { Button, Space } from "antd";
 import { useState } from "react";
 import { useMainTabStore } from "../zustand/useMainTabStore";
 export function Navbar() {
-  const { user_id, user } = useUserStore((state) => state);
+  const { user_id, user, logout } = useUserStore((state) => state);
   const location = useLocation();
   const navigate = useNavigate();
   const { data: myTaskIds } = useQuery(
@@ -155,18 +155,33 @@ export function Navbar() {
               </Link>
               <Space direction="vertical">
                 <Space wrap>
-                  <Button
-                    type="primary"
-                    icon={<PoweroffOutlined />}
-                    loading={loadings[1]}
-                    style={{ backgroundColor: "#344CB7" }}
-                    onClick={() => {
-                      enterLoading(1);
-                      signOutBtnHandler();
-                    }}
-                  >
-                    로그아웃
-                  </Button>
+                  {!user_id ? (
+                    <Button
+                      type="primary"
+                      icon={<PoweroffOutlined />}
+                      loading={loadings[1]}
+                      style={{ backgroundColor: "#344CB7" }}
+                      onClick={() => {
+                        navigate("/first-main");
+                      }}
+                    >
+                      로그인
+                    </Button>
+                  ) : (
+                    <Button
+                      type="primary"
+                      icon={<PoweroffOutlined />}
+                      loading={loadings[1]}
+                      style={{ backgroundColor: "#344CB7" }}
+                      onClick={() => {
+                        enterLoading(1);
+                        signOutBtnHandler();
+                        logout();
+                      }}
+                    >
+                      로그아웃
+                    </Button>
+                  )}
                 </Space>
               </Space>
             </StRightNavInner>

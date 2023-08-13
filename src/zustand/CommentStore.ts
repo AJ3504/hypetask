@@ -35,6 +35,14 @@ function findAndAppendComment(c: Comment[], targetId: string, reply: Comment) {
     findAndAppendComment(c[i].replys!, targetId, reply);
   }
 }
+function findAndDeleteComment(c: Comment[], targetId: string) {
+  for (let i = 0; i < c.length; i++) {
+    if (c.length > 0) {
+      findAndDeleteComment(c[i]!.replys!, targetId);
+      c.filter((c) => c.comment_id !== targetId);
+    }
+  }
+}
 const store = (set: any, get: any) => ({
   comment: [],
   parentCommentContainerWidth: 700,
@@ -71,6 +79,12 @@ const store = (set: any, get: any) => ({
     }
     //아니면 최상위에 붙인다
     c.unshift(insertedData);
+    set({ comment: c });
+  },
+  deleteComment: async (comment: Comment) => {
+    let c = [...get().comment];
+    findAndDeleteComment(c, comment!.comment_id!);
+    console.log(c);
     set({ comment: c });
   },
 });

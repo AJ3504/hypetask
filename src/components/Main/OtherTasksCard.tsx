@@ -1,21 +1,17 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import {
-  Tasks,
-  getFollowerTasks,
-  updateDetailOn,
-  updateDone,
-} from "../../api/tasks";
+import { getFollowerTasks, updateDetailOn, updateDone } from "../../api/tasks";
+import type { Tasks } from "../../Types";
 import { queryClient } from "../../App";
 import { MdCheckBoxOutlineBlank } from "react-icons/md";
 import { RiUserFollowLine } from "react-icons/ri";
 import { RiUserUnfollowLine } from "react-icons/ri";
-
+import { useNavigate } from "react-router-dom";
 import { MdOutlineCheckBox } from "react-icons/md";
 import { BsTextRight } from "react-icons/bs";
 import { useMainTabStore } from "../../zustand/useMainTabStore";
 import { addFollower, deleteFollower, getAllUser } from "../../api/users";
 import S from "./MainStyles";
-import { useUserStore } from "../../config/useUserStore";
+import { useUserStore } from "../../zustand/useUserStore";
 import TaskDetail from "./TaskDetail";
 import { today } from "../../consts/consts";
 
@@ -26,7 +22,7 @@ interface OtherTasksCardProps {
 const OtherTasksCard = ({ userIds }: OtherTasksCardProps) => {
   const { user_id } = useUserStore();
   const { currentTab, setCurrentTab } = useMainTabStore();
-
+  const navigate = useNavigate();
   const { data: users, isLoading } = useQuery(["users"], async () => {
     const usersData = await getAllUser();
     return usersData;
@@ -108,13 +104,19 @@ const OtherTasksCard = ({ userIds }: OtherTasksCardProps) => {
           );
           const userOnlyIds = userFollowersTasks.length > 0 ? [] : [userId];
           const userArr = users.filter((user) => user.user_id === userId);
-
           return (
             <S.TaskContainer key={userId}>
               <S.TaskBox
                 style={{ display: "flex", justifyContent: "space-between" }}
               >
-                <S.Text>{userArr[0].username}</S.Text>
+                <S.Text
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    navigate(`/detail?uid=${userArr[0].user_id}&day=${today}`);
+                  }}
+                >
+                  {userArr[0].username}
+                </S.Text>
                 <span>
                   {currentTab === "explore" ? (
                     <S.FollowBtn
