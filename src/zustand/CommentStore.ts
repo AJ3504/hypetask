@@ -35,14 +35,7 @@ function findAndAppendComment(c: Comment[], targetId: string, reply: Comment) {
     findAndAppendComment(c[i].replys!, targetId, reply);
   }
 }
-function findAndDeleteComment(c: Comment[], targetId: string) {
-  for (let i = 0; i < c.length; i++) {
-    if (c.length > 0) {
-      findAndDeleteComment(c[i]!.replys!, targetId);
-      c.filter((c) => c.comment_id !== targetId);
-    }
-  }
-}
+
 const store = (set: any, get: any) => ({
   comment: [],
   parentCommentContainerWidth: 700,
@@ -81,11 +74,12 @@ const store = (set: any, get: any) => ({
     c.unshift(insertedData);
     set({ comment: c });
   },
-  deleteComment: async (comment: Comment) => {
-    let c = [...get().comment];
-    findAndDeleteComment(c, comment!.comment_id!);
-    console.log(c);
-    set({ comment: c });
+  deleteComment: async (commentId: string) => {
+    if (window.confirm("삭제하시겠습니까?")) {
+      await cApi.deleteComment(commentId);
+      alert("삭제되었습니다.");
+      window.location.reload();
+    }
   },
 });
 

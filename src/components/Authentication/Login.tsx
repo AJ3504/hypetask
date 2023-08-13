@@ -53,9 +53,6 @@ const Login: React.FC = () => {
         supabase.auth as SupabaseClient["auth"]
       ).signInWithOAuth({
         provider: provider,
-        options: {
-          redirectTo: process.env.REACT_APP_HOME_URL,
-        },
       });
       if (error) {
         console.error(`${provider} 로그인 에러 발생:`, error);
