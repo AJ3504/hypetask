@@ -7,6 +7,9 @@ import {
 } from "../../api/tasks";
 import { queryClient } from "../../App";
 import { MdCheckBoxOutlineBlank } from "react-icons/md";
+import { RiUserFollowLine } from "react-icons/ri";
+import { RiUserUnfollowLine } from "react-icons/ri";
+
 import { MdOutlineCheckBox } from "react-icons/md";
 import { BsTextRight } from "react-icons/bs";
 import { useMainTabStore } from "../../zustand/useMainTabStore";
@@ -14,13 +17,13 @@ import { addFollower, deleteFollower } from "../../api/users";
 import S from "./MainStyles";
 import { useUserStore } from "../../config/useUserStore";
 import TaskDetail from "./TaskDetail";
+import { today } from "../../consts/consts";
 
 interface OtherTasksCardProps {
   userIds: string[];
 }
 
 const OtherTasksCard = ({ userIds }: OtherTasksCardProps) => {
-  const today = new Date().toISOString().slice(0, 10);
   const { user_id } = useUserStore();
   const { currentTab, setCurrentTab } = useMainTabStore();
 
@@ -30,8 +33,9 @@ const OtherTasksCard = ({ userIds }: OtherTasksCardProps) => {
       const followerTasksData = await getFollowerTasks(today, userIds!);
       return followerTasksData;
     },
-    { enabled: !!user_id }
+    { enabled: !!user_id && !!userIds }
   );
+  console.log(followersTasks);
 
   const updateDoneMutation = useMutation(
     ({ taskId, done }: { taskId: string; done: boolean }) =>
@@ -92,87 +96,102 @@ const OtherTasksCard = ({ userIds }: OtherTasksCardProps) => {
 
   return (
     <>
-      {userIds?.map((userId) => (
-        <S.TaskContainer key={userId}>
-          <S.TaskBox
-            style={{ display: "flex", justifyContent: "space-between" }}
-          >
-            <S.Text>{userId}</S.Text>
-            <span>
-              {currentTab === "explore" ? (
-                <button
-                  onClick={() => followBtnHandler(user_id as string, userId)}
-                >
-                  팔로우
-                </button>
-              ) : (
-                <button
-                  onClick={() =>
-                    deleteFollowBtnHandler(user_id as string, userId)
-                  }
-                >
-                  팔로우 취소
-                </button>
-              )}
-            </span>
-          </S.TaskBox>
-          {followersTasks &&
-            followersTasks
-              .filter((followerTask) => followerTask.user_id === userId)
-              .map((followerTask: Tasks) => {
+      {followersTasks &&
+        userIds?.map((userId) => {
+          const userFollowersTasks = followersTasks.filter(
+            (task) => task.user_id === userId
+          );
+          const userOnlyIds = userFollowersTasks.length > 0 ? [] : [userId];
+
+          return (
+            <S.TaskContainer key={userId}>
+              <S.TaskBox
+                style={{ display: "flex", justifyContent: "space-between" }}
+              >
+                <S.Text>{userId}</S.Text>
+                <span>
+                  {currentTab === "explore" ? (
+                    <S.FollowBtn
+                      onClick={() =>
+                        followBtnHandler(user_id as string, userId)
+                      }
+                      style={{ cursor: "pointer" }}
+                    >
+                      <RiUserFollowLine size="20" color="white" />
+                    </S.FollowBtn>
+                  ) : (
+                    <S.FollowBtn
+                      onClick={() =>
+                        deleteFollowBtnHandler(user_id as string, userId)
+                      }
+                      style={{ cursor: "pointer" }}
+                    >
+                      <RiUserUnfollowLine size="20" color="white" />
+                    </S.FollowBtn>
+                  )}
+                </span>
+              </S.TaskBox>
+              {userFollowersTasks.map((followerTask: Tasks) => {
                 const endHour = followerTask.end_time;
                 const startHour = followerTask.start_time;
                 const height = (endHour - startHour) * 80;
                 const top = (startHour + 1) * 80;
+                console.log("이거", followerTask);
 
                 return (
                   <div key={followerTask.task_id}>
-                    {followersTasks.length > 0 ? (
-                      <S.TaskBox height={height} top={top}>
-                        {followerTask.detail_on ? (
-                          <TaskDetail task={followerTask} />
-                        ) : (
-                          <S.Task>
-                            <S.DoneCheckBtn
-                              onClick={() =>
-                                updateDoneMutation.mutate({
-                                  taskId: followerTask.task_id!,
-                                  done: followerTask.done!,
-                                })
-                              }
-                            >
-                              {followerTask.done ? (
-                                <MdOutlineCheckBox size="25" />
-                              ) : (
-                                <MdCheckBoxOutlineBlank size="25" />
-                              )}
-                            </S.DoneCheckBtn>
-                            <p>{followerTask.title}</p>
-                            <span
-                              onClick={() =>
-                                updateDetailOnMutation.mutate({
-                                  taskId: followerTask.task_id!,
-                                  on: followerTask.detail_on!,
-                                })
-                              }
-                            >
-                              <BsTextRight size="20" />
-                            </span>
-                          </S.Task>
-                        )}
-                      </S.TaskBox>
-                    ) : (
-                      <S.TaskBox top={380}>
+                    <S.TaskBox height={height} top={top}>
+                      {followerTask.detail_on ? (
+                        <TaskDetail task={followerTask} />
+                      ) : (
                         <S.Task>
-                          <S.Text>오늘의 할 일이 없습니다!</S.Text>
+                          <S.DoneCheckBtn
+                            onClick={() =>
+                              updateDoneMutation.mutate({
+                                taskId: followerTask.task_id!,
+                                done: followerTask.done!,
+                              })
+                            }
+                            style={{ cursor: "pointer" }}
+                          >
+                            {followerTask.done ? (
+                              <MdOutlineCheckBox size="30" />
+                            ) : (
+                              <MdCheckBoxOutlineBlank size="30" />
+                            )}
+                          </S.DoneCheckBtn>
+                          <p style={{ fontSize: "18px", fontWeight: "600" }}>
+                            {followerTask.title}
+                          </p>
+                          <span
+                            style={{ cursor: "pointer" }}
+                            onClick={() =>
+                              updateDetailOnMutation.mutate({
+                                taskId: followerTask.task_id!,
+                                on: followerTask.detail_on!,
+                              })
+                            }
+                          >
+                            <BsTextRight size="30" />
+                          </span>
                         </S.Task>
-                      </S.TaskBox>
-                    )}
+                      )}
+                    </S.TaskBox>
                   </div>
                 );
               })}
-        </S.TaskContainer>
-      ))}
+              {userOnlyIds.map((onlyUserId) => (
+                <S.TaskBox key={onlyUserId} top={80}>
+                  <S.Task>
+                    <S.Text style={{ color: "white", height: "80px" }}>
+                      오늘의 할 일이 없습니다!
+                    </S.Text>
+                  </S.Task>
+                </S.TaskBox>
+              ))}
+            </S.TaskContainer>
+          );
+        })}
     </>
   );
 };

@@ -11,6 +11,7 @@ export interface Tasks {
   date: string;
   user_id: string | undefined;
   detail_on?: boolean;
+  username?: string;
 }
 
 export const getMyTasks = async (
@@ -29,12 +30,14 @@ export const getFollowerTasks = async (
   date: string,
   userIds: string[]
 ): Promise<Tasks[] | null> => {
-  const { data: followersTasks } = await supabase
+  const data = await supabase
     .from("tasks")
     .select("*")
     .eq("date", date)
     .in("user_id", userIds);
-  return followersTasks;
+  console.log("followersTasks", data.data);
+  console.log(userIds);
+  return data.data;
 };
 
 /**
