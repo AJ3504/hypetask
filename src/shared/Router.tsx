@@ -10,6 +10,9 @@ import ResetPassword from "../pages/ResetPassword";
 import FindPassword from "../pages/FindPassword";
 import FirstMain from "../pages/FirstMain";
 import PrivateRoute from "./PrivateRouter";
+import ChatRoom from "../components/Chat/ChatRoom";
+import OpenChatList from "../components/Chat/OpenChatList";
+import MyChatList from "../components/Chat/MyChatList";
 
 const Router = () => {
   return (
@@ -46,7 +49,10 @@ const Router = () => {
               </PrivateRoute>
             }
           />
-          <Route path="/chat" element={<Chat />} />
+          <Route path="/chat/*" element={<Chat />} />
+          {/* 다음의 경로들에 대해서 OpenChatList와 MyChatList로 연결 */}
+          <Route path="/chat/openChat" element={<OpenChatList />} />
+          <Route path="/chat/myChat" element={<MyChatList />} />
         </Routes>
       </Layout>
     </BrowserRouter>

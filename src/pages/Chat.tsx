@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import ChatRoom from "../components/Chat/ChatRoom";
 import { useUserStore } from "../components/Authentication/Login";
 import OpenChatList from "../components/Chat/OpenChatList";
@@ -37,10 +37,11 @@ const Chat = () => {
 
   return (
     <>
-      <div className="상단_채팅방입장">
-        {room && roomPW ? (
-          <ChatRoom room={room} roomPW={roomPW} />
-        ) : (
+      <div
+        className="상단_채팅방입장_페이지"
+        style={{ border: "solid", borderRadius: "10px" }}
+      >
+        {!room || !roomPW ? (
           <section style={{ marginBottom: "30px" }}>
             <label>Enter Room Name:</label>
             <input ref={roomInputRef} />
@@ -59,22 +60,17 @@ const Chat = () => {
               Enter Chat
             </button>
           </section>
+        ) : (
+          <ChatRoom room={room} roomPW={roomPW} />
         )}
       </div>
       {/* --------------------------------------------- */}
-      <div className="하단_오픈채팅목록" style={{ backgroundColor: "yellow" }}>
+      <div
+        className="하단_오픈채팅목록_페이지"
+        style={{ border: "solid", borderRadius: "10px", marginTop: "30px" }}
+      >
         <section className="탭">
           <div style={{ display: "flex" }}>
-            <span
-              style={{
-                backgroundColor:
-                  activeTab === "myChat" ? "darkolivegreen" : "transparent",
-                cursor: "pointer",
-              }}
-              onClick={() => handleTabChange("myChat")}
-            >
-              My Chat
-            </span>
             <span
               style={{
                 backgroundColor:
@@ -82,18 +78,28 @@ const Chat = () => {
                 marginLeft: "20px",
                 cursor: "pointer",
               }}
-              onClick={() => handleTabChange("openChat")}
+              onClick={() => {
+                handleTabChange("openChat");
+                navigate("/chat/openChat");
+              }}
             >
               Open Chat
             </span>
+            {/* ---- */}
+            <span
+              style={{
+                backgroundColor:
+                  activeTab === "myChat" ? "darkolivegreen" : "transparent",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                handleTabChange("myChat");
+                navigate("/chat/myChat");
+              }}
+            >
+              My Chat
+            </span>
           </div>
-        </section>
-        {/* ------------------------------------------------------------------- */}
-        <section className="활성화컴포넌트" style={{ border: "solid black" }}>
-          {activeTab === "openChat" && (
-            <OpenChatList room={room} roomPW={roomPW} />
-          )}
-          {activeTab === "myChat" && <MyChatList room={room} roomPW={roomPW} />}
         </section>
       </div>
     </>

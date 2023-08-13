@@ -28,7 +28,7 @@ const ChatRoom: React.FC<ChatRoomProps> = (props) => {
   } = useQuery(["chats", room, roomPW], () =>
     getRealTimeChats({ room, roomPW })
   );
-  console.log(chats);
+  // console.log(chats);
 
   // Post
   const addMutation = useMutation(addChat, {
