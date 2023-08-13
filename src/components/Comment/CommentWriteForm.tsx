@@ -14,7 +14,7 @@ type Props = {
 };
 
 const CommentWriteForm = ({ ref_step, ref_id }: Props) => {
-  const [comment, __, onChangeComment] = useInput<string>("");
+  const [comment, setComment, onChangeComment] = useInput<string>("");
   const commentContainerWidth = useCommentStoreDev(
     (state) => state.parentCommentContainerWidth
   );
@@ -43,6 +43,7 @@ const CommentWriteForm = ({ ref_step, ref_id }: Props) => {
       ref_id: ref_id ? ref_id : null,
       ref_user_id: searchParams.get("uid")!,
     };
+    setComment("");
     await writeComment(data);
   };
   return (
