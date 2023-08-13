@@ -3,8 +3,8 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import { styled } from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import supabase from "../../config/supabaseClient";
-import { useUserStore } from "../../config/useUserStore";
 import type { User } from "../../Types";
+import { useUserStore } from "../../zustand/useUserStore";
 enum AuthProvider {
   Google = "google",
   Kakao = "kakao",

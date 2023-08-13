@@ -3,11 +3,11 @@ import { getAllUser } from "../../api/users";
 import { useModalStore } from "../../zustand/useModalStore";
 import SearchModal from "../modal/SearchModal";
 import { useCurrentFollowerStore } from "../../zustand/useCurrentFollowerStore";
-import { useUserStore } from "../../config/useUserStore";
 import Header from "./Header";
 import S from "./MainStyles";
 import TimeStampCard from "./TimeStampCard";
 import OtherTasksCard from "./OtherTasksCard";
+import { useUserStore } from "../../zustand/useUserStore";
 
 const ExplorePeople = () => {
   // 모든 유저

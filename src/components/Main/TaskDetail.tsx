@@ -11,7 +11,7 @@ import { queryClient } from "../../App";
 import { useModalStore } from "../../zustand/useModalStore";
 import AddTaskModal from "../modal/AddTaskModal";
 import S from "./MainStyles";
-import { useUserStore } from "../../config/useUserStore";
+import { useUserStore } from "../../zustand/useUserStore";
 
 export interface TaskDetailProps {
   task: Tasks | undefined | null;

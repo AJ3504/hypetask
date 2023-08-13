@@ -5,7 +5,7 @@ import { useCurrentFollowerStore } from "../zustand/useCurrentFollowerStore";
 import { useQuery } from "@tanstack/react-query";
 import { getCurrentUser, getFollowers } from "../api/users";
 import { Followers } from "../Types";
-import { useUserStore } from "../config/useUserStore";
+import { useUserStore } from "../zustand/useUserStore";
 
 const Main = () => {
   const { setCurrentUserFollowers } = useCurrentFollowerStore();

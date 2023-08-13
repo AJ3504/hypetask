@@ -15,9 +15,9 @@ import { BsTextRight } from "react-icons/bs";
 import { useMainTabStore } from "../../zustand/useMainTabStore";
 import { addFollower, deleteFollower, getAllUser } from "../../api/users";
 import S from "./MainStyles";
-import { useUserStore } from "../../config/useUserStore";
 import TaskDetail from "./TaskDetail";
 import { today } from "../../consts/consts";
+import { useUserStore } from "../../zustand/useUserStore";
 
 interface OtherTasksCardProps {
   userIds: string[];
@@ -186,12 +186,10 @@ const OtherTasksCard = ({ userIds }: OtherTasksCardProps) => {
                 );
               })}
               {userOnlyIds.map((onlyUserId) => (
-                <S.TaskBox key={onlyUserId} top={80}>
-                  <S.Task>
-                    <S.Text style={{ color: "white", height: "80px" }}>
-                      오늘의 할 일이 없습니다!
-                    </S.Text>
-                  </S.Task>
+                <S.TaskBox key={onlyUserId} top={30}>
+                  <S.Text style={{ color: "black", height: "20px" }}>
+                    오늘의 할 일이 없습니다!
+                  </S.Text>
                 </S.TaskBox>
               ))}
             </S.TaskContainer>

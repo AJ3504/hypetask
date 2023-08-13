@@ -8,10 +8,10 @@ import { MdCheckBoxOutlineBlank } from "react-icons/md";
 import { MdOutlineCheckBox } from "react-icons/md";
 import { BsTextRight } from "react-icons/bs";
 import S from "./MainStyles";
-import { useUserStore } from "../../config/useUserStore";
 import { useNavigate } from "react-router-dom";
 import TaskDetail from "./TaskDetail";
 import { today } from "../../consts/consts";
+import { useUserStore } from "../../zustand/useUserStore";
 
 export interface TasksProps {
   myId: string;

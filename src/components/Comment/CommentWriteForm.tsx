@@ -3,10 +3,10 @@ import { Card, Space, Avatar, Typography, Input, Button } from "antd";
 import useInput from "../../hooks/useInput";
 import { EditOutlined } from "@ant-design/icons";
 import { useCommentStoreDev } from "../../zustand/CommentStore";
-import { useUserStore } from "../../config/useUserStore";
 import type { Comment } from "../../Types";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { today } from "../../consts/consts";
+import { useUserStore } from "../../zustand/useUserStore";
 type Props = {
   ref_step: number;
   ref_id?: string;

@@ -17,7 +17,7 @@ export interface Tasks {
 export const getMyTasks = async (
   myId: string,
   date: string
-): Promise<Tasks[] | null> => {
+): Promise<Tasks[]> => {
   const { data: tasks } = await supabase
     .from("tasks")
     .select("*")
