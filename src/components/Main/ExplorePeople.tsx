@@ -36,8 +36,6 @@ const ExplorePeople = () => {
     fillteredUsers.splice(index, 1);
   });
 
-  console.log("여기", fillteredUsers);
-
   return (
     <>
       {searchModalVisible ? <SearchModal /> : null}

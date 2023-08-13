@@ -18,7 +18,6 @@ const SearchModal = () => {
     return usersData;
   });
 
-  console.log(users);
   const user_id = useUserStore((state) => state.user_id);
   const { setCurrentTab } = useMainTabStore();
 
@@ -27,7 +26,6 @@ const SearchModal = () => {
     const searchedUsers = users
       ?.filter((user) => user.user_id !== user_id)
       .filter((user) => user.username?.includes(keyWord));
-    console.log(searchedUsers);
     setSearchedUsers(searchedUsers);
   };
 

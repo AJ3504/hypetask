@@ -13,7 +13,7 @@ import { RiUserUnfollowLine } from "react-icons/ri";
 import { MdOutlineCheckBox } from "react-icons/md";
 import { BsTextRight } from "react-icons/bs";
 import { useMainTabStore } from "../../zustand/useMainTabStore";
-import { addFollower, deleteFollower } from "../../api/users";
+import { addFollower, deleteFollower, getAllUser } from "../../api/users";
 import S from "./MainStyles";
 import { useUserStore } from "../../config/useUserStore";
 import TaskDetail from "./TaskDetail";
@@ -27,15 +27,19 @@ const OtherTasksCard = ({ userIds }: OtherTasksCardProps) => {
   const { user_id } = useUserStore();
   const { currentTab, setCurrentTab } = useMainTabStore();
 
+  const { data: users, isLoading } = useQuery(["users"], async () => {
+    const usersData = await getAllUser();
+    return usersData;
+  });
+
   const { data: followersTasks } = useQuery(
     ["followerTasks"],
     async () => {
       const followerTasksData = await getFollowerTasks(today, userIds!);
       return followerTasksData;
     },
-    { enabled: !!user_id && !!userIds }
+    { enabled: !!user_id && !!userIds, refetchOnWindowFocus: false }
   );
-  console.log(followersTasks);
 
   const updateDoneMutation = useMutation(
     ({ taskId, done }: { taskId: string; done: boolean }) =>
@@ -97,18 +101,20 @@ const OtherTasksCard = ({ userIds }: OtherTasksCardProps) => {
   return (
     <>
       {followersTasks &&
+        users &&
         userIds?.map((userId) => {
           const userFollowersTasks = followersTasks.filter(
             (task) => task.user_id === userId
           );
           const userOnlyIds = userFollowersTasks.length > 0 ? [] : [userId];
+          const userArr = users.filter((user) => user.user_id === userId);
 
           return (
             <S.TaskContainer key={userId}>
               <S.TaskBox
                 style={{ display: "flex", justifyContent: "space-between" }}
               >
-                <S.Text>{userId}</S.Text>
+                <S.Text>{userArr[0].username}</S.Text>
                 <span>
                   {currentTab === "explore" ? (
                     <S.FollowBtn
@@ -136,7 +142,6 @@ const OtherTasksCard = ({ userIds }: OtherTasksCardProps) => {
                 const startHour = followerTask.start_time;
                 const height = (endHour - startHour) * 80;
                 const top = (startHour + 1) * 80;
-                console.log("이거", followerTask);
 
                 return (
                   <div key={followerTask.task_id}>

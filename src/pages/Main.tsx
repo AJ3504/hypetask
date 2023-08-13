@@ -21,7 +21,6 @@ const Main = () => {
     async () => {
       const followersData = await getFollowers(currentUser!);
       setCurrentUserFollowers(followers as string[]);
-      console.log("asa", followersData);
       return followersData;
     },
     {
