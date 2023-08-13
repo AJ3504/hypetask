@@ -10,6 +10,7 @@ type UserStore = {
   setUserId: (uset_id: string) => void;
   setAccessToken: (accessToken: string) => void;
   setUser: (user: User) => void;
+  logout: () => void;
 };
 const store = (set: any) => ({
   user_id: "",
@@ -18,6 +19,9 @@ const store = (set: any) => ({
   setUserId: (user_id: string) => set({ user_id: user_id }),
   setAccessToken: (accessToken: string) => set({ accessToken: accessToken }),
   setUser: (user: User) => set({ user: user }),
+  logout: () => {
+    set({ user_id: "", user: null, accessToken: null });
+  },
 });
 const persistStore = persist<UserStore>(store, {
   name: StorageKey,

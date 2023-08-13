@@ -22,11 +22,11 @@ export type Comment = {
   date: string;
   checked?: boolean;
   ref_user_id: string;
+  task?: Tasks;
 };
 export type User = {
   user_id: string;
   created_at: string;
-  name: string;
   img_url: string;
   email: string;
   username: string;
@@ -49,11 +49,15 @@ export interface Likes {
   user_id: string;
   created_at: string;
 }
-export interface Tasks {
-  todo_id: string;
-  created_at: string;
-  days_id: string;
-  desc: string;
+export type Tasks = {
+  task_id: string | undefined;
+  created_at?: string;
   title: string;
-  done: boolean;
-}
+  desc: string;
+  done?: boolean;
+  start_time: number;
+  end_time: number;
+  date: string;
+  user_id: string | undefined;
+  detail_on?: boolean;
+};

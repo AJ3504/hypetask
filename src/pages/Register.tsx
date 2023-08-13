@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import supabase from "../config/supabaseClient";
 import { styled } from "styled-components";
+import * as uApi from "../api/users";
 interface FormEvent extends React.FormEvent<HTMLFormElement> {}
 const Register: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -24,9 +25,18 @@ const Register: React.FC = () => {
     try {
       setLoading(true);
 
+      const userMetadata = {
+        username: name,
+        avatar_url: `http://gravatar.com/avatar/${
+          name + Math.random().toString()
+        }?d=identicon`,
+      };
       const signUpResult: any = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          data: userMetadata,
+        },
       });
 
       if (signUpResult.error) {
@@ -37,31 +47,16 @@ const Register: React.FC = () => {
         return;
       }
       const { data } = await supabase.auth.getUser();
-      console.log(data);
 
       if (data) {
         console.log("User registered:", data);
-        await addUser(data.user!.id, name);
+        await uApi.addUser(data.user!.id, userMetadata);
         setError("");
       }
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const addUser = async (userUid: string, userName: string) => {
-    const { error } = await supabase
-      .from("profiles")
-      .upsert({
-        user_id: userUid,
-        username: userName,
-        avatar_url: `http://gravatar.com/avatar/${userUid}?d=identicon`,
-      });
-
-    if (error) {
-      console.error(error);
     }
   };
 

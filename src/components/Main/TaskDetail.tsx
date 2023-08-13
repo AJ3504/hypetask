@@ -1,4 +1,7 @@
-import { Tasks, deleteTask, updateDetailOn } from "../../api/tasks";
+import React from "react";
+import { deleteTask, updateDetailOn } from "../../api/tasks";
+import type { Tasks } from "../../Types";
+import { styled } from "styled-components";
 import { MdTitle } from "react-icons/md";
 import { BiTimeFive } from "react-icons/bi";
 import { BsTextLeft } from "react-icons/bs";

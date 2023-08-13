@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import supabase from "../../config/supabaseClient";
 import type { User } from "../../Types";
 import { useUserStore } from "../../zustand/useUserStore";
+
 enum AuthProvider {
   Google = "google",
   Kakao = "kakao",
@@ -36,50 +37,13 @@ const Login: React.FC = () => {
 
       // 토큰 저장 - 일반 로그인
       if (data.user) {
-        const session = await supabase.auth.getSession();
-        console.log(session);
-        const accessToken = session?.data?.session?.access_token;
-        const userData = session?.data?.session?.user;
-        const user: User = {
-          name: "feaw",
-          email: "fawefe",
-          user_id: userData!.id,
-          created_at: userData!.created_at,
-          img_url: userData?.user_metadata
-            ? userData?.user_metadata.avatar_url
-            : "",
-          username: userData?.user_metadata
-            ? userData.user_metadata.full_name
-            : "사용자",
-        };
-        setUserId(userData?.id!);
-        setAccessToken(accessToken!);
-        setUser(user);
-        if (accessToken) {
-          localStorage.setItem("accessToken", accessToken);
-
-          alert("로그인에 성공했습니다. 메인페이지로 이동합니다.");
-          navigate("/");
-        }
+        alert("로그인에 성공했습니다. 메인페이지로 이동합니다.");
+        navigate("/");
       }
     } catch (error) {
       console.error((error as any).message);
     }
   };
-
-  interface OAuthResponse {
-    user?: {
-      id: string;
-    };
-    profile?: {
-      id: string;
-    };
-  }
-
-  interface ProviderResponse {
-    provider: AuthProvider;
-    url: string;
-  }
 
   // 2. 소셜 로그인 (provider = google, github, kakao)
   const handleOAuthLogin = async (provider: AuthProvider, e: FormEvent) => {
@@ -87,29 +51,15 @@ const Login: React.FC = () => {
     try {
       const { data, error } = await (
         supabase.auth as SupabaseClient["auth"]
-      ).signInWithOAuth({ provider });
-
+      ).signInWithOAuth({
+        provider: provider,
+        options: {
+          redirectTo: process.env.REACT_APP_HOME_URL,
+        },
+      });
       if (error) {
         console.error(`${provider} 로그인 에러 발생:`, error);
         return;
-      }
-
-      const session = await supabase.auth.getSession();
-
-      const oauthData = data as OAuthResponse;
-      if (oauthData.user || oauthData.profile) {
-        const user = oauthData.user ?? oauthData.profile;
-        if (user) {
-          // 이안진 추가
-
-          console.log(`Successfully Sociallogged in: ${provider} user:`, user);
-
-          await supabase.from("users").upsert([
-            {
-              user_id: user.id,
-            },
-          ]);
-        }
       }
     } catch (error) {
       console.error(`${provider} 로그인 에러 발생:`, error);
@@ -140,7 +90,11 @@ const Login: React.FC = () => {
         </div>
         {/* Social login */}
         <div className="social-login">
-          <div onClick={(e) => handleOAuthLogin(AuthProvider.Google, e)}>
+          <div
+            onClick={(e) => {
+              handleOAuthLogin(AuthProvider.Google, e);
+            }}
+          >
             <LoginIcon src="/assets/google (1).png" />
           </div>
           <div onClick={(e) => handleOAuthLogin(AuthProvider.GitHub, e)}>
