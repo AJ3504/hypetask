@@ -14,6 +14,7 @@ import S from "./MainStyles";
 import TaskDetail from "./TaskDetail";
 import { today } from "../../consts/consts";
 import { useUserStore } from "../../zustand/useUserStore";
+import { useCurrentStore } from "../../zustand/useCurrentStore";
 
 interface OtherTasksCardProps {
   userIds: string[];
@@ -94,6 +95,8 @@ const OtherTasksCard = ({ userIds }: OtherTasksCardProps) => {
     }
   };
 
+  const { currentDetailId, setCurrentDetailId } = useCurrentStore();
+
   return (
     <>
       {followersTasks &&
@@ -113,7 +116,8 @@ const OtherTasksCard = ({ userIds }: OtherTasksCardProps) => {
                 <S.Text
                   style={{ cursor: "pointer" }}
                   onClick={() => {
-                    navigate(`/detail?uid=${userArr[0].user_id}&day=${today}`);
+                    navigate(`/detail?uid=${userId}&day=${today}`);
+                    setCurrentDetailId(userId);
                   }}
                 >
                   {userArr[0].username}

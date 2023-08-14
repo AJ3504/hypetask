@@ -26,7 +26,6 @@ const MyTasksCard = ({ myId }: TasksProps) => {
   });
   const { setClickedTime } = useCommentTimeStoreDev();
   const { addTaskModalVisible, changeAddTaskModalstatus } = useModalStore();
-  const { user_id } = useUserStore();
 
   const updateDoneMutation = useMutation(
     ({ taskId, done }: { taskId: string; done: boolean }) =>
@@ -51,13 +50,13 @@ const MyTasksCard = ({ myId }: TasksProps) => {
   return (
     <>
       {addTaskModalVisible ? (
-        <AddTaskModal todayDefault={true} myId={user_id!} />
+        <AddTaskModal todayDefault={true} myId={myId!} />
       ) : null}
       <S.TaskContainer>
         <S.TaskBox
           style={{ cursor: "pointer" }}
           onClick={() => {
-            navigate(`/detail?uid=${user_id}&day=${today}`);
+            navigate(`/detail?uid=${myId}&day=${today}`);
           }}
         >
           <S.Text>My Task</S.Text>
