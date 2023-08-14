@@ -19,7 +19,7 @@ const S = {
     background-color: #262286;
     height: 100px;
     width: 100%;
-    z-index: 99;
+    z-index: 50;
     padding: 0 30px;
   `,
 
