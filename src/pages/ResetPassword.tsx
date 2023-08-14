@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import supabase from "../config/supabaseClient";
 
 const ResetPassword: React.FC = () => {
@@ -7,7 +7,7 @@ const ResetPassword: React.FC = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [error, setError] = useState("");
-
+  const navigate = useNavigate();
   const updatePasswordHandler = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -25,6 +25,7 @@ const ResetPassword: React.FC = () => {
         alert("비밀번호가 성공적으로 변경되었습니다.");
         setNewPassword("");
         setConfirmNewPassword("");
+        navigate("/First-main");
       } else {
         alert("비밀번호 변경 중에 오류가 발생했습니다.");
       }
