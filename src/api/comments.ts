@@ -14,7 +14,14 @@ export const writeComment = async (data: Comment | null): Promise<Comment> => {
   }
   return comments![0] as Comment;
 };
-
+export const deleteComment = async (commentId: string): Promise<void> => {
+  let result = await supabase
+    .from("comments")
+    .delete()
+    .eq("comment_id", commentId)
+    .select();
+  console.log(result);
+};
 /**
  *
  * @param task_id 태스크아이디

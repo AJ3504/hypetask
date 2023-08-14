@@ -95,7 +95,7 @@ const OtherTasksCard = ({ userIds }: OtherTasksCardProps) => {
     }
   };
 
-  const { currentDetailId, setCurrentDetailId } = useCurrentStore();
+  const { setCurrentDetailId } = useCurrentStore();
 
   return (
     <>

@@ -206,7 +206,7 @@ const AddTaskModal: React.FC<IModalProps> = ({
               <div>
                 <Space
                   direction="horizontal"
-                  style={{ position: "relative", left: "300px" }}
+                  style={{ position: "relative", left: "250px" }}
                 >
                   {isLoading ? (
                     <Button type="primary" loading>

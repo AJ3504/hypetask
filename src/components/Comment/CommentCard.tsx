@@ -28,9 +28,8 @@ function CommentCard({
   const commentContainerWidth = useCommentStoreDev(
     (state) => state.parentCommentContainerWidth
   );
-  console.log(user);
   const fetchReplys = useCommentStoreDev((state) => state.fetchReplys);
-  const deleteComment = useCommentStoreDev();
+  const deleteComment = useCommentStoreDev((state) => state.deleteComment);
   const my_user_id = useUserStore((state) => state.user_id);
   const [seeMore, setSeeMore] = useState(false);
   const [seeReply, setSeeReply] = useState(false);
@@ -57,7 +56,9 @@ function CommentCard({
       await fetchReplysHandler();
     }
   };
-  const deleteCommentHandler = async () => {};
+  const deleteCommentHandler = () => {
+    deleteComment(comment_id!);
+  };
   const closeSeeReply = () => {
     setSeeReply(!seeReply);
     setPrevReplyPage(replyPage);
@@ -74,9 +75,6 @@ function CommentCard({
     return `${Math.floor(daysElapsed)}일 전`;
   };
   const focusTime = () => {};
-  const toggleReplyForm = async () => {
-    setWriteForm(!writeForm);
-  };
   return (
     <>
       <>
@@ -144,7 +142,12 @@ function CommentCard({
                   )}
                   {"   "}
                   {user?.user_id === my_user_id && (
-                    <Typography.Link onClick={deleteCommentHandler}>
+                    <Typography.Link
+                      onClick={() => {
+                        deleteCommentHandler();
+                        console.log("feafwe");
+                      }}
+                    >
                       <DeleteOutlined />
                     </Typography.Link>
                   )}

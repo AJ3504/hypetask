@@ -10,9 +10,8 @@ const FindPassword: React.FC = () => {
   const resetPasswordHandler = async () => {
     try {
       const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: process.env.REACT_APP_HOME_URL + "/resetPassword",
+        redirectTo: "https://" + window.location.hostname + "/resetPassword",
       });
-      console.log(data);
       if (!error) {
         alert("Please check your email");
         setEmail("");

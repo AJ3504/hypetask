@@ -10,7 +10,7 @@ export type CommentStoreType = {
   setParentCommentContainerWidth: (width: number) => void;
   setNumOfComment: (user_id: string, date: string) => Promise<void>;
   writeComment: (data: Comment) => Promise<void>;
-  deleteComment: (comment: Comment) => Promise<void>;
+  deleteComment: (commentId: string) => Promise<void>;
 };
 
 export type CommentTimeStoreType = {

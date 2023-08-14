@@ -3,8 +3,9 @@ export interface Chats {
   text: string;
   created_at: string;
   user_id: string;
-  texter: string;
+  username?: string;
   roomName: string;
+  roomPW: string;
 }
 
 export type Comment = {
