@@ -15,7 +15,7 @@ export const getRealTimeChats = async ({
     .eq("roomName", room)
     .eq("roomPW", roomPW)
     .order("created_at");
-  console.log(response);
+  // console.log(""response);
   return response.data;
 };
 
@@ -53,14 +53,14 @@ export const getChats = async ({
   const startIndex = pageParam * itemsPerPage;
   const endIndex = startIndex + itemsPerPage - 1;
 
-  const response = await supabase
+  const response = await supabase // 여기서의 reponse: 그냥 data가 아니라 pages 데이터
     .from("chats")
     .select("*")
     .eq("roomName", room)
     .eq("roomPW", roomPW)
-    .range(pageParam * itemsPerPage, (pageParam + 1) * itemsPerPage) // 0~4, 5~9, 10~14, ...
+    .range(startIndex, endIndex)
     .order("created_at");
 
-  // console.log(response);
+  console.log(response.data); // 만약 총 챗개수가 15개라면, 3개 덩어리로 잘라져서 옴 -> response.data = [ 0: [{}, {}, {}, {}, {}], 1: [{}, {}, {}, {}, {}], 2: [{}, {}, {}, {}, {}] ]
   return response.data as Chats[];
 };
