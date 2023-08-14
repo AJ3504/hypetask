@@ -96,7 +96,6 @@ const OtherTasksCard = ({ userIds }: OtherTasksCardProps) => {
   };
 
   const { setCurrentDetailId } = useCurrentStore();
-  console.log(userIds);
 
   return (
     <>
@@ -118,7 +117,9 @@ const OtherTasksCard = ({ userIds }: OtherTasksCardProps) => {
                   style={{ cursor: "pointer" }}
                   onClick={() => {
                     navigate(`/detail?uid=${userId}&day=${today}`);
-                    setCurrentDetailId(userId);
+                    user_id === userId
+                      ? setCurrentDetailId(user_id)
+                      : setCurrentDetailId(userId);
                   }}
                 >
                   {userArr[0].username}

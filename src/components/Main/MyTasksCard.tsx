@@ -13,6 +13,7 @@ import { useCommentTimeStoreDev } from "../../zustand/CommentTimeStore";
 import TaskDetail from "./TaskDetail";
 import { today } from "../../consts/consts";
 import { useUserStore } from "../../zustand/useUserStore";
+import { useCurrentStore } from "../../zustand/useCurrentStore";
 
 export interface TasksProps {
   myId: string;
@@ -47,6 +48,9 @@ const MyTasksCard = ({ myId }: TasksProps) => {
     }
   );
 
+  const { setCurrentDetailId, currentDetailId } = useCurrentStore();
+  console.log(currentDetailId);
+
   return (
     <>
       {addTaskModalVisible ? (
@@ -57,6 +61,7 @@ const MyTasksCard = ({ myId }: TasksProps) => {
           style={{ cursor: "pointer" }}
           onClick={() => {
             navigate(`/detail?uid=${myId}&day=${today}`);
+            setCurrentDetailId(myId);
           }}
         >
           <S.Text>My Task</S.Text>
