@@ -25,10 +25,9 @@ const DailyCalender = () => {
           <MyTasksCard myId={user_id!} />
         </S.CalenderContainer>
         <S.FollowersCalenderContainer>
-          {currentUserFollowers &&
-            currentUserFollowers.map(() => {
-              return <OtherTasksCard userIds={currentUserFollowers} />;
-            })}
+          {currentUserFollowers && (
+            <OtherTasksCard userIds={currentUserFollowers} />
+          )}
         </S.FollowersCalenderContainer>
       </S.Container>
     </>
