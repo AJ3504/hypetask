@@ -22,6 +22,8 @@ export const FirstMainContainer = styled.div`
   width: 100%;
   height: 100vh;
   padding: 20px;
+  background-image: url("/assets/background.gif");
+  background-size: cover;
 `;
 export const ContentContainer = styled.div`
   display: flex;
