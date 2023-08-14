@@ -48,7 +48,7 @@ const SearchModal = () => {
           style={{
             display: "flex",
             justifyContent: "space-between",
-            marginTop: "50px",
+            marginTop: "10px",
           }}
         >
           <input
