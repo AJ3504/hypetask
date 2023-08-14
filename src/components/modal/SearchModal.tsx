@@ -45,7 +45,11 @@ const SearchModal = () => {
       <S.ModalContent>
         <form
           onSubmit={searchOnsubmitHandler}
-          style={{ display: "flex", justifyContent: "space-between" }}
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginTop: "50px",
+          }}
         >
           <input
             onChange={onChangeKeyWord}
@@ -91,6 +95,7 @@ const SearchModal = () => {
           </div>
         )}
       </S.ModalContent>
+      <S.CloseBtn onClick={changeSearchModalstatus}> X </S.CloseBtn>
     </S.ModalBackGround>
   );
 };
@@ -113,16 +118,27 @@ const S = {
   `,
   ModalContent: styled.div`
     background-color: #fff;
-    padding: 30px;
+    padding: 20px;
     width: 420px;
     height: 500px;
     border-radius: 10px;
     overflow: auto;
+    margin-right: 10px;
   `,
   SearchBtn: styled.button`
     background-color: #262286;
     color: white;
     border: none;
     border-radius: 7px;
+  `,
+  CloseBtn: styled.button`
+    background-color: #262286;
+    color: white;
+    border: none;
+    border-radius: 100px;
+    width: 30px;
+    height: 30px;
+    margin-bottom: 450px;
+    cursor: pointer;
   `,
 };
