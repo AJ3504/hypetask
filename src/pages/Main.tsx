@@ -2,14 +2,14 @@ import React from "react";
 import { useMainTabStore } from "../zustand/useMainTabStore";
 import DailyCalender from "../components/Main/DailyCalender";
 import ExplorePeople from "../components/Main/ExplorePeople";
-import { useCurrentFollowerStore } from "../zustand/useCurrentFollowerStore";
+import { useCurrentStore } from "../zustand/useCurrentStore";
 import { useQuery } from "@tanstack/react-query";
 import { getCurrentUser, getFollowers } from "../api/users";
 import { Followers } from "../Types";
 import { useUserStore } from "../zustand/useUserStore";
 
 const Main = () => {
-  const { setCurrentUserFollowers } = useCurrentFollowerStore();
+  const { setCurrentUserFollowers } = useCurrentStore();
   const { setUserId, user_id } = useUserStore();
 
   const { data: followers, isLoading } = useQuery(

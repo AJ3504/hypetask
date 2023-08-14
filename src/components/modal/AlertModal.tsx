@@ -52,13 +52,9 @@ const AlertModal = ({ myComments }: AlertModalProps) => {
             const comment = myComment.comment;
             return (
               <S.Cmt>
-                <S.CmtInfo>
-                  <S.AlertText>{writer}</S.AlertText>
-                  <S.AlertText>{time}</S.AlertText>
-                </S.CmtInfo>
-                <S.CmtBody>
-                  <S.AlertText>{comment}</S.AlertText>
-                </S.CmtBody>
+                <S.AlertText>{comment}</S.AlertText>
+                <S.AlertText>{writer}</S.AlertText>
+                <S.AlertText>{time}</S.AlertText>
               </S.Cmt>
             );
           })}
@@ -87,6 +83,8 @@ const S = {
     top: 70px;
     right: 0px;
     z-index: 9999;
+
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
   `,
   CloseBtn: styled.button`
     background-color: transparent;
@@ -99,16 +97,10 @@ const S = {
     margin-bottom: 10px;
   `,
   Cmt: styled.div`
-    /* border-bottom: 1px solid grey; */
-  `,
-  CmtInfo: styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    margin: 10px 0;
-  `,
-  CmtBody: styled.div`
-    margin-bottom: 20px;
+    margin: 15px 0;
   `,
   AlertText: styled.p`
     color: black;

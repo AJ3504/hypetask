@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllUser } from "../../api/users";
 import { useModalStore } from "../../zustand/useModalStore";
 import SearchModal from "../modal/SearchModal";
-import { useCurrentFollowerStore } from "../../zustand/useCurrentFollowerStore";
+import { useCurrentStore } from "../../zustand/useCurrentStore";
 import Header from "./Header";
 import S from "./MainStyles";
 import TimeStampCard from "./TimeStampCard";
@@ -20,7 +20,7 @@ const ExplorePeople = () => {
     { select: (usersData) => usersData.map((userData) => userData.user_id) }
   );
 
-  const { currentUserFollowers } = useCurrentFollowerStore();
+  const { currentUserFollowers } = useCurrentStore();
   const user_id = useUserStore((state) => state.user_id);
   const { searchModalVisible } = useModalStore();
 

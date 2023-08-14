@@ -4,14 +4,14 @@ import Header from "./Header";
 import TimeStampCard from "./TimeStampCard";
 import MyTasksCard from "./MyTasksCard";
 import OtherTasksCard from "./OtherTasksCard";
-import { useCurrentFollowerStore } from "../../zustand/useCurrentFollowerStore";
+import { useCurrentStore } from "../../zustand/useCurrentStore";
 import S from "./MainStyles";
 import { useUserStore } from "../../zustand/useUserStore";
 
 const DailyCalender = () => {
   const { user_id } = useUserStore();
   const { addTaskModalVisible } = useModalStore();
-  const { currentUserFollowers } = useCurrentFollowerStore();
+  const { currentUserFollowers } = useCurrentStore();
 
   return (
     <>
