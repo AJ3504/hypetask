@@ -23,6 +23,7 @@ const OpenChatList: React.FC = () => {
 
   // useInfiniteQuery
   const fetchChatsForPage = async ({ pageParam = 0 }): Promise<Chats[]> => {
+    console.log("fetchChatsForPage");
     const response = await getChats({ room, roomPW, pageParam });
     // console.log(response);
     return response;
@@ -32,13 +33,19 @@ const OpenChatList: React.FC = () => {
     useInfiniteQuery({
       queryKey: ["chats", room],
       queryFn: ({ pageParam }) => fetchChatsForPage({ pageParam }),
-      getNextPageParam: (_lastPage, pages) => {
+      getNextPageParam: (lastPage, pages) => {
         // 현재페이지 < 총 페이지수일때만 다음 페이지 가져옴
-        if (pages[pages.length - 1]?.length >= 5) {
-          return pages.length + 1;
-        } else {
-          return undefined;
+        // if (pages[pages.length - 1]?.length >= 5) {
+        //   // console.log("다음페이지 있음");
+        //   return pages.length + 1;
+        // } else {
+        //   // console.log("다음페이지 없음");
+        //   return undefined;
+        // }
+        if (pages.length > 0) {
+          return pages.length; // 다음 페이지 번호 return
         }
+        return undefined;
       },
     });
   const { ref } = useInView({
@@ -63,10 +70,10 @@ const OpenChatList: React.FC = () => {
     return new Intl.DateTimeFormat("en-US", options).format(date);
   };
 
-  // const fetchMore = () => {
-  //   if (!hasNextPage) return;
-  //   fetchNextPage();
-  // };
+  const fetchMore = () => {
+    if (!hasNextPage) return;
+    fetchNextPage();
+  };
 
   return (
     <StOpenChatListContainer>
@@ -94,7 +101,7 @@ const OpenChatList: React.FC = () => {
           width: "100%",
           height: 50,
         }}
-        ref={ref} // useInView에서 반환한 ref를 적용
+        ref={ref}
       >
         더보기…
       </div>
