@@ -52,16 +52,15 @@ const FindPassword: React.FC = () => {
     <CenteredContainer>
       <ResetPassword>
         <h1>비밀번호 변경</h1>
-        
-          <PasswordFormContainer onSubmit={resetPasswordHandler}>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="이메일을 입력해주세요"
-            />
-            <button type="submit">Reset Password</button>
-          
+
+        <PasswordFormContainer onSubmit={resetPasswordHandler}>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="이메일을 입력해주세요"
+          />
+          <button type="submit">Reset Password</button>
         </PasswordFormContainer>
       </ResetPassword>
     </CenteredContainer>

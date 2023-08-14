@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import supabase from "../../config/supabaseClient";
 import type { User } from "../../Types";
 import { useUserStore } from "../../zustand/useUserStore";
+import { IntroduceContainer, IntroduceTitle } from "./Introduce";
 
 enum AuthProvider {
   Google = "google",
@@ -64,53 +65,99 @@ const Login: React.FC = () => {
   };
   return (
     <div>
-      <div className="login-container">
-        <div className="login-title">Log in</div>
-        <div className="login-input">
-          <input
+      <IntroduceContainer>
+        <IntroduceTitle style={{ marginBottom: "10px" }}>Log in</IntroduceTitle>
+        <LoginForm>
+          <LoginInput
             type="text"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <input
+          <LoginInput
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <button onClick={loginHandler}>Go!</button>
-        </div>
-        <div className="login-guide">
-          <Link to="/findpassword">forgot password?</Link>
-          <Link to="/register">Join us</Link>
-        </div>
-        {/* Social login */}
-        <div className="social-login">
-          <div
-            onClick={(e) => {
-              handleOAuthLogin(AuthProvider.Google, e);
-            }}
+          <GoButton onClick={loginHandler}>Go!</GoButton>
+        </LoginForm>
+        <LoginGuide>
+          <Link
+            to="/findpassword"
+            style={{ color: "black", marginRight: "5px" }}
           >
-            <LoginIcon src="/assets/google (1).png" />
-          </div>
-          <div onClick={(e) => handleOAuthLogin(AuthProvider.GitHub, e)}>
-            <LoginIcon src="/assets/github (1).png" />
-          </div>
-          <div onClick={(e) => handleOAuthLogin(AuthProvider.Kakao, e)}>
-            <LoginIcon src="/assets/kakao-talk.png" />
-          </div>
-        </div>
-      </div>
+            forgot password?
+          </Link>
+          <Link to="/register" style={{ color: "black" }}>
+            Join us
+          </Link>
+        </LoginGuide>
+        {/* Social login */}
+        <SocialLogin>
+          <LoginIcon
+            onClick={(e) => handleOAuthLogin(AuthProvider.Google, e)}
+            src="/assets/google (1).png"
+          />
+          <LoginIcon
+            onClick={(e) => handleOAuthLogin(AuthProvider.GitHub, e)}
+            src="/assets/github (1).png"
+          />
+          <LoginIcon
+            onClick={(e) => handleOAuthLogin(AuthProvider.Kakao, e)}
+            src="/assets/kakao-talk.png"
+          />
+        </SocialLogin>
+      </IntroduceContainer>
     </div>
   );
 };
 export default Login;
+const LoginForm = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+`;
+
+const GoButton = styled.button`
+  align-self: flex-end;
+  width: 180px;
+  height: 30px;
+  border-radius: 10px;
+  border: transparent;
+  &:hover {
+    background-color: gray;
+  }
+`;
+const LoginGuide = styled.div`
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  display: flex;
+  align-items: center;
+`;
+const SocialLogin = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+`;
 const LoginIcon = styled.img`
-  width: 30px;
+  width: 45px;
   height: auto;
-  margin: 8px;
+  margin: 0 8px;
   padding: 6px;
   border: solid 1px lightgray;
   border-radius: 8px;
+  cursor: pointer;
+  &:hover {
+    background-color: lightgray;
+  }
+`;
+const LoginInput = styled.input`
+  margin-bottom: 10px;
+  padding: 8px;
+  border-radius: 10px;
+  border: transparent;
 `;
